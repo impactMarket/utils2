@@ -7,22 +7,13 @@
 ## Install
 
 ```bash
-npm install --save @impact-market/utils
+yarn add @impact-market/utils
 ```
 
 ## Usage
 
 ```tsx
-import React, { Component } from 'react'
-
-import MyComponent from '@impact-market/utils'
-import '@impact-market/utils/dist/index.css'
-
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
-}
+// Example here
 ```
 
 ## License
