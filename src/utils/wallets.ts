@@ -5,6 +5,26 @@ const instance = axios.create({
     baseURL: 'https://api.coingecko.com/api/v3/coins'
 });
 
+const ethCurrencies = ['eth', 'dai', 'usdc', 'usdt'] as const;
+const ethContractAddresses: {
+    name: typeof ethCurrencies[number];
+    address: string;
+}[] = [
+    { name: 'dai', address: '0x6b175474e89094c44da98b954eedeac495271d0f' },
+    { name: 'usdc', address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
+    { name: 'usdt', address: '0xdac17f958d2ee523a2206206994597c13d831ec7' }
+];
+
+const celoCurrencies = ['celo', 'cusd', 'ceur'] as const;
+const celoContractAddresses: {
+    name: typeof celoCurrencies[number];
+    address: string;
+}[] = [
+    { name: 'celo', address: '0x471EcE3750Da237f93B8E339c536989b8978a438' },
+    { name: 'cusd', address: '0x765DE816845861e75A25fCA122bb6898B8B1282a' },
+    { name: 'ceur', address: '0xD8763CBa276a3738E6DE85b4b3bF5FDed6D6cA73' }
+];
+
 const getCoinPrice = async (coin: string) =>
     (
         await instance.get<
@@ -21,101 +41,94 @@ const getCoinPrice = async (coin: string) =>
 const getEtherScanBalance = async (
     wallet: string,
     etherscanApiKey: string,
-    balanceOf: 'eth' | 'dai' | 'usdc' | 'usdt'
+    balanceOf: typeof ethCurrencies[number]
 ) => {
-    let queryCoin = '';
-    if (balanceOf === 'eth') {
-        queryCoin = 'action=balance';
-    } else if (balanceOf === 'dai') {
-        queryCoin =
-            'action=tokenbalance&contractaddress=0x6b175474e89094c44da98b954eedeac495271d0f';
-    } else if (balanceOf === 'usdc') {
-        queryCoin =
-            'action=tokenbalance&contractaddress=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
-    } else if (balanceOf === 'usdt') {
-        queryCoin =
-            'action=tokenbalance&contractaddress=0xdac17f958d2ee523a2206206994597c13d831ec7';
-    }
+    const contractaddress = ethContractAddresses.find(
+        ({ name }) => name === balanceOf
+    )?.address;
+
+    const queryCoin = contractaddress
+        ? `action=tokenbalance&contractaddress=${contractaddress}`
+        : 'action=balance';
+
     const balance = await axios.get<any, AxiosResponse<{ result: string }>>(
         `https://api.etherscan.io/api?module=account&${queryCoin}&address=${wallet}&tag=latest&apikey=${etherscanApiKey}`
     );
+
     if (balanceOf === 'eth') {
         return toNumber(balance.data.result);
     }
+
     return parseInt(balance.data.result) / 1000000;
 };
 
 const getCeloApiBalance = async (
     wallet: string,
-    balanceOf: 'celo' | 'cusd' | 'ceur'
+    balanceOf: typeof celoCurrencies[number]
 ) => {
-    let queryCoin = '';
-    if (balanceOf === 'celo') {
-        queryCoin = '0x471EcE3750Da237f93B8E339c536989b8978a438';
-    } else if (balanceOf === 'cusd') {
-        queryCoin = '0x765DE816845861e75A25fCA122bb6898B8B1282a';
-    } else if (balanceOf === 'ceur') {
-        queryCoin = '0xD8763CBa276a3738E6DE85b4b3bF5FDed6D6cA73';
-    }
+    const contractaddress = celoContractAddresses.find(
+        ({ name }) => name === balanceOf
+    )?.address;
+
     const balance = await axios.get<any, AxiosResponse<{ result: string }>>(
-        `https://explorer.celo.org/api?module=account&action=tokenbalance&contractaddress=${queryCoin}&address=${wallet}`
+        `https://explorer.celo.org/api?module=account&action=tokenbalance&contractaddress=${contractaddress}&address=${wallet}`
     );
     return balance.data.result;
 };
 
 const getCeloWalletBalance = async (wallet: string) => {
-    const celo_ = await getCoinPrice('celo');
-    const ceur_ = await getCoinPrice('celo-euro');
+    const [celoPrice, celoEuroPrice] = await Promise.all([
+        getCoinPrice('celo'),
+        getCoinPrice('celo-euro')
+    ]);
 
-    const ceurBalance = await getCeloApiBalance(wallet, 'ceur');
-    const cusdBalance = await getCeloApiBalance(wallet, 'cusd');
-    const celoBalance = await getCeloApiBalance(wallet, 'celo');
+    const balance = await Promise.all(
+        celoCurrencies.map(async (currency: typeof celoCurrencies[number]) => {
+            const val = await getCeloApiBalance(wallet, currency);
 
-    return (
-        toNumber(ceurBalance) * ceur_ +
-        toNumber(cusdBalance) +
-        toNumber(celoBalance) * celo_
+            if (currency === 'celo') {
+                return celoPrice * toNumber(val);
+            }
+
+            if (currency === 'ceur') {
+                return celoEuroPrice * toNumber(val);
+            }
+
+            return toNumber(val);
+        })
     );
+
+    return balance.reduce((previous, current) => previous + current, 0);
 };
 
 const getEthereumWalletBalance = async (
     wallet: string,
     etherscanApiKey: string
 ) => {
-    const ethereum_ = await getCoinPrice('ethereum');
-    const balanceETH = await getEtherScanBalance(
-        wallet,
-        etherscanApiKey,
-        'eth'
+    const ethPrice = await getCoinPrice('ethereum');
+
+    const balance = await Promise.all(
+        ethCurrencies.map(async (currency: typeof ethCurrencies[number]) => {
+            const val = await getEtherScanBalance(
+                wallet,
+                etherscanApiKey,
+                currency
+            );
+            return currency === 'eth' ? ethPrice * val : val;
+        })
     );
-    const balanceDAI = await getEtherScanBalance(
-        wallet,
-        etherscanApiKey,
-        'dai'
-    );
-    const balanceUSDC = await getEtherScanBalance(
-        wallet,
-        etherscanApiKey,
-        'usdc'
-    );
-    const balanceUSDT = await getEtherScanBalance(
-        wallet,
-        etherscanApiKey,
-        'usdt'
-    );
-    // console.log({ balanceETH, balanceUSDC, balanceDAI, balanceUSDT });
-    return ethereum_ * balanceETH + balanceUSDC + balanceDAI + balanceUSDT;
+
+    return balance.reduce((previous, current) => previous + current, 0);
 };
 
 export async function getWalletsBalance(props: {
-    wallets: { celo: string; ethereum: string; bitcoin: string };
+    wallets: { celo: string; bitcoin: string; ethereum: string };
     etherscanApiKey: string;
 }) {
-    return {
-        ethereum: await getEthereumWalletBalance(
-            props.wallets.ethereum,
-            props.etherscanApiKey
-        ),
-        celo: await getCeloWalletBalance(props.wallets.celo)
-    };
+    const [celo, ethereum] = await Promise.all([
+        getCeloWalletBalance(props.wallets.celo),
+        getEthereumWalletBalance(props.wallets.ethereum, props.etherscanApiKey)
+    ]);
+
+    return { celo, ethereum };
 }
