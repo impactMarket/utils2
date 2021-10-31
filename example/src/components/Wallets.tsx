@@ -3,6 +3,15 @@ import { getWalletsBalance } from '@impact-market/utils';
 
 const blankWalletState = { celo: 0, ethereum: 0 };
 
+const wallets = {
+    etherscanApiKey: '<ETHERSCAN_API_KEY>',
+    wallets: {
+        bitcoin: '<BITCOIN_ADDRESS>',
+        celo: '<CELO_ADDRESS>',
+        ethereum: '<ETHEREUM_ADDRESS>'
+    }
+}
+
 const Wallets = () => {
     const [balance, setBalance] = useState(blankWalletState);
     const [isLoading, setIsLoading] = useState(true);
@@ -12,14 +21,7 @@ const Wallets = () => {
 
         const getBalance = async () => {
             try {
-                const balance = await getWalletsBalance({
-                    etherscanApiKey: '<ETHERSCAN_API_KEY>',
-                    wallets: {
-                        bitcoin: '<BTC_WALLET_ADDRESS>',
-                        celo: '<CELO_WALLET_ADDRESS>',
-                        ethereum: '<ETH_WALLET_ADDRESS>'
-                    }
-                 });
+                const balance = await getWalletsBalance(wallets);
 
                 setBalance(balance);
                 setIsLoading(false);
@@ -35,7 +37,7 @@ const Wallets = () => {
 
     return (
         <div>
-            <h1>Wallets balance</h1>
+            <h2>Wallets balance</h2>
             {isLoading ? (
                 <p>Loading...</p>
             ) : (
