@@ -1,3 +1,6 @@
+export const cusdContractAddress = '0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1';
+export const pactContractAddress = '0xAb0EE41B8d3540d6145E2Eb58B84a55142aac345';
+
 export const ContractAddresses = new Map<
     number,
     {
