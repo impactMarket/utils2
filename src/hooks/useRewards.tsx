@@ -3,6 +3,7 @@ import { useContracts } from './useContracts';
 import { useContractKit } from '@celo-tools/use-contractkit';
 import React, { useEffect } from 'react';
 import toNumber from '../helpers/toNumber';
+import { useBalance } from '..';
 
 type UseRewardsType = {
     claimRewards?: Function;
@@ -13,6 +14,7 @@ type UseRewardsType = {
 export const useRewards = (): UseRewardsType => {
     const { address } = useContractKit();
     const { donationMiner } = useContracts();
+    const { updateBalance } = useBalance();
     const { rewards, setRewards } = React.useContext(DaoContext);
 
     const getEstimatedClaimableRewards = async () => {
@@ -47,7 +49,8 @@ export const useRewards = (): UseRewardsType => {
     const updateRewards = async () => {
         await Promise.all([
             getEstimatedClaimableRewards(),
-            getClaimableRewards()
+            getClaimableRewards(),
+            updateBalance()
         ]);
     };
 
