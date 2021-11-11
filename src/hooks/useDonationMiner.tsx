@@ -54,9 +54,11 @@ export const useDonationMiner = (): DonationMinerType => {
             const tx = await donationMiner?.donate(amount);
             const response = await tx.wait();
 
-            await updateBalance();
-            await updateRewards();
-            await updateEpoch();
+            await Promise.all([
+                updateBalance(),
+                updateRewards(),
+                updateEpoch()
+            ]);
 
             return response;
         } catch (error) {
