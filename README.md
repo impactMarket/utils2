@@ -10,9 +10,20 @@
 yarn add @impact-market/utils
 ```
 
+## Requirements:
+- use `DaoProvider` as child of `ContractKitProvider` in order to hooks to work.
+
 ### Available Methods:
 
 - `getWalletsBalance`
+
+### Available Hooks:
+
+- `useBalance`
+- `useContracts`
+- `useDonationMiner`
+- `useEpoch`
+- `useRewards`
 
 ## Development
 
