@@ -1,7 +1,5 @@
 # @impact-market/utils
 
-> impactMarket utils
-
 [![NPM](https://img.shields.io/npm/v/@impact-market/utils.svg)](https://www.npmjs.com/package/@impact-market/utils) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ## Install
@@ -49,7 +47,3 @@ Now, anytime you make a change to your library in `src/` or to the example app's
 
 This lib was created using `create-react-library`.
 Please check documentetion [here](https://github.com/transitive-bullshit/create-react-library).
-
-## License
-
-MIT © [impactMarket](https://github.com/impactMarket)
