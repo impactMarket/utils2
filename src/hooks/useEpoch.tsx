@@ -32,11 +32,12 @@ export const useEpoch = () => {
 
             // calculate remaining time until the end block, in seconds.
             // If the end block was in the past, add another epoch.
+            const isFuture = currentBlock > endBlock.toNumber();
             const blocksPerDay = 12 * 60 * 24; // ~ amount of blocks in a day
             const blockTime =
                 (endBlock.toNumber() -
                     currentBlock +
-                    (currentBlock > endBlock.toNumber() ? blocksPerDay : 0)) *
+                    (isFuture ? blocksPerDay : 0)) *
                 5000;
 
             const endPeriod = new Date(new Date().getTime() + blockTime);
@@ -45,9 +46,9 @@ export const useEpoch = () => {
                 period,
                 address
             );
-            const userContribution = toNumber(amount);
+            const userContribution = isFuture ? 0 : toNumber(amount);
             const rewards = toNumber(rewardAmount);
-            const totalRaised = toNumber(donationsAmount);
+            const totalRaised = isFuture ? 0 : toNumber(donationsAmount);
 
             setEpoch({
                 endPeriod: endPeriod.toISOString(),
