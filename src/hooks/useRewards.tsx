@@ -1,9 +1,9 @@
 import { DaoContext, RewardsType } from '../components/DaoProvider';
+import { useBalance } from './useBalance';
 import { useContracts } from './useContracts';
 import { useContractKit } from '@celo-tools/use-contractkit';
 import React, { useEffect } from 'react';
 import toNumber from '../helpers/toNumber';
-import { useBalance } from '..';
 
 type UseRewardsType = {
     claimRewards?: Function;
