@@ -34,10 +34,10 @@ export const useEpoch = () => {
             // If the end block was in the past, add another epoch.
             const blocksPerDay = 12 * 60 * 24; // ~ amount of blocks in a day
             const blockTime =
-                ((endBlock.toNumber() - currentBlock) + currentBlock >
-                endBlock.toNumber()
-                    ? blocksPerDay
-                    : 0) * 5000;
+                (endBlock.toNumber() -
+                    currentBlock +
+                    (currentBlock > endBlock.toNumber() ? blocksPerDay : 0)) *
+                5000;
 
             const endPeriod = new Date(new Date().getTime() + blockTime);
 
