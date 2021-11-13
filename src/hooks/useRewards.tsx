@@ -23,7 +23,10 @@ export const useRewards = (): UseRewardsType => {
 
             const estimated = toNumber(value);
 
-            setRewards((rewards: RewardsType) => ({ ...rewards, estimated }));
+            setRewards((rewards: RewardsType) => ({
+                ...rewards,
+                estimated
+            }));
         } catch (error) {
             console.log(
                 'Error getting estimated claimable rewards amount: \n',
@@ -40,7 +43,10 @@ export const useRewards = (): UseRewardsType => {
 
             const claimable = toNumber(value);
 
-            setRewards((rewards: RewardsType) => ({ ...rewards, claimable }));
+            setRewards((rewards: RewardsType) => ({
+                ...rewards,
+                claimable
+            }));
         } catch (error) {
             console.log('Error getting claimable rewards amount: \n', error);
         }
@@ -52,6 +58,11 @@ export const useRewards = (): UseRewardsType => {
             getClaimableRewards(),
             updateBalance()
         ]);
+
+        setRewards((rewards: RewardsType) => ({
+            ...rewards,
+            initialised: true
+        }));
     };
 
     const claimRewards = async () => {
@@ -68,8 +79,10 @@ export const useRewards = (): UseRewardsType => {
     };
 
     useEffect(() => {
-        updateRewards();
-    }, [donationMiner]);
+        if (!rewards?.initialised && donationMiner) {
+            updateRewards();
+        }
+    }, [donationMiner, rewards?.initialised]);
 
     return { claimRewards, rewards, updateRewards };
 };
