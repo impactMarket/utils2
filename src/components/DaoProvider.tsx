@@ -27,11 +27,13 @@ const initialBalance: BalanceType = {
 export type RewardsType = {
     claimable?: number;
     estimated?: number;
+    initialised?: boolean;
 };
 
 const initialRewards: RewardsType = {
     claimable: 0,
-    estimated: 0
+    estimated: 0,
+    initialised: false
 };
 
 const intialData: {
