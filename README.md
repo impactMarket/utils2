@@ -19,6 +19,7 @@ yarn add @impact-market/utils
 
 - `useBalance`
 - `useContracts`
+- `useDAO`
 - `useDonationMiner`
 - `useEpoch`
 - `useRewards`

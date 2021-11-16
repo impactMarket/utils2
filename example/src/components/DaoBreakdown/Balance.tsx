@@ -3,7 +3,7 @@ import { useBalance } from '@impact-market/utils';
 
 const Balance = () => {
     const { balance } = useBalance();
-    console.log()
+
     return (
         <>
             <h3>Balance</h3>

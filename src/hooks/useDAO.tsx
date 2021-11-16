@@ -7,16 +7,16 @@ type UseDAOType = {
 };
 
 type CommunityArgs = {
-    proposalDescription: string;
-    firstManager: string;
-    claimAmount: string | BigNumber;
-    maxClaim: string | BigNumber;
-    decreaseStep: string | BigNumber;
     baseInterval: string | BigNumber;
+    claimAmount: string | BigNumber;
+    decreaseStep: string | BigNumber;
+    firstManager: string;
     incrementInterval: string | BigNumber;
-    minTranche: string | BigNumber;
-    maxTranche: string | BigNumber;
     managerBlockList: string[];
+    maxClaim: string | BigNumber;
+    maxTranche: string | BigNumber;
+    minTranche: string | BigNumber;
+    proposalDescription: string;
 };
 
 export const useDAO = (): UseDAOType => {
@@ -29,18 +29,18 @@ export const useDAO = (): UseDAOType => {
 
         try {
             const {
-                proposalDescription,
-                firstManager,
-                claimAmount,
-                maxClaim,
-                decreaseStep,
                 baseInterval,
+                claimAmount,
+                decreaseStep,
+                firstManager,
                 incrementInterval,
-                minTranche,
+                managerBlockList,
+                maxClaim,
                 maxTranche,
-                managerBlockList
+                minTranche,
+                proposalDescription
             } = community;
-            const targets = addresses.communityAdmin;
+            const targets = [addresses.communityAdmin];
             const values = [0];
             const signatures = [
                 'addCommunity(address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,address[])'
