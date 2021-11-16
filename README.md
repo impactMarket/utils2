@@ -14,6 +14,11 @@ yarn add @impact-market/utils
 ### Available Methods:
 
 - `getWalletsBalance`
+- `estimateCommunityRemainFunds`
+- `frequencyToNumer`
+- `frequencyToText`
+- `toNumber`
+- `toToken`
 
 ### Available Hooks:
 
