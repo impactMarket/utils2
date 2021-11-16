@@ -13,15 +13,26 @@ import {
 import ApproveERC20ABI from '../contracts/abi/ApproveERC20.json';
 import DonationMinerABI from '../contracts/abi/DonationMiner.json';
 import PACTToken from '../contracts/abi/PACTToken.json';
+import PACTDelegate from '../contracts/abi/PACTDelegate.json';
 
 type ContractsType = {
+    addresses?: {
+        communityAdmin?: string;
+        cusd?: string;
+        delegate?: string;
+        donationMiner?: string;
+        pactToken?: string;
+    };
     cusd?: Contract;
+    delegate?: Contract;
     donationMiner?: Contract;
     pact?: Contract;
 };
 
 const initialContractsState = {
+    addresses: undefined,
     cusd: undefined,
+    delegate: undefined,
     donationMiner: undefined,
     pact: undefined
 };
@@ -39,28 +50,45 @@ export const useContracts = () => {
         const getContracts = async () => {
             const network = await provider?.getNetwork();
 
-            const donationMinerContractAddress =
-                ContractAddresses.get(network?.chainId!)?.DonationMiner || '';
+            const addresses = {
+                communityAdmin:
+                    ContractAddresses.get(network?.chainId!)?.CommunityAdmin ||
+                    '',
+                cusd: cusdContractAddress,
+                delegate:
+                    ContractAddresses.get(network?.chainId!)?.PACTDelegate ||
+                    '',
+                donationMiner:
+                    ContractAddresses.get(network?.chainId!)?.DonationMiner ||
+                    '',
+                pactToken: pactContractAddress
+            };
 
             const donationMiner = new ethers.Contract(
-                donationMinerContractAddress,
+                addresses.donationMiner,
                 DonationMinerABI as any,
                 signer
             );
 
             const cusd = new ethers.Contract(
-                cusdContractAddress,
+                addresses.cusd,
                 ApproveERC20ABI as any,
                 signer
             );
 
             const pact = new ethers.Contract(
-                pactContractAddress,
+                addresses.pactToken,
                 PACTToken as any,
                 signer
             );
 
-            setContracts({ cusd, donationMiner, pact });
+            const delegate = new ethers.Contract(
+                addresses.delegate,
+                PACTDelegate,
+                signer
+            );
+
+            setContracts({ addresses, cusd, delegate, donationMiner, pact });
         };
 
         if (!!address && initialised && !!signer) {
