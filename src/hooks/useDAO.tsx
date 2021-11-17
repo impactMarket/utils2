@@ -73,13 +73,15 @@ export const useDAO = (): UseDAOType => {
                 )
             ];
 
-            const response = await delegate.propose(
+            const tx = await delegate.propose(
                 targets,
                 values,
                 signatures,
                 calldatas,
                 proposalDescription
             );
+
+            const response = await tx.wait();
 
             return response;
         } catch (error) {

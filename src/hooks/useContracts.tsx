@@ -20,6 +20,7 @@ type ContractsType = {
         communityAdmin?: string;
         cusd?: string;
         delegate?: string;
+        delegator?: string;
         donationMiner?: string;
         pactToken?: string;
     };
@@ -58,6 +59,9 @@ export const useContracts = () => {
                 delegate:
                     ContractAddresses.get(network?.chainId!)?.PACTDelegate ||
                     '',
+                delegator:
+                    ContractAddresses.get(network?.chainId!)?.PACTDelegator ||
+                    '',
                 donationMiner:
                     ContractAddresses.get(network?.chainId!)?.DonationMiner ||
                     '',
@@ -86,14 +90,12 @@ export const useContracts = () => {
                 addresses.delegate,
                 PACTDelegate,
                 signer
-            );
+            ).attach(addresses.delegator);
 
             setContracts({
                 addresses,
                 cusd,
-                delegate: delegate.attach(
-                    ContractAddresses.get(network?.chainId!)?.PACTDelegator!
-                ),
+                delegate,
                 donationMiner,
                 pact
             });

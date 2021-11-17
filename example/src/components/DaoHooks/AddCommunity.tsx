@@ -21,8 +21,6 @@ const Community = props => {
             proposalDescription: `${name} | ${city}, ${country} - ${description}`
         };
 
-        console.log(data);
-
         const response = await addCommunity(data)
 
         console.log(response);
