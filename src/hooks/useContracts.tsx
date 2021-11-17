@@ -88,7 +88,15 @@ export const useContracts = () => {
                 signer
             );
 
-            setContracts({ addresses, cusd, delegate, donationMiner, pact });
+            setContracts({
+                addresses,
+                cusd,
+                delegate: delegate.attach(
+                    ContractAddresses.get(network?.chainId!)?.PACTDelegator!
+                ),
+                donationMiner,
+                pact
+            });
         };
 
         if (!!address && initialised && !!signer) {
