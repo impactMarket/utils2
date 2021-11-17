@@ -16,7 +16,7 @@ const Community = props => {
             decreaseStep: toToken(0.01),
             firstManager: requestByAddress,
             managerBlockList: [],
-            maxTranche: toToken(10000),
+            maxTranche: toToken(10000, { EXPONENTIAL_AT: 25 }),
             minTranche: toToken(100),
             proposalDescription: `${name} | ${city}, ${country} - ${description}`
         };

@@ -7,7 +7,7 @@ export const toToken = (
     if (options) {
         BigNumber.config(options);
     }
-    new BigNumber(value.toString())
+    return new BigNumber(value.toString())
         .multipliedBy(new BigNumber(10).pow(18))
         .toString();
 };
