@@ -12,7 +12,7 @@ const wallets = {
     }
 }
 
-const Wallets = () => {
+const WalletsBalance = () => {
     const [balance, setBalance] = useState(blankWalletState);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -50,4 +50,4 @@ const Wallets = () => {
     )
 }
 
-export default Wallets;
+export default WalletsBalance;
