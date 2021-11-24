@@ -3,7 +3,6 @@ import {
     useProvider,
     useProviderOrSigner
 } from '@celo-tools/use-contractkit';
-import { ethers, Contract } from 'ethers';
 import { useEffect, useState } from 'react';
 import {
     ContractAddresses,
@@ -14,6 +13,8 @@ import ApproveERC20ABI from '../contracts/abi/ApproveERC20.json';
 import DonationMinerABI from '../contracts/abi/DonationMiner.json';
 import PACTToken from '../contracts/abi/PACTToken.json';
 import PACTDelegate from '../contracts/abi/PACTDelegate.json';
+import { IPCTDelegate } from '../types/contracts/IPCTDelegate';
+import { Contract } from '@ethersproject/contracts';
 
 type ContractsType = {
     addresses?: {
@@ -25,7 +26,7 @@ type ContractsType = {
         pactToken?: string;
     };
     cusd?: Contract;
-    delegate?: Contract;
+    delegate?: Contract & IPCTDelegate;
     donationMiner?: Contract;
     pact?: Contract;
 };
@@ -68,29 +69,21 @@ export const useContracts = () => {
                 pactToken: pactContractAddress
             };
 
-            const donationMiner = new ethers.Contract(
+            const donationMiner = new Contract(
                 addresses.donationMiner,
-                DonationMinerABI as any,
+                DonationMinerABI,
                 signer
             );
 
-            const cusd = new ethers.Contract(
-                addresses.cusd,
-                ApproveERC20ABI as any,
-                signer
-            );
+            const cusd = new Contract(addresses.cusd, ApproveERC20ABI, signer);
 
-            const pact = new ethers.Contract(
-                addresses.pactToken,
-                PACTToken as any,
-                signer
-            );
+            const pact = new Contract(addresses.pactToken, PACTToken, signer);
 
-            const delegate = new ethers.Contract(
+            const delegate = new Contract(
                 addresses.delegate,
                 PACTDelegate,
                 signer
-            ).attach(addresses.delegator);
+            ).attach(addresses.delegator) as Contract & IPCTDelegate;
 
             setContracts({
                 addresses,
