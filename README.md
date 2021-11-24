@@ -15,6 +15,14 @@ yarn add @impact-market/utils
 
 - `getWalletsBalance`
 
+### Available Helpers
+
+- `estimateCommunityRemainFunds`
+- `frequencyToNumer`
+- `frequencyToText`
+- `toNumber`
+- `toToken`
+
 ### Available Hooks:
 
 - `useBalance`
