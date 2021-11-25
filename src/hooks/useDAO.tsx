@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { ethers } from 'ethers';
+import { defaultAbiCoder } from 'ethers/lib/utils';
 import { useContracts } from '../hooks/useContracts';
 
 type UseDAOType = {
@@ -10,9 +10,8 @@ type CommunityArgs = {
     baseInterval: string | BigNumber;
     claimAmount: string | BigNumber;
     decreaseStep: string | BigNumber;
-    firstManager: string;
+    managers: string[];
     incrementInterval: string | BigNumber;
-    managerBlockList: string[];
     maxClaim: string | BigNumber;
     maxTranche: string | BigNumber;
     minTranche: string | BigNumber;
@@ -32,9 +31,8 @@ export const useDAO = (): UseDAOType => {
                 baseInterval,
                 claimAmount,
                 decreaseStep,
-                firstManager,
+                managers,
                 incrementInterval,
-                managerBlockList,
                 maxClaim,
                 maxTranche,
                 minTranche,
@@ -43,32 +41,30 @@ export const useDAO = (): UseDAOType => {
             const targets = [addresses.communityAdmin];
             const values = [0];
             const signatures = [
-                'addCommunity(address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,address[])'
+                'addCommunity(address[],uint256,uint256,uint256,uint256,uint256,uint256,uint256)'
             ];
 
             const calldatas = [
-                ethers.utils.defaultAbiCoder.encode(
+                defaultAbiCoder.encode(
                     [
-                        'address',
+                        'address[]',
                         'uint256',
                         'uint256',
                         'uint256',
                         'uint256',
                         'uint256',
                         'uint256',
-                        'uint256',
-                        'address[]'
+                        'uint256'
                     ],
                     [
-                        firstManager,
+                        managers,
                         claimAmount,
                         maxClaim,
                         decreaseStep,
                         baseInterval,
                         incrementInterval,
                         minTranche,
-                        maxTranche,
-                        managerBlockList
+                        maxTranche
                     ]
                 )
             ];
@@ -86,6 +82,7 @@ export const useDAO = (): UseDAOType => {
             return response;
         } catch (error) {
             console.log('Error in addCommunity function: \n', error);
+            return undefined;
         }
     };
 
