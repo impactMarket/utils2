@@ -14,6 +14,7 @@ yarn add @impact-market/utils
 ### Available Methods:
 
 - `getWalletsBalance`
+- `communityContract` (instantiate a community using the address)
 
 ### Available Helpers
 
