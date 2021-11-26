@@ -11,6 +11,7 @@ import PACTToken from '../contracts/abi/PACTToken.json';
 import PACTDelegate from '../contracts/abi/PACTDelegate.json';
 import { IPCTDelegate } from '../types/contracts/IPCTDelegate';
 import { Contract } from '@ethersproject/contracts';
+import { IPCTToken } from '../types/contracts/IPCTToken';
 
 type ContractsType = {
     addresses?: {
@@ -24,7 +25,7 @@ type ContractsType = {
     cusd?: Contract;
     delegate?: Contract & IPCTDelegate;
     donationMiner?: Contract;
-    pact?: Contract;
+    pact?: Contract & IPCTToken;
 };
 
 const initialContractsState = {
@@ -74,7 +75,11 @@ export const useContracts = () => {
 
             const cusd = new Contract(addresses.cusd, ApproveERC20ABI, signer);
 
-            const pact = new Contract(addresses.pactToken, PACTToken, signer);
+            const pact = new Contract(
+                addresses.pactToken,
+                PACTToken,
+                signer
+            ) as Contract & IPCTToken;
 
             const delegate = new Contract(
                 addresses.delegate,
