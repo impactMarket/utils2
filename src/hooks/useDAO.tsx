@@ -79,7 +79,7 @@ export const useDAO = (): UseDAOType => {
 
             const response = await tx.wait();
 
-            return response;
+            return parseInt(response.events![0].args![0].toString(), 10);
         } catch (error) {
             console.log('Error in addCommunity function: \n', error);
             return undefined;
