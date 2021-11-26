@@ -4,11 +4,7 @@ import {
     useProviderOrSigner
 } from '@celo-tools/use-contractkit';
 import { useEffect, useState } from 'react';
-import {
-    ContractAddresses,
-    cusdContractAddress,
-    pactContractAddress
-} from '../contracts';
+import { ContractAddresses } from '../contracts';
 import ApproveERC20ABI from '../contracts/abi/ApproveERC20.json';
 import DonationMinerABI from '../contracts/abi/DonationMiner.json';
 import PACTToken from '../contracts/abi/PACTToken.json';
@@ -56,7 +52,7 @@ export const useContracts = () => {
                 communityAdmin:
                     ContractAddresses.get(network?.chainId!)?.CommunityAdmin ||
                     '',
-                cusd: cusdContractAddress,
+                cusd: ContractAddresses.get(network?.chainId!)?.cUSD || '',
                 delegate:
                     ContractAddresses.get(network?.chainId!)?.PACTDelegate ||
                     '',
@@ -66,7 +62,8 @@ export const useContracts = () => {
                 donationMiner:
                     ContractAddresses.get(network?.chainId!)?.DonationMiner ||
                     '',
-                pactToken: pactContractAddress
+                pactToken:
+                    ContractAddresses.get(network?.chainId!)?.PACTToken || ''
             };
 
             const donationMiner = new Contract(
