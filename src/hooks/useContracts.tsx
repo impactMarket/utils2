@@ -7,10 +7,11 @@ import { useEffect, useState } from 'react';
 import { ContractAddresses } from '../contracts';
 import ApproveERC20ABI from '../contracts/abi/ApproveERC20.json';
 import DonationMinerABI from '../contracts/abi/DonationMiner.json';
-import PACTToken from '../contracts/abi/PACTToken.json';
+import PACTTokenABI from '../contracts/abi/PACTToken.json';
 import PACTDelegate from '../contracts/abi/PACTDelegate.json';
 import { IPCTDelegate } from '../types/contracts/IPCTDelegate';
 import { Contract } from '@ethersproject/contracts';
+import { PACTToken } from '../types/contracts/PACTToken';
 
 type ContractsType = {
     addresses?: {
@@ -24,7 +25,7 @@ type ContractsType = {
     cusd?: Contract;
     delegate?: Contract & IPCTDelegate;
     donationMiner?: Contract;
-    pact?: Contract;
+    pact?: Contract & PACTToken;
 };
 
 const initialContractsState = {
@@ -74,7 +75,11 @@ export const useContracts = () => {
 
             const cusd = new Contract(addresses.cusd, ApproveERC20ABI, signer);
 
-            const pact = new Contract(addresses.pactToken, PACTToken, signer);
+            const pact = new Contract(
+                addresses.pactToken,
+                PACTTokenABI,
+                signer
+            ) as Contract & PACTToken;
 
             const delegate = new Contract(
                 addresses.delegate,

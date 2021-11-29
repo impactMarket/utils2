@@ -8,6 +8,7 @@ export * from './hooks/useDAO';
 export * from './hooks/useDonationMiner';
 export * from './hooks/useEpoch';
 export * from './hooks/useRewards';
+export * from './hooks/useVotingPower';
 
 export * from './helpers/toNumber';
 export * from './helpers/toToken';

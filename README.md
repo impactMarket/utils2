@@ -32,6 +32,7 @@ yarn add @impact-market/utils
 - `useDonationMiner`
 - `useEpoch`
 - `useRewards`
+- `useVotingPower`
 
 ## Development
 
