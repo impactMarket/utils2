@@ -42,13 +42,10 @@ export interface IPCTDelegateInterface extends utils.Interface {
     "MIN_VOTING_PERIOD()": FunctionFragment;
     "NAME()": FunctionFragment;
     "PROPOSAL_MAX_OPERATIONS()": FunctionFragment;
-    "_acceptAdmin()": FunctionFragment;
-    "_setPendingAdmin(address)": FunctionFragment;
     "_setProposalThreshold(uint256)": FunctionFragment;
     "_setQuorumVotes(uint256)": FunctionFragment;
     "_setVotingDelay(uint256)": FunctionFragment;
     "_setVotingPeriod(uint256)": FunctionFragment;
-    "admin()": FunctionFragment;
     "cancel(uint256)": FunctionFragment;
     "castVote(uint256,uint8)": FunctionFragment;
     "castVoteBySig(uint256,uint8,uint8,bytes32,bytes32)": FunctionFragment;
@@ -56,10 +53,9 @@ export interface IPCTDelegateInterface extends utils.Interface {
     "execute(uint256)": FunctionFragment;
     "getActions(uint256)": FunctionFragment;
     "getReceipt(uint256,address)": FunctionFragment;
-    "implementation()": FunctionFragment;
     "initialize(address,address,address,uint256,uint256,uint256,uint256)": FunctionFragment;
     "latestProposalIds(address)": FunctionFragment;
-    "pendingAdmin()": FunctionFragment;
+    "owner()": FunctionFragment;
     "proposalCalldatas(uint256,uint256)": FunctionFragment;
     "proposalCount()": FunctionFragment;
     "proposalReceipts(uint256,address)": FunctionFragment;
@@ -72,9 +68,12 @@ export interface IPCTDelegateInterface extends utils.Interface {
     "queue(uint256)": FunctionFragment;
     "quorumVotes()": FunctionFragment;
     "releaseToken()": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
     "state(uint256)": FunctionFragment;
     "timelock()": FunctionFragment;
     "token()": FunctionFragment;
+    "transfer(address,address,uint256)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
     "votingDelay()": FunctionFragment;
     "votingPeriod()": FunctionFragment;
   };
@@ -117,14 +116,6 @@ export interface IPCTDelegateInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "_acceptAdmin",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "_setPendingAdmin",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "_setProposalThreshold",
     values: [BigNumberish]
   ): string;
@@ -140,7 +131,6 @@ export interface IPCTDelegateInterface extends utils.Interface {
     functionFragment: "_setVotingPeriod",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "admin", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "cancel",
     values: [BigNumberish]
@@ -170,10 +160,6 @@ export interface IPCTDelegateInterface extends utils.Interface {
     values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "implementation",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "initialize",
     values: [
       string,
@@ -189,10 +175,7 @@ export interface IPCTDelegateInterface extends utils.Interface {
     functionFragment: "latestProposalIds",
     values: [string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "pendingAdmin",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "proposalCalldatas",
     values: [BigNumberish, BigNumberish]
@@ -238,9 +221,21 @@ export interface IPCTDelegateInterface extends utils.Interface {
     functionFragment: "releaseToken",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "state", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "timelock", values?: undefined): string;
   encodeFunctionData(functionFragment: "token", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "transfer",
+    values: [string, string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
+  ): string;
   encodeFunctionData(
     functionFragment: "votingDelay",
     values?: undefined
@@ -288,14 +283,6 @@ export interface IPCTDelegateInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "_acceptAdmin",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "_setPendingAdmin",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "_setProposalThreshold",
     data: BytesLike
   ): Result;
@@ -311,7 +298,6 @@ export interface IPCTDelegateInterface extends utils.Interface {
     functionFragment: "_setVotingPeriod",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "admin", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "cancel", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "castVote", data: BytesLike): Result;
   decodeFunctionResult(
@@ -325,19 +311,12 @@ export interface IPCTDelegateInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "execute", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getActions", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getReceipt", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "implementation",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "latestProposalIds",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "pendingAdmin",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "proposalCalldatas",
     data: BytesLike
@@ -377,9 +356,18 @@ export interface IPCTDelegateInterface extends utils.Interface {
     functionFragment: "releaseToken",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "state", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "timelock", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "transfer", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "votingDelay",
     data: BytesLike
@@ -393,12 +381,14 @@ export interface IPCTDelegateInterface extends utils.Interface {
     "NewAdmin(address,address)": EventFragment;
     "NewImplementation(address,address)": EventFragment;
     "NewPendingAdmin(address,address)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
     "ProposalCanceled(uint256)": EventFragment;
     "ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)": EventFragment;
     "ProposalExecuted(uint256)": EventFragment;
     "ProposalQueued(uint256,uint256)": EventFragment;
     "ProposalThresholdSet(uint256,uint256)": EventFragment;
     "QuorumVotesSet(uint256,uint256)": EventFragment;
+    "TransferERC20(address,address,uint256)": EventFragment;
     "VoteCast(address,uint256,uint8,uint256,string)": EventFragment;
     "VotingDelaySet(uint256,uint256)": EventFragment;
     "VotingPeriodSet(uint256,uint256)": EventFragment;
@@ -407,12 +397,14 @@ export interface IPCTDelegateInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "NewAdmin"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NewImplementation"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NewPendingAdmin"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalCanceled"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalExecuted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalQueued"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalThresholdSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "QuorumVotesSet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TransferERC20"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "VoteCast"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "VotingDelaySet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "VotingPeriodSet"): EventFragment;
@@ -439,6 +431,14 @@ export type NewPendingAdminEvent = TypedEvent<
 >;
 
 export type NewPendingAdminEventFilter = TypedEventFilter<NewPendingAdminEvent>;
+
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string],
+  { previousOwner: string; newOwner: string }
+>;
+
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
 
 export type ProposalCanceledEvent = TypedEvent<[BigNumber], { id: BigNumber }>;
 
@@ -498,6 +498,13 @@ export type QuorumVotesSetEvent = TypedEvent<
 >;
 
 export type QuorumVotesSetEventFilter = TypedEventFilter<QuorumVotesSetEvent>;
+
+export type TransferERC20Event = TypedEvent<
+  [string, string, BigNumber],
+  { token: string; to: string; amount: BigNumber }
+>;
+
+export type TransferERC20EventFilter = TypedEventFilter<TransferERC20Event>;
 
 export type VoteCastEvent = TypedEvent<
   [string, BigNumber, number, BigNumber, string],
@@ -573,15 +580,6 @@ export interface IPCTDelegate extends BaseContract {
 
     PROPOSAL_MAX_OPERATIONS(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    _acceptAdmin(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    _setPendingAdmin(
-      newPendingAdmin: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     _setProposalThreshold(
       newProposalThreshold: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -601,8 +599,6 @@ export interface IPCTDelegate extends BaseContract {
       newVotingPeriod: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    admin(overrides?: CallOverrides): Promise<[string]>;
 
     cancel(
       proposalId: BigNumberish,
@@ -654,8 +650,6 @@ export interface IPCTDelegate extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[ReceiptStructOutput]>;
 
-    implementation(overrides?: CallOverrides): Promise<[string]>;
-
     initialize(
       timelock_: string,
       token_: string,
@@ -672,7 +666,7 @@ export interface IPCTDelegate extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    pendingAdmin(overrides?: CallOverrides): Promise<[string]>;
+    owner(overrides?: CallOverrides): Promise<[string]>;
 
     proposalCalldatas(
       arg0: BigNumberish,
@@ -761,6 +755,10 @@ export interface IPCTDelegate extends BaseContract {
 
     releaseToken(overrides?: CallOverrides): Promise<[string]>;
 
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     state(
       proposalId: BigNumberish,
       overrides?: CallOverrides
@@ -769,6 +767,18 @@ export interface IPCTDelegate extends BaseContract {
     timelock(overrides?: CallOverrides): Promise<[string]>;
 
     token(overrides?: CallOverrides): Promise<[string]>;
+
+    transfer(
+      token_: string,
+      to_: string,
+      amount_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     votingDelay(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -795,15 +805,6 @@ export interface IPCTDelegate extends BaseContract {
 
   PROPOSAL_MAX_OPERATIONS(overrides?: CallOverrides): Promise<BigNumber>;
 
-  _acceptAdmin(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  _setPendingAdmin(
-    newPendingAdmin: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   _setProposalThreshold(
     newProposalThreshold: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -823,8 +824,6 @@ export interface IPCTDelegate extends BaseContract {
     newVotingPeriod: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  admin(overrides?: CallOverrides): Promise<string>;
 
   cancel(
     proposalId: BigNumberish,
@@ -876,8 +875,6 @@ export interface IPCTDelegate extends BaseContract {
     overrides?: CallOverrides
   ): Promise<ReceiptStructOutput>;
 
-  implementation(overrides?: CallOverrides): Promise<string>;
-
   initialize(
     timelock_: string,
     token_: string,
@@ -894,7 +891,7 @@ export interface IPCTDelegate extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  pendingAdmin(overrides?: CallOverrides): Promise<string>;
+  owner(overrides?: CallOverrides): Promise<string>;
 
   proposalCalldatas(
     arg0: BigNumberish,
@@ -983,11 +980,27 @@ export interface IPCTDelegate extends BaseContract {
 
   releaseToken(overrides?: CallOverrides): Promise<string>;
 
+  renounceOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   state(proposalId: BigNumberish, overrides?: CallOverrides): Promise<number>;
 
   timelock(overrides?: CallOverrides): Promise<string>;
 
   token(overrides?: CallOverrides): Promise<string>;
+
+  transfer(
+    token_: string,
+    to_: string,
+    amount_: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   votingDelay(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1014,13 +1027,6 @@ export interface IPCTDelegate extends BaseContract {
 
     PROPOSAL_MAX_OPERATIONS(overrides?: CallOverrides): Promise<BigNumber>;
 
-    _acceptAdmin(overrides?: CallOverrides): Promise<void>;
-
-    _setPendingAdmin(
-      newPendingAdmin: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     _setProposalThreshold(
       newProposalThreshold: BigNumberish,
       overrides?: CallOverrides
@@ -1040,8 +1046,6 @@ export interface IPCTDelegate extends BaseContract {
       newVotingPeriod: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    admin(overrides?: CallOverrides): Promise<string>;
 
     cancel(proposalId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
@@ -1087,8 +1091,6 @@ export interface IPCTDelegate extends BaseContract {
       overrides?: CallOverrides
     ): Promise<ReceiptStructOutput>;
 
-    implementation(overrides?: CallOverrides): Promise<string>;
-
     initialize(
       timelock_: string,
       token_: string,
@@ -1105,7 +1107,7 @@ export interface IPCTDelegate extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    pendingAdmin(overrides?: CallOverrides): Promise<string>;
+    owner(overrides?: CallOverrides): Promise<string>;
 
     proposalCalldatas(
       arg0: BigNumberish,
@@ -1191,11 +1193,25 @@ export interface IPCTDelegate extends BaseContract {
 
     releaseToken(overrides?: CallOverrides): Promise<string>;
 
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
     state(proposalId: BigNumberish, overrides?: CallOverrides): Promise<number>;
 
     timelock(overrides?: CallOverrides): Promise<string>;
 
     token(overrides?: CallOverrides): Promise<string>;
+
+    transfer(
+      token_: string,
+      to_: string,
+      amount_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     votingDelay(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1226,6 +1242,15 @@ export interface IPCTDelegate extends BaseContract {
       oldPendingAdmin?: null,
       newPendingAdmin?: null
     ): NewPendingAdminEventFilter;
+
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
 
     "ProposalCanceled(uint256)"(id?: null): ProposalCanceledEventFilter;
     ProposalCanceled(id?: null): ProposalCanceledEventFilter;
@@ -1279,6 +1304,17 @@ export interface IPCTDelegate extends BaseContract {
       oldQuorumVotes?: null,
       newQuorumVotes?: null
     ): QuorumVotesSetEventFilter;
+
+    "TransferERC20(address,address,uint256)"(
+      token?: string | null,
+      to?: string | null,
+      amount?: null
+    ): TransferERC20EventFilter;
+    TransferERC20(
+      token?: string | null,
+      to?: string | null,
+      amount?: null
+    ): TransferERC20EventFilter;
 
     "VoteCast(address,uint256,uint8,uint256,string)"(
       voter?: string | null,
@@ -1335,15 +1371,6 @@ export interface IPCTDelegate extends BaseContract {
 
     PROPOSAL_MAX_OPERATIONS(overrides?: CallOverrides): Promise<BigNumber>;
 
-    _acceptAdmin(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    _setPendingAdmin(
-      newPendingAdmin: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     _setProposalThreshold(
       newProposalThreshold: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1363,8 +1390,6 @@ export interface IPCTDelegate extends BaseContract {
       newVotingPeriod: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    admin(overrides?: CallOverrides): Promise<BigNumber>;
 
     cancel(
       proposalId: BigNumberish,
@@ -1409,8 +1434,6 @@ export interface IPCTDelegate extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    implementation(overrides?: CallOverrides): Promise<BigNumber>;
-
     initialize(
       timelock_: string,
       token_: string,
@@ -1427,7 +1450,7 @@ export interface IPCTDelegate extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    pendingAdmin(overrides?: CallOverrides): Promise<BigNumber>;
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     proposalCalldatas(
       arg0: BigNumberish,
@@ -1486,6 +1509,10 @@ export interface IPCTDelegate extends BaseContract {
 
     releaseToken(overrides?: CallOverrides): Promise<BigNumber>;
 
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     state(
       proposalId: BigNumberish,
       overrides?: CallOverrides
@@ -1494,6 +1521,18 @@ export interface IPCTDelegate extends BaseContract {
     timelock(overrides?: CallOverrides): Promise<BigNumber>;
 
     token(overrides?: CallOverrides): Promise<BigNumber>;
+
+    transfer(
+      token_: string,
+      to_: string,
+      amount_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     votingDelay(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1527,15 +1566,6 @@ export interface IPCTDelegate extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    _acceptAdmin(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    _setPendingAdmin(
-      newPendingAdmin: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     _setProposalThreshold(
       newProposalThreshold: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1555,8 +1585,6 @@ export interface IPCTDelegate extends BaseContract {
       newVotingPeriod: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    admin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     cancel(
       proposalId: BigNumberish,
@@ -1601,8 +1629,6 @@ export interface IPCTDelegate extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    implementation(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     initialize(
       timelock_: string,
       token_: string,
@@ -1619,7 +1645,7 @@ export interface IPCTDelegate extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    pendingAdmin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     proposalCalldatas(
       arg0: BigNumberish,
@@ -1678,6 +1704,10 @@ export interface IPCTDelegate extends BaseContract {
 
     releaseToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     state(
       proposalId: BigNumberish,
       overrides?: CallOverrides
@@ -1686,6 +1716,18 @@ export interface IPCTDelegate extends BaseContract {
     timelock(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     token(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    transfer(
+      token_: string,
+      to_: string,
+      amount_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     votingDelay(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

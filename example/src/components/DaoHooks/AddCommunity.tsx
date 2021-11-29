@@ -15,8 +15,8 @@ const Community = props => {
             ...contract,
             decreaseStep: toToken(0.01),
             managers: [requestByAddress],
-            maxTranche: toToken(10000, { EXPONENTIAL_AT: 25 }),
-            minTranche: toToken(100),
+            maxTranche: toToken(0.1, { EXPONENTIAL_AT: 25 }),
+            minTranche: toToken(0.01),
             proposalDescription: `${name} | ${city}, ${country} - ${description}`
         };
 
