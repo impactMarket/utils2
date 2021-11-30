@@ -12,3 +12,6 @@ export * from './hooks/useVotingPower';
 
 export * from './helpers/toNumber';
 export * from './helpers/toToken';
+export * from './helpers/estimateCommunityRemainFunds';
+export * from './helpers/frequencyToNumber';
+export * from './helpers/frequencyToText';
