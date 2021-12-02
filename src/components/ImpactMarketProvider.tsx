@@ -18,11 +18,13 @@ const initialEpoch = {
 };
 
 export type BalanceType = {
+    cusdAllowance?: number;
     cusd?: number;
     pact?: number;
 };
 
 const initialBalance: BalanceType = {
+    cusdAllowance: 0,
     cusd: 0,
     pact: 0
 };

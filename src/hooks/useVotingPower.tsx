@@ -10,9 +10,16 @@ export const useVotingPower = () => {
     const { address } = React.useContext(ImpactMarketContext);
 
     const updateVotingPower = async () => {
-        if (address === null || !delegate?.address || !pactContract?.address) {
+        if (
+            address === null ||
+            !delegate?.address ||
+            !delegate?.provider ||
+            !pactContract?.address ||
+            !pactContract?.provider
+        ) {
             return;
         }
+
         try {
             const [proposalThreshold, currentVotes] = await Promise.all([
                 delegate.proposalThreshold(),
@@ -25,7 +32,7 @@ export const useVotingPower = () => {
                 )
             );
         } catch (error) {
-            console.log(`Error getting balance...\n${error}`);
+            console.log(`Error getting voting power...\n${error}`);
         }
     };
 
