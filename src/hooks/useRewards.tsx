@@ -20,6 +20,10 @@ export const useRewards = (): UseRewardsType => {
         React.useContext(ImpactMarketContext);
 
     const getEstimatedClaimableRewards = async () => {
+        if (!donationMiner?.provider) {
+            return;
+        }
+
         try {
             const value = await donationMiner?.estimateClaimableReward(address);
 
@@ -38,6 +42,10 @@ export const useRewards = (): UseRewardsType => {
     };
 
     const getClaimableRewards = async () => {
+        if (!donationMiner?.provider) {
+            return;
+        }
+
         try {
             const value = await donationMiner?.calculateClaimableRewards(
                 address

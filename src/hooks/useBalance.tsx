@@ -7,26 +7,36 @@ import React, { useEffect } from 'react';
 import toNumber from '../helpers/toNumber';
 
 export const useBalance = () => {
-    const { cusd, pact: pactContract } = useContracts();
+    const { cusd, donationMiner, pact: pactContract } = useContracts();
     const { balance, setBalance, address } =
         React.useContext(ImpactMarketContext);
 
     const updateBalance = async () => {
-        if (!address || !cusd || !pactContract) {
+        if (
+            !address ||
+            !donationMiner?.provider ||
+            !cusd?.provider ||
+            !pactContract?.provider
+        ) {
             return;
         }
 
         try {
-            const [cUSDBalance, pactBalance] = await Promise.all([
-                cusd?.balanceOf(address),
-                pactContract?.balanceOf(address)
-            ]);
+            const [cUSDAllowance, cUSDBalance, pactBalance] = await Promise.all(
+                [
+                    cusd.allowance(address, donationMiner.address),
+                    cusd?.balanceOf(address),
+                    pactContract?.balanceOf(address)
+                ]
+            );
 
+            const cusdAllowance = toNumber(cUSDAllowance);
             const cUSD = toNumber(cUSDBalance);
             const pact = toNumber(pactBalance);
 
             return setBalance((balance: BalanceType) => ({
                 ...balance,
+                cusdAllowance,
                 cusd: cUSD,
                 pact
             }));

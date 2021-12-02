@@ -14,13 +14,14 @@ type DonationMinerType = {
 export const useDonationMiner = (): DonationMinerType => {
     const { donationMiner, cusd } = useContracts();
     const { updateRewards } = useRewards();
-    const { updateBalance } = useBalance();
+    const { balance, updateBalance } = useBalance();
     const { updateEpoch } = useEpoch();
     const { address } = React.useContext(ImpactMarketContext);
 
     const approve = async (value: string | number) => {
         try {
             const amount = toToken(value);
+            const allowance = balance?.cusdAllowance || 0;
 
             if (
                 !donationMiner?.address ||
@@ -31,18 +32,16 @@ export const useDonationMiner = (): DonationMinerType => {
                 return;
             }
 
-            const allowance = await cusd.allowance(
-                address,
-                donationMiner.address
-            );
-
-            if (allowance.gte(amount)) {
+            if (allowance >= Number(value)) {
                 return { status: true };
             }
 
             const tx = await cusd.approve(donationMiner.address, amount);
+            const response = await tx.wait();
 
-            return await tx.waitReceipt();
+            await updateBalance();
+
+            return response;
         } catch (error) {
             console.log('Error approving amount: \n', error);
 
