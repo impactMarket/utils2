@@ -1,7 +1,9 @@
-import { DaoContext, RewardsType } from '../components/DaoProvider';
+import {
+    ImpactMarketContext,
+    RewardsType
+} from '../components/ImpactMarketProvider';
 import { useBalance } from './useBalance';
 import { useContracts } from './useContracts';
-import { useContractKit } from '@celo-tools/use-contractkit';
 import React, { useEffect } from 'react';
 import toNumber from '../helpers/toNumber';
 
@@ -12,10 +14,10 @@ type UseRewardsType = {
 };
 
 export const useRewards = (): UseRewardsType => {
-    const { address } = useContractKit();
     const { donationMiner } = useContracts();
     const { updateBalance } = useBalance();
-    const { rewards, setRewards } = React.useContext(DaoContext);
+    const { rewards, setRewards, address } =
+        React.useContext(ImpactMarketContext);
 
     const getEstimatedClaimableRewards = async () => {
         try {

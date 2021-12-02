@@ -1,4 +1,4 @@
-export * from './components/DaoProvider';
+export * from './components/ImpactMarketProvider';
 
 export * from './utils/wallets';
 

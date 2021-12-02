@@ -1,9 +1,10 @@
+import React from 'react';
 import { useBalance } from './useBalance';
-import { useContractKit } from '@celo-tools/use-contractkit';
 import { useContracts } from './useContracts';
 import { useEpoch } from './useEpoch';
 import { useRewards } from './useRewards';
 import { toToken } from '../helpers/toToken';
+import { ImpactMarketContext } from '../components/ImpactMarketProvider';
 
 type DonationMinerType = {
     approve?: Function;
@@ -11,23 +12,26 @@ type DonationMinerType = {
 };
 
 export const useDonationMiner = (): DonationMinerType => {
-    const { address, kit } = useContractKit();
-    const { donationMiner } = useContracts();
+    const { donationMiner, cusd } = useContracts();
     const { updateRewards } = useRewards();
     const { updateBalance } = useBalance();
     const { updateEpoch } = useEpoch();
+    const { address } = React.useContext(ImpactMarketContext);
 
     const approve = async (value: string | number) => {
         try {
             const amount = toToken(value);
 
-            if (!donationMiner?.address || !address || !amount || !kit) {
+            if (
+                !donationMiner?.address ||
+                !address ||
+                !amount ||
+                !cusd?.address
+            ) {
                 return;
             }
 
-            await kit.setFeeCurrency('StableToken' as any);
-            const stable = await kit.contracts.getStableToken();
-            const allowance = await stable.allowance(
+            const allowance = await cusd.allowance(
                 address,
                 donationMiner.address
             );
@@ -36,9 +40,7 @@ export const useDonationMiner = (): DonationMinerType => {
                 return { status: true };
             }
 
-            const tx = await stable
-                .approve(donationMiner.address, amount)
-                .send();
+            const tx = await cusd.approve(donationMiner.address, amount);
 
             return await tx.waitReceipt();
         } catch (error) {
