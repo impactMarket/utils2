@@ -1,23 +1,22 @@
 import { useContracts } from './useContracts';
-import { useContractKit } from '@celo-tools/use-contractkit';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import BigNumber from 'bignumber.js';
+import { ImpactMarketContext } from '../components/ImpactMarketProvider';
 
 export const useVotingPower = () => {
-    const { address } = useContractKit();
     const { pact: pactContract, delegate } = useContracts();
     const [enoughVotingPowerToPropose, setEnoughVotingPowerToPropose] =
         useState<boolean | undefined>(undefined);
+    const { address } = React.useContext(ImpactMarketContext);
 
     const updateVotingPower = async () => {
-        if (!address || !delegate || !pactContract) {
+        if (address === null || !delegate?.address || !pactContract?.address) {
             return;
         }
-
         try {
             const [proposalThreshold, currentVotes] = await Promise.all([
-                delegate?.proposalThreshold(),
-                pactContract?.getCurrentVotes(address)
+                delegate.proposalThreshold(),
+                pactContract.getCurrentVotes(address)
             ]);
 
             return setEnoughVotingPowerToPropose(

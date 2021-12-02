@@ -1,13 +1,15 @@
-import { BalanceType, DaoContext } from '../components/DaoProvider';
+import {
+    BalanceType,
+    ImpactMarketContext
+} from '../components/ImpactMarketProvider';
 import { useContracts } from './useContracts';
-import { useContractKit } from '@celo-tools/use-contractkit';
 import React, { useEffect } from 'react';
 import toNumber from '../helpers/toNumber';
 
 export const useBalance = () => {
-    const { address } = useContractKit();
     const { cusd, pact: pactContract } = useContracts();
-    const { balance, setBalance } = React.useContext(DaoContext);
+    const { balance, setBalance, address } =
+        React.useContext(ImpactMarketContext);
 
     const updateBalance = async () => {
         if (!address || !cusd || !pactContract) {

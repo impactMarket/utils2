@@ -1,14 +1,14 @@
-import { useContractKit, useProvider } from '@celo-tools/use-contractkit';
+import { useContractKit } from '@celo-tools/use-contractkit';
 import React, { useEffect } from 'react';
-import { DaoContext } from '../components/DaoProvider';
+import { ImpactMarketContext } from '../components/ImpactMarketProvider';
 import toNumber from '../helpers/toNumber';
 import { useContracts } from './useContracts';
 
 export const useEpoch = () => {
-    const provider = useProvider();
-    const { address, initialised } = useContractKit();
+    const { initialised } = useContractKit();
     const { donationMiner: donationMinerContract } = useContracts();
-    const { epoch, setEpoch } = React.useContext(DaoContext);
+    const { epoch, setEpoch, address, provider } =
+        React.useContext(ImpactMarketContext);
 
     const updateEpoch = async () => {
         try {
