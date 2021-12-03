@@ -4,7 +4,7 @@ import {
 } from '../components/ImpactMarketProvider';
 import { useContracts } from './useContracts';
 import React, { useEffect } from 'react';
-import toNumber from '../helpers/toNumber';
+import { toNumber } from '../helpers/toNumber';
 
 export const useBalance = () => {
     const { cusd, donationMiner, pact: pactContract } = useContracts();
