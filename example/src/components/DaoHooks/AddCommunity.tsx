@@ -1,9 +1,9 @@
-import { toToken, useDAO } from '@impact-market/utils';
+import { toNumber, frequencyToText, toToken, useDAO } from '@impact-market/utils';
 import React, { useEffect, useState } from 'react';
 import { impactMarket } from '../../services/impactMarket';
 
 const Community = props => {
-    const { city, country, contract, description, name, requestByAddress } = props;
+    const { id, name, contract, requestByAddress } = props;
     const { addCommunity } = useDAO();
     const [isLoading, setIsLoading] = useState(false);
     const [isAdded, setIsAdded] = useState(false);
@@ -17,7 +17,7 @@ const Community = props => {
             managers: [requestByAddress],
             maxTranche: toToken(0.1, { EXPONENTIAL_AT: 25 }),
             minTranche: toToken(0.01),
-            proposalDescription: `${name} | ${city}, ${country} - ${description}`
+            proposalDescription: `${name} |\nclaim amount: ${toNumber(contract.claimAmount)}\nmax claim: ${toNumber(contract.maxClaim)}\nbase interval: ${frequencyToText(contract.baseInterval)}\n${process.env.BASE_URL}/communities/${id}`
         };
 
         const response = await addCommunity(data)

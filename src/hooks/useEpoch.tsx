@@ -1,7 +1,7 @@
 import { useContractKit } from '@celo-tools/use-contractkit';
 import React, { useEffect } from 'react';
 import { ImpactMarketContext } from '../components/ImpactMarketProvider';
-import toNumber from '../helpers/toNumber';
+import { toNumber } from '../helpers/toNumber';
 import { useContracts } from './useContracts';
 
 export const useEpoch = () => {

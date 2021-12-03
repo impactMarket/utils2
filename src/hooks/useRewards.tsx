@@ -5,7 +5,7 @@ import {
 import { useBalance } from './useBalance';
 import { useContracts } from './useContracts';
 import React, { useEffect } from 'react';
-import toNumber from '../helpers/toNumber';
+import { toNumber } from '../helpers/toNumber';
 
 type UseRewardsType = {
     claimRewards?: Function;
