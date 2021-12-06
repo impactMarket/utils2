@@ -1,4 +1,4 @@
-import { Contract } from 'ethers/lib/ethers';
+import { Contract } from '@ethersproject/contracts';
 import CommunityABI from '../contracts/abi/CommunityABI.json';
 import { Community } from '../types/contracts/Community';
 

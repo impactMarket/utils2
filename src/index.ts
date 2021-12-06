@@ -6,6 +6,7 @@ export * from './utils/community';
 export * from './utils/subgraph';
 
 export * from './hooks/useBalance';
+export * from './hooks/useBeneficiary';
 export * from './hooks/useDAO';
 export * from './hooks/useDonationMiner';
 export * from './hooks/useEpoch';
@@ -16,5 +17,6 @@ export * from './hooks/useMerkleDistributor';
 export * from './helpers/toNumber';
 export * from './helpers/toToken';
 export * from './helpers/estimateCommunityRemainFunds';
+export * from './helpers/estimateBlockTime';
 export * from './helpers/frequencyToNumber';
 export * from './helpers/frequencyToText';
