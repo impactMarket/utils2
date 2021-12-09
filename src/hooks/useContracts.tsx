@@ -5,6 +5,7 @@ import BaseERC20ABI from '../contracts/abi/BaseERC20.json';
 import DonationMinerABI from '../contracts/abi/DonationMiner.json';
 import PACTTokenABI from '../contracts/abi/PACTToken.json';
 import PACTDelegate from '../contracts/abi/PACTDelegate.json';
+import MerkleDistributorABI from '../contracts/abi/MerkleDistributor.json';
 import { IPCTDelegate } from '../types/contracts/IPCTDelegate';
 import { Contract } from '@ethersproject/contracts';
 import { PACTToken } from '../types/contracts/PACTToken';
@@ -18,11 +19,13 @@ type ContractsType = {
         delegator?: string;
         donationMiner?: string;
         pactToken?: string;
+        merkleDistributor?: string;
     };
     cusd?: Contract;
     delegate?: Contract & IPCTDelegate;
     donationMiner?: Contract;
     pact?: Contract & PACTToken;
+    merkleDistributor?: Contract;
 };
 
 const initialContractsState = {
@@ -30,7 +33,8 @@ const initialContractsState = {
     cusd: undefined,
     delegate: undefined,
     donationMiner: undefined,
-    pact: undefined
+    pact: undefined,
+    merkleDistributor: undefined
 };
 
 export const useContracts = () => {
@@ -60,7 +64,10 @@ export const useContracts = () => {
                     ContractAddresses.get(network?.chainId!)?.DonationMiner ||
                     '',
                 pactToken:
-                    ContractAddresses.get(network?.chainId!)?.PACTToken || ''
+                    ContractAddresses.get(network?.chainId!)?.PACTToken || '',
+                merkleDistributor:
+                    ContractAddresses.get(network?.chainId!)
+                        ?.MerkleDistributor || ''
             };
             const _signer = signer || undefined;
 
@@ -71,6 +78,11 @@ export const useContracts = () => {
             );
 
             const cusd = new Contract(addresses.cusd, BaseERC20ABI, _signer);
+            const merkleDistributor = new Contract(
+                addresses.merkleDistributor,
+                MerkleDistributorABI,
+                _signer
+            );
 
             const pact = new Contract(
                 addresses.pactToken,
@@ -89,7 +101,8 @@ export const useContracts = () => {
                 cusd,
                 delegate,
                 donationMiner,
-                pact
+                pact,
+                merkleDistributor
             });
         };
 

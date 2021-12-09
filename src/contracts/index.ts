@@ -7,6 +7,7 @@ export const ContractAddresses = new Map<
         PACTDelegate: string;
         PACTDelegator: string;
         PACTToken: string;
+        MerkleDistributor: string;
     }
 >([
     [
@@ -17,7 +18,8 @@ export const ContractAddresses = new Map<
             CommunityAdmin: '0x88B101c163bbFE1dc4764225248a6DAd282d7A39',
             PACTDelegate: '0x28579662E826Bfe199A535440C4B77E4C59d04e1',
             PACTDelegator: '0xBf35872f98E716bfc06B03aB173037576DebE1F5',
-            PACTToken: '0x6FA09BC0CF975fABFAAAF8231886F66c1c22B53e'
+            PACTToken: '0x6FA09BC0CF975fABFAAAF8231886F66c1c22B53e',
+            MerkleDistributor: ''
         }
     ]
 ]);
