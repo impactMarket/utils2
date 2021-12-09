@@ -5,6 +5,7 @@ import Rewards from './Rewards';
 import Epoch from './Epoch';
 import WalletConnection from '../WalletConnection';
 import MerkleDistributor from './MerkleDistributor';
+import Beneficiary from './Beneficiary';
 
 const DaoBreakdown = () => {
     return (
@@ -22,6 +23,9 @@ const DaoBreakdown = () => {
                     </li>
                     <li style={{ marginTop: 16 }}>
                         <MerkleDistributor />
+                    </li>
+                    <li style={{ marginTop: 16 }}>
+                        <Beneficiary />
                     </li>
                 </ul>
             </WalletConnection>

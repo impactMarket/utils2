@@ -24,11 +24,11 @@ export const useBeneficiary = (communityAddress: string) => {
     const { address, signer, provider } = React.useContext(ImpactMarketContext);
     let refreshInterval: NodeJS.Timeout;
 
-    const updateClaimData = async () => {
-        if (!contract || !address) {
+    const updateClaimData = async (_contract: Contract & Community) => {
+        if (!_contract || !address) {
             return;
         }
-        const { claimedAmount, lastClaim } = await contract.beneficiaries(
+        const { claimedAmount, lastClaim } = await _contract.beneficiaries(
             address
         );
         setBeneficiary({
@@ -41,30 +41,6 @@ export const useBeneficiary = (communityAddress: string) => {
                 claimedAmount: claimedAmount.toString(),
                 lastClaim: lastClaim.toString()
             })
-        );
-    };
-
-    /**
-     * Refresh beneficiary time for next claim
-     */
-    const refreshClaimCooldown = async () => {
-        if (!contract || !address) {
-            return;
-        }
-        const _cooldown = await contract.claimCooldown(address);
-        refreshInterval = setInterval(async () => {
-            setClaimCooldown(
-                estimateBlockTime(
-                    await provider.getBlockNumber(),
-                    _cooldown.toNumber()
-                )
-            );
-        }, 10000);
-        setClaimCooldown(
-            estimateBlockTime(
-                await provider.getBlockNumber(),
-                _cooldown.toNumber()
-            )
         );
     };
 
@@ -86,16 +62,32 @@ export const useBeneficiary = (communityAddress: string) => {
         ).claim();
         const response = await tx.wait();
 
-        updateClaimData();
+        updateClaimData(contract);
 
         return response;
     };
 
     useEffect(() => {
-        if (communityAddress) {
-            setContract(communityContract(communityAddress));
-        }
-        if (address && communityAddress) {
+        if (address) {
+            // Refresh beneficiary time for next claim
+            const _contract = communityContract(communityAddress);
+            setContract(_contract);
+            const refreshClaimCooldown = async (
+                _contract: Contract & Community
+            ) => {
+                const _cooldown = await _contract.claimCooldown(address);
+                const estimate = async () =>
+                    estimateBlockTime(
+                        await provider.getBlockNumber(),
+                        _cooldown.toNumber()
+                    );
+                refreshInterval = setInterval(async () => {
+                    setClaimCooldown(await estimate());
+                }, 10000);
+                setClaimCooldown(await estimate());
+            };
+            refreshClaimCooldown(_contract);
+            //
             const data = localStorage.getItem(
                 `@beneficiary/claim-${communityAddress}`
             );
@@ -105,12 +97,14 @@ export const useBeneficiary = (communityAddress: string) => {
                     claimedAmount: BigNumber.from(parsed.claimedAmount),
                     lastClaim: BigNumber.from(parsed.lastClaim)
                 });
+            } else {
+                updateClaimData(_contract);
             }
         }
         return () => {
             clearInterval(refreshInterval);
         };
-    }, [communityAddress, address]);
+    }, [address]);
 
-    return { claim, beneficiary, claimCooldown, refreshClaimCooldown };
+    return { claim, beneficiary, claimCooldown };
 };
