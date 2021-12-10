@@ -1,11 +1,9 @@
-import { useContractKit } from '@celo-tools/use-contractkit';
 import React, { useEffect, useState } from 'react';
 import { ContractAddresses } from '../contracts';
 import BaseERC20ABI from '../contracts/abi/BaseERC20.json';
 import DonationMinerABI from '../contracts/abi/DonationMiner.json';
 import PACTTokenABI from '../contracts/abi/PACTToken.json';
-import PACTDelegate from '../contracts/abi/PACTDelegate.json';
-import MerkleDistributorABI from '../contracts/abi/MerkleDistributor.json';
+import PACTDelegateABI from '../contracts/abi/PACTDelegate.json';
 import { IPCTDelegate } from '../types/contracts/IPCTDelegate';
 import { Contract } from '@ethersproject/contracts';
 import { PACTToken } from '../types/contracts/PACTToken';
@@ -19,13 +17,11 @@ type ContractsType = {
         delegator?: string;
         donationMiner?: string;
         pactToken?: string;
-        merkleDistributor?: string;
     };
     cusd?: Contract;
     delegate?: Contract & IPCTDelegate;
     donationMiner?: Contract;
     pact?: Contract & PACTToken;
-    merkleDistributor?: Contract;
 };
 
 const initialContractsState = {
@@ -33,13 +29,10 @@ const initialContractsState = {
     cusd: undefined,
     delegate: undefined,
     donationMiner: undefined,
-    pact: undefined,
-    merkleDistributor: undefined
+    pact: undefined
 };
 
 export const useContracts = () => {
-    const { initialised } = useContractKit();
-
     const [contracts, setContracts] = useState<ContractsType>(
         initialContractsState
     );
@@ -47,27 +40,23 @@ export const useContracts = () => {
 
     useEffect(() => {
         const getContracts = async () => {
-            const network = await provider?.getNetwork();
+            const network = await provider.getNetwork();
 
+            const {
+                CommunityAdmin,
+                cUSD,
+                PACTDelegate,
+                PACTDelegator,
+                PACTToken,
+                DonationMiner
+            } = ContractAddresses.get(network.chainId)!;
             const addresses = {
-                communityAdmin:
-                    ContractAddresses.get(network?.chainId!)?.CommunityAdmin ||
-                    '',
-                cusd: ContractAddresses.get(network?.chainId!)?.cUSD || '',
-                delegate:
-                    ContractAddresses.get(network?.chainId!)?.PACTDelegate ||
-                    '',
-                delegator:
-                    ContractAddresses.get(network?.chainId!)?.PACTDelegator ||
-                    '',
-                donationMiner:
-                    ContractAddresses.get(network?.chainId!)?.DonationMiner ||
-                    '',
-                pactToken:
-                    ContractAddresses.get(network?.chainId!)?.PACTToken || '',
-                merkleDistributor:
-                    ContractAddresses.get(network?.chainId!)
-                        ?.MerkleDistributor || ''
+                communityAdmin: CommunityAdmin || '',
+                cusd: cUSD || '',
+                delegate: PACTDelegate || '',
+                delegator: PACTDelegator || '',
+                donationMiner: DonationMiner || '',
+                pactToken: PACTToken || ''
             };
             const _signer = signer || undefined;
 
@@ -78,11 +67,6 @@ export const useContracts = () => {
             );
 
             const cusd = new Contract(addresses.cusd, BaseERC20ABI, _signer);
-            const merkleDistributor = new Contract(
-                addresses.merkleDistributor,
-                MerkleDistributorABI,
-                _signer
-            );
 
             const pact = new Contract(
                 addresses.pactToken,
@@ -92,7 +76,7 @@ export const useContracts = () => {
 
             const delegate = new Contract(
                 addresses.delegate,
-                PACTDelegate,
+                PACTDelegateABI,
                 _signer
             ).attach(addresses.delegator) as Contract & IPCTDelegate;
 
@@ -101,15 +85,14 @@ export const useContracts = () => {
                 cusd,
                 delegate,
                 donationMiner,
-                pact,
-                merkleDistributor
+                pact
             });
         };
 
-        if (!!address && initialised) {
+        if (address && provider) {
             getContracts();
         }
-    }, [address, initialised, provider, signer]);
+    }, [address, provider, signer]);
 
     return contracts;
 };
