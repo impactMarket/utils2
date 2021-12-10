@@ -2,7 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { ImpactMarketContext } from '../components/ImpactMarketProvider';
 import { useContracts } from './useContracts';
 
-export const useMerkleDistributor = () => {
+export const useMerkleDistributor = (merkleTree: {
+    claims: {
+        [key: string]: {
+            index: number;
+            amount: string;
+            proof: string[];
+        };
+    };
+}) => {
     const { merkleDistributor: merkleDistributorContract } = useContracts();
     const { address, signer } = React.useContext(ImpactMarketContext);
     const [hasClaim, setHasClaim] = useState(false);
@@ -14,12 +22,13 @@ export const useMerkleDistributor = () => {
             }
 
             const merkleDistributor = merkleDistributorContract.connect(signer);
+            const treeAccount = merkleTree.claims[address];
 
             const tx = await merkleDistributor.claim(
-                0,
+                treeAccount.index,
                 address,
-                '100',
-                'proof0'
+                treeAccount.amount,
+                treeAccount.proof
             );
             const response = await tx.wait();
 
