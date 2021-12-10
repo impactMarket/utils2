@@ -2,9 +2,16 @@
     "name": "@impact-market/utils",
     "version": "1.0.10",
     "description": "impactMarket utils",
-    "author": "impactMarket",
-    "license": "MIT",
-    "repository": "impactMarket/utils2",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/impactMarket/utils.git"
+    },
+    "author": "impact-market",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/impactMarket/utils/issues"
+    },
+    "homepage": "https://github.com/impactMarket/utils#readme",
     "main": "dist/index.js",
     "module": "dist/index.modern.js",
     "source": "src/index.ts",
@@ -14,14 +21,10 @@
     "scripts": {
         "build": "microbundle-crl --no-compress --format modern,cjs",
         "start": "microbundle-crl watch --no-compress --format modern,cjs",
-        "prepare": "run-s build",
-        "test": "run-s test:unit test:lint test:build",
-        "test:build": "run-s build",
+        "test": "run-s test:unit",
         "test:lint": "eslint src/**/*.ts",
-        "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
-        "test:watch": "react-scripts test --env=jsdom",
-        "predeploy": "cd example && yarn install && yarn run build",
-        "deploy": "gh-pages -d example/build",
+        "test:unit": "CI=1 react-scripts test --env=node",
+        "test:watch": "react-scripts test --env=node",
         "version": "auto-changelog -p && git add CHANGELOG.md"
     },
     "peerDependencies": {
@@ -60,7 +63,8 @@
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
         "react-scripts": "^3.4.1",
-        "typescript": "^3.7.5"
+        "typescript": "^3.7.5",
+        "coveralls": "3.1.1"
     },
     "files": [
         "dist"
