@@ -5,6 +5,8 @@ orbs:
 
 jobs:
   test:
+    docker:
+      - image: circleci/node:14.15.1
     steps:
       - checkout
       - run: yarn
