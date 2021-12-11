@@ -40,11 +40,18 @@ export const useMerkleDistributor = (merkleTree: {
         }
     };
 
-    const verifyClaim = async () => {
-        setHasClaim(true);
-    };
-
     useEffect(() => {
+        const verifyClaim = async () => {
+            if (!address || !merkleDistributorContract || !signer) {
+                return;
+            }
+
+            const treeAccount = merkleTree.claims[address];
+            const _isClaimed = await merkleDistributorContract.isClaimed(
+                treeAccount.index
+            );
+            setHasClaim(!_isClaimed);
+        };
         verifyClaim();
     }, [merkleDistributorContract, signer]);
 
