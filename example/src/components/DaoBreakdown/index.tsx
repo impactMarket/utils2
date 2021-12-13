@@ -5,6 +5,7 @@ import ClaimableRewards from './ClaimableRewards';
 import Epoch from './Epoch';
 import EstimatedRewards from './EstimatedRewards';
 import WalletConnection from '../WalletConnection';
+import MerkleDistributor from './MerkleDistributor';
 
 const DaoBreakdown = props => {
     return (
@@ -24,6 +25,9 @@ const DaoBreakdown = props => {
                 </li>
                 <li style={{ marginTop: 16 }}>
                     <Epoch />
+                </li>
+                <li style={{ marginTop: 16 }}>
+                    <MerkleDistributor />
                 </li>
             </ul>
         </WalletConnection>
