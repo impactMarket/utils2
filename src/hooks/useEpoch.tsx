@@ -1,23 +1,16 @@
-import { useContractKit } from '@celo-tools/use-contractkit';
 import React, { useEffect } from 'react';
 import { ImpactMarketContext } from '../components/ImpactMarketProvider';
 import { toNumber } from '../helpers/toNumber';
 import { useContracts } from './useContracts';
 
 export const useEpoch = () => {
-    const { initialised } = useContractKit();
     const { donationMiner: donationMinerContract } = useContracts();
     const { epoch, setEpoch, address, provider } =
         React.useContext(ImpactMarketContext);
 
     const updateEpoch = async () => {
         try {
-            if (
-                !address ||
-                !initialised ||
-                !donationMinerContract ||
-                !provider
-            ) {
+            if (!address || !donationMinerContract || !provider) {
                 return;
             }
 
