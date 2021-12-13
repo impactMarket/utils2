@@ -1,4 +1,6 @@
+import { BigNumber } from 'bignumber.js';
 import React, { useEffect, useState } from 'react';
+import { toNumber } from '../helpers/toNumber';
 import { ImpactMarketContext } from '../components/ImpactMarketProvider';
 import { useContracts } from './useContracts';
 
@@ -14,6 +16,7 @@ export const useMerkleDistributor = (merkleTree: {
     const { merkleDistributor: merkleDistributorContract } = useContracts();
     const { address, signer } = React.useContext(ImpactMarketContext);
     const [hasClaim, setHasClaim] = useState(false);
+    const [amountToClaim, setAmountToClaim] = useState(0);
 
     const claim = async () => {
         try {
@@ -47,13 +50,18 @@ export const useMerkleDistributor = (merkleTree: {
             }
 
             const treeAccount = merkleTree.claims[address];
-            const _isClaimed = await merkleDistributorContract.isClaimed(
-                treeAccount.index
-            );
-            setHasClaim(!_isClaimed);
+            if (treeAccount) {
+                const _isClaimed = await merkleDistributorContract.isClaimed(
+                    treeAccount.index
+                );
+                setAmountToClaim(
+                    toNumber(new BigNumber(treeAccount.amount, 16).toString())
+                );
+                setHasClaim(!_isClaimed);
+            }
         };
         verifyClaim();
     }, [merkleDistributorContract, signer]);
 
-    return { hasClaim, claim };
+    return { hasClaim, amountToClaim, claim };
 };
