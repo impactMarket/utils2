@@ -15,7 +15,7 @@ const components = [
 
 const options = components.map(({ label }) => label);
 
-const initialOption = options[2];
+const initialOption = options[1];
 
 function App() {
     const provider = useProvider();
