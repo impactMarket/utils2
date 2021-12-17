@@ -8,6 +8,7 @@ import { IPCTDelegate } from '../types/contracts/IPCTDelegate';
 import { Contract } from '@ethersproject/contracts';
 import { PACTToken } from '../types/contracts/PACTToken';
 import { ImpactMarketContext } from '../components/ImpactMarketProvider';
+import MerkleDistributorABI from '../contracts/abi/MerkleDistributor.json';
 
 type ContractsType = {
     addresses?: {
@@ -17,11 +18,13 @@ type ContractsType = {
         delegator?: string;
         donationMiner?: string;
         pactToken?: string;
+        merkleDistributor?: string;
     };
     cusd?: Contract;
     delegate?: Contract & IPCTDelegate;
     donationMiner?: Contract;
     pact?: Contract & PACTToken;
+    merkleDistributor?: Contract;
 };
 
 const initialContractsState = {
@@ -29,7 +32,8 @@ const initialContractsState = {
     cusd: undefined,
     delegate: undefined,
     donationMiner: undefined,
-    pact: undefined
+    pact: undefined,
+    merkleDistributor: undefined
 };
 
 export const useContracts = () => {
@@ -56,9 +60,18 @@ export const useContracts = () => {
                 delegate: PACTDelegate || '',
                 delegator: PACTDelegator || '',
                 donationMiner: DonationMiner || '',
-                pactToken: PACTToken || ''
+                pactToken: PACTToken || '',
+                merkleDistributor:
+                    ContractAddresses.get(network?.chainId!)
+                        ?.MerkleDistributor || ''
             };
             const _signer = signer || undefined;
+
+            const merkleDistributor = new Contract(
+                addresses.merkleDistributor,
+                MerkleDistributorABI,
+                _signer
+            );
 
             const donationMiner = new Contract(
                 addresses.donationMiner,
@@ -85,7 +98,8 @@ export const useContracts = () => {
                 cusd,
                 delegate,
                 donationMiner,
-                pact
+                pact,
+                merkleDistributor
             });
         };
 

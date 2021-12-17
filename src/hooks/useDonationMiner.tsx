@@ -8,7 +8,8 @@ import { ImpactMarketContext } from '../components/ImpactMarketProvider';
 
 type DonationMinerType = {
     approve?: Function;
-    donate?: Function;
+    donateToTreasury?: Function;
+    donateToCommunity?: Function;
 };
 
 export const useDonationMiner = (): DonationMinerType => {
@@ -49,7 +50,7 @@ export const useDonationMiner = (): DonationMinerType => {
         }
     };
 
-    const donate = async (value: string | number) => {
+    const donateToTreasury = async (value: string | number) => {
         try {
             const amount = toToken(value);
             const tx = await donationMiner?.donate(amount);
@@ -63,12 +64,37 @@ export const useDonationMiner = (): DonationMinerType => {
 
             return response;
         } catch (error) {
-            console.log('Error in donate function: \n', error);
+            console.log('Error in donateToTreasury function: \n', error);
+        }
+    };
+
+    const donateToCommunity = async (
+        community: string,
+        value: string | number
+    ) => {
+        try {
+            const amount = toToken(value);
+            const tx = await donationMiner?.donateToCommunity(
+                community,
+                amount
+            );
+            const response = await tx.wait();
+
+            await Promise.all([
+                updateBalance(),
+                updateRewards(),
+                updateEpoch()
+            ]);
+
+            return response;
+        } catch (error) {
+            console.log('Error in donateToCommunity function: \n', error);
         }
     };
 
     return {
         approve,
-        donate
+        donateToTreasury,
+        donateToCommunity
     };
 };
