@@ -1,5 +1,8 @@
 import React, { useEffect } from 'react';
-import { ImpactMarketContext } from '../components/ImpactMarketProvider';
+import {
+    ImpactMarketContext,
+    EpochType
+} from '../components/ImpactMarketProvider';
 import { toNumber } from '../helpers/toNumber';
 import { useContracts } from './useContracts';
 
@@ -10,14 +13,14 @@ export const useEpoch = () => {
 
     const updateEpoch = async () => {
         try {
-            if (!address || !donationMinerContract || !provider) {
+            if (!donationMinerContract || !provider) {
                 return;
             }
 
             const donationMiner = donationMinerContract.connect(provider);
 
             const currentBlock = await provider.getBlockNumber();
-            const period = await donationMiner.rewardPeriodCount();
+            const period = await donationMinerContract.rewardPeriodCount();
 
             const response = await donationMiner.rewardPeriods(period);
 
@@ -35,27 +38,57 @@ export const useEpoch = () => {
 
             const endPeriod = new Date(new Date().getTime() + blockTime);
 
-            const amount = await donationMiner.rewardPeriodDonorAmount(
-                period,
-                address
-            );
-            const userContribution = isFuture ? 0 : toNumber(amount);
             const rewards = toNumber(rewardAmount);
             const totalRaised = isFuture ? 0 : toNumber(donationsAmount);
 
-            setEpoch({
+            setEpoch((epoch: EpochType) => ({
+                ...epoch,
                 endPeriod: endPeriod.toISOString(),
                 rewards,
-                totalRaised,
-                userContribution
-            });
+                totalRaised
+            }));
         } catch (error) {
             console.log(`Error getting epoch data...\n${error}`);
         }
     };
 
+    const updateUserContribution = async () => {
+        try {
+            if (!address || !donationMinerContract || !provider) {
+                return;
+            }
+
+            const donationMiner = donationMinerContract.connect(provider);
+
+            const currentBlock = await provider.getBlockNumber();
+            const period = await donationMiner.rewardPeriodCount();
+
+            const response = await donationMiner.rewardPeriods(period);
+
+            const { endBlock } = response || {};
+
+            // calculate remaining time until the end block, in seconds.
+            // If the end block was in the past, add another epoch.
+            const isFuture = currentBlock > endBlock.toNumber();
+
+            const amount = await donationMiner.rewardPeriodDonorAmount(
+                period,
+                address
+            );
+            const userContribution = isFuture ? 0 : toNumber(amount);
+
+            setEpoch((epoch: EpochType) => ({
+                ...epoch,
+                userContribution
+            }));
+        } catch (error) {
+            console.log(`Error getting epoch user contribution...\n${error}`);
+        }
+    };
+
     useEffect(() => {
         updateEpoch();
+        updateUserContribution();
     }, [donationMinerContract, provider]);
 
     return { epoch, updateEpoch };

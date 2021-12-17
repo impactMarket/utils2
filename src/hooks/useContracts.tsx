@@ -45,6 +45,7 @@ export const useContracts = () => {
     useEffect(() => {
         const getContracts = async () => {
             const network = await provider.getNetwork();
+            const contractAddresses = ContractAddresses.get(network.chainId)!;
 
             const {
                 CommunityAdmin,
@@ -53,7 +54,8 @@ export const useContracts = () => {
                 PACTDelegator,
                 PACTToken,
                 DonationMiner
-            } = ContractAddresses.get(network.chainId)!;
+            } = contractAddresses;
+
             const addresses = {
                 communityAdmin: CommunityAdmin || '',
                 cusd: cUSD || '',
@@ -61,10 +63,9 @@ export const useContracts = () => {
                 delegator: PACTDelegator || '',
                 donationMiner: DonationMiner || '',
                 pactToken: PACTToken || '',
-                merkleDistributor:
-                    ContractAddresses.get(network?.chainId!)
-                        ?.MerkleDistributor || ''
+                merkleDistributor: contractAddresses?.MerkleDistributor || ''
             };
+
             const _signer = signer || undefined;
 
             const merkleDistributor = new Contract(
@@ -103,7 +104,7 @@ export const useContracts = () => {
             });
         };
 
-        if (address && provider) {
+        if (provider) {
             getContracts();
         }
     }, [address, provider, signer]);
