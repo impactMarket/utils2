@@ -45,7 +45,7 @@ export const useMerkleDistributor = (merkleTree: {
 
     useEffect(() => {
         const verifyClaim = async () => {
-            if (!address || !merkleDistributorContract || !signer) {
+            if (!address || !merkleDistributorContract?.provider || !signer) {
                 return;
             }
 
