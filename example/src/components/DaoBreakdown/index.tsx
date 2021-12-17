@@ -25,15 +25,10 @@ const DaoBreakdown = props => {
                         <EstimatedRewards />
                     </li>
                     <li style={{ marginTop: 16 }}>
-                        <Epoch />
-                    </li>
-                    <li style={{ marginTop: 16 }}>
                         <MerkleDistributor />
                     </li>
                 </ul>
             </WalletConnection>
-
-            <h3 style={{ marginTop: 24 }}>Epoch data with no wallet connected:</h3>
             <Epoch />
         </>
     );

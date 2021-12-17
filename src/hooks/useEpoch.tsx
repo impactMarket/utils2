@@ -13,16 +13,14 @@ export const useEpoch = () => {
 
     const updateEpoch = async () => {
         try {
-            if (!donationMinerContract || !provider) {
+            if (!donationMinerContract?.provider || !provider) {
                 return;
             }
-
-            const donationMiner = donationMinerContract.connect(provider);
 
             const currentBlock = await provider.getBlockNumber();
             const period = await donationMinerContract.rewardPeriodCount();
 
-            const response = await donationMiner.rewardPeriods(period);
+            const response = await donationMinerContract.rewardPeriods(period);
 
             const { rewardAmount, endBlock, donationsAmount } = response || {};
 
