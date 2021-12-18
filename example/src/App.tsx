@@ -4,7 +4,7 @@ import Intro from './components/Intro';
 import WalletsBalance from './components/WalletsBalance';
 import DaoBreakdown from './components/DaoBreakdown';
 import DaoHooks from './components/DaoHooks';
-import { ContractKitProvider, Alfajores, useContractKit, useProvider, useConnectedSigner } from '@celo-tools/use-contractkit';
+import { ContractKitProvider, Alfajores, useContractKit, useConnectedSigner } from '@celo-tools/use-contractkit';
 import { ImpactMarketProvider } from '@impact-market/utils';
 import { JsonRpcProvider } from '@ethersproject/providers';
 
@@ -18,31 +18,45 @@ const options = components.map(({ label }) => label);
 
 const initialOption = options[1];
 
+const network = Alfajores;
+
 function App() {
-    const provider = new JsonRpcProvider('https://alfajores-forno.celo-testnet.org');
-    const walletProvider = useProvider();
+    const provider = new JsonRpcProvider(network.rpcUrl);
     const signer = useConnectedSigner();
-    const { address } = useContractKit();
+    const { address, initialised, network: walletNetwork } = useContractKit();
     const [selectedOption, setSelectedOption] = useState<any>(initialOption);
-    const [isInDifferentNetwork, setIsInDifferentNetwork] = useState(false);
+    const [providerNetworkChainId, setProviderNetworkChainId] = useState();
 
     const Component = components.find(({ label }) => label === selectedOption)?.component;
 
     useEffect(() => {
-        const verifyNetwork = async () => {
-            const netowrk = await provider?.getNetwork();
-            const walletNetowrk = await walletProvider?.getNetwork();
-            setIsInDifferentNetwork(netowrk.chainId !== walletNetowrk.chainId);
+        const setChainId = async () => {
+            const network = await provider?.getNetwork();
+
+            if (providerNetworkChainId !== network?.chainId) {
+                setProviderNetworkChainId(network?.chainId)
+            }
         }
-        if (walletProvider) {
-            verifyNetwork();
+        if (provider) {
+            setChainId();
         }
-    }, [walletProvider, provider])
+    }, [provider, providerNetworkChainId])
+
+    if (!initialised || !providerNetworkChainId) {
+        return <div>Loading...</div>
+    }
+
+    const isSameNetwork = walletNetwork?.chainId === providerNetworkChainId
+
+    if (walletNetwork?.chainId && !isSameNetwork) {
+        return <div>The app and your wallet are in different networks!</div>
+    }
+
+    console.log(walletNetwork)
 
     return (
         <>
-            {isInDifferentNetwork && (<div>You are on the wrong network!</div>)}
-            <ImpactMarketProvider address={address} provider={provider} signer={signer}>
+            <ImpactMarketProvider address={isSameNetwork ? address : undefined} provider={provider} signer={signer}>
                 <Intro handleChange={setSelectedOption} initialOption={initialOption} options={options} />
                 {!!Component && <Component />}
             </ImpactMarketProvider>
@@ -53,7 +67,7 @@ function App() {
 function WrappedApp() {
     return (
         <ContractKitProvider
-            network={Alfajores}
+            network={network}
             dapp={{
                 name: 'My awesome dApp',
                 description: 'My awesome description',

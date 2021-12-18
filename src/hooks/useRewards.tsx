@@ -20,7 +20,7 @@ export const useRewards = (): UseRewardsType => {
         React.useContext(ImpactMarketContext);
 
     const getEstimatedClaimableRewards = async () => {
-        if (!donationMiner?.provider) {
+        if (!donationMiner?.provider || !address) {
             return;
         }
 
@@ -42,7 +42,7 @@ export const useRewards = (): UseRewardsType => {
     };
 
     const getClaimableRewards = async () => {
-        if (!donationMiner?.provider) {
+        if (!donationMiner?.provider || !address) {
             return;
         }
 
