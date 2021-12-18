@@ -9,28 +9,28 @@ import MerkleDistributor from './MerkleDistributor';
 
 const DaoBreakdown = props => {
     return (
-        <WalletConnection title="DAO Breakdown">
-            <ul>
-                <li style={{ marginTop: 16 }}>
-                    <Balance />
-                </li>
-                <li style={{ marginTop: 16 }}>
-                    <ApproveDonate />
-                </li>
-                <li style={{ marginTop: 16 }}>
-                    <ClaimableRewards />
-                </li>
-                <li style={{ marginTop: 16 }}>
-                    <EstimatedRewards />
-                </li>
-                <li style={{ marginTop: 16 }}>
-                    <Epoch />
-                </li>
-                <li style={{ marginTop: 16 }}>
-                    <MerkleDistributor />
-                </li>
-            </ul>
-        </WalletConnection>
+        <>
+            <WalletConnection title="DAO Breakdown">
+                <ul>
+                    <li style={{ marginTop: 16 }}>
+                        <Balance />
+                    </li>
+                    <li style={{ marginTop: 16 }}>
+                        <ApproveDonate />
+                    </li>
+                    <li style={{ marginTop: 16 }}>
+                        <ClaimableRewards />
+                    </li>
+                    <li style={{ marginTop: 16 }}>
+                        <EstimatedRewards />
+                    </li>
+                    <li style={{ marginTop: 16 }}>
+                        <MerkleDistributor />
+                    </li>
+                </ul>
+            </WalletConnection>
+            <Epoch />
+        </>
     );
 }
 

@@ -40,11 +40,12 @@ export const useContracts = () => {
     const [contracts, setContracts] = useState<ContractsType>(
         initialContractsState
     );
-    const { address, signer, provider } = React.useContext(ImpactMarketContext);
+    const { signer, provider } = React.useContext(ImpactMarketContext);
 
     useEffect(() => {
         const getContracts = async () => {
             const network = await provider.getNetwork();
+            const contractAddresses = ContractAddresses.get(network.chainId)!;
 
             const {
                 CommunityAdmin,
@@ -52,8 +53,10 @@ export const useContracts = () => {
                 PACTDelegate,
                 PACTDelegator,
                 PACTToken,
-                DonationMiner
-            } = ContractAddresses.get(network.chainId)!;
+                DonationMiner,
+                MerkleDistributor
+            } = contractAddresses;
+
             const addresses = {
                 communityAdmin: CommunityAdmin || '',
                 cusd: cUSD || '',
@@ -61,36 +64,39 @@ export const useContracts = () => {
                 delegator: PACTDelegator || '',
                 donationMiner: DonationMiner || '',
                 pactToken: PACTToken || '',
-                merkleDistributor:
-                    ContractAddresses.get(network?.chainId!)
-                        ?.MerkleDistributor || ''
+                merkleDistributor: MerkleDistributor || ''
             };
-            const _signer = signer || undefined;
+
+            const _signerOrProvider = signer || provider || undefined;
 
             const merkleDistributor = new Contract(
                 addresses.merkleDistributor,
                 MerkleDistributorABI,
-                _signer
+                _signerOrProvider
             );
 
             const donationMiner = new Contract(
                 addresses.donationMiner,
                 DonationMinerABI,
-                _signer
+                _signerOrProvider
             );
 
-            const cusd = new Contract(addresses.cusd, BaseERC20ABI, _signer);
+            const cusd = new Contract(
+                addresses.cusd,
+                BaseERC20ABI,
+                _signerOrProvider
+            );
 
             const pact = new Contract(
                 addresses.pactToken,
                 PACTTokenABI,
-                _signer
+                _signerOrProvider
             ) as Contract & PACTToken;
 
             const delegate = new Contract(
                 addresses.delegate,
                 PACTDelegateABI,
-                _signer
+                _signerOrProvider
             ).attach(addresses.delegator) as Contract & IPCTDelegate;
 
             setContracts({
@@ -103,10 +109,10 @@ export const useContracts = () => {
             });
         };
 
-        if (address && provider) {
+        if (provider) {
             getContracts();
         }
-    }, [address, provider, signer]);
+    }, [provider, signer]);
 
     return contracts;
 };

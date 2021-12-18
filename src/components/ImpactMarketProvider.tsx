@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-use-before-define
 import React, { useState } from 'react';
 import { Signer } from '@ethersproject/abstract-signer';
-import { Web3Provider } from '@ethersproject/providers';
+import { BaseProvider } from '@ethersproject/providers';
 
 export type EpochType = {
     endPeriod?: string;
@@ -42,7 +42,7 @@ const initialRewards: RewardsType = {
 };
 
 const intialData: {
-    provider: Web3Provider;
+    provider: BaseProvider;
     signer: Signer | null;
     address: string | null;
     balance?: BalanceType;
@@ -68,7 +68,7 @@ export const ImpactMarketContext = React.createContext(intialData);
 type ProviderProps = {
     children?: any;
     address: string | null;
-    provider: Web3Provider;
+    provider: BaseProvider;
     signer: Signer | null;
 };
 
