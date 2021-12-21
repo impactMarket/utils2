@@ -4,14 +4,10 @@ import { toNumber } from '../helpers/toNumber';
 import { ImpactMarketContext } from '../components/ImpactMarketProvider';
 import { useContracts } from './useContracts';
 
-export const useMerkleDistributor = (merkleTree: {
-    claims: {
-        [key: string]: {
-            index: number;
-            amount: string;
-            proof: string[];
-        };
-    };
+export const useMerkleDistributor = (treeAccount: {
+    index: number;
+    amount: string;
+    proof: string[];
 }) => {
     const { merkleDistributor: merkleDistributorContract } = useContracts();
     const { address, signer } = React.useContext(ImpactMarketContext);
@@ -25,7 +21,6 @@ export const useMerkleDistributor = (merkleTree: {
             }
 
             const merkleDistributor = merkleDistributorContract.connect(signer);
-            const treeAccount = merkleTree.claims[address];
 
             const tx = await merkleDistributor.claim(
                 treeAccount.index,
@@ -49,7 +44,6 @@ export const useMerkleDistributor = (merkleTree: {
                 return;
             }
 
-            const treeAccount = merkleTree.claims[address];
             if (treeAccount) {
                 const _isClaimed = await merkleDistributorContract.isClaimed(
                     treeAccount.index
