@@ -24,8 +24,8 @@ function App() {
     const provider = new JsonRpcProvider(network.rpcUrl);
     const signer = useConnectedSigner();
     const { address, initialised, network: walletNetwork } = useContractKit();
-    const [selectedOption, setSelectedOption] = useState<any>(initialOption);
-    const [providerNetworkChainId, setProviderNetworkChainId] = useState();
+    const [selectedOption, setSelectedOption] = useState<string>(initialOption);
+    const [providerNetworkChainId, setProviderNetworkChainId] = useState<number | undefined>();
 
     const Component = components.find(({ label }) => label === selectedOption)?.component;
 
@@ -56,7 +56,7 @@ function App() {
 
     return (
         <>
-            <ImpactMarketProvider address={isSameNetwork ? address : undefined} provider={provider} signer={signer}>
+            <ImpactMarketProvider address={isSameNetwork ? address : null} provider={provider} signer={signer}>
                 <Intro handleChange={setSelectedOption} initialOption={initialOption} options={options} />
                 {!!Component && <Component />}
             </ImpactMarketProvider>

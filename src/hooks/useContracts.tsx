@@ -4,7 +4,7 @@ import BaseERC20ABI from '../contracts/abi/BaseERC20.json';
 import DonationMinerABI from '../contracts/abi/DonationMiner.json';
 import PACTTokenABI from '../contracts/abi/PACTToken.json';
 import PACTDelegateABI from '../contracts/abi/PACTDelegate.json';
-import { IPCTDelegate } from '../types/contracts/IPCTDelegate';
+import { PACTDelegate } from '../types/contracts/PACTDelegate';
 import { Contract } from '@ethersproject/contracts';
 import { PACTToken } from '../types/contracts/PACTToken';
 import { ImpactMarketContext } from '../components/ImpactMarketProvider';
@@ -21,7 +21,7 @@ type ContractsType = {
         merkleDistributor?: string;
     };
     cusd?: Contract;
-    delegate?: Contract & IPCTDelegate;
+    delegate?: Contract & PACTDelegate;
     donationMiner?: Contract;
     pact?: Contract & PACTToken;
     merkleDistributor?: Contract;
@@ -97,7 +97,7 @@ export const useContracts = () => {
                 addresses.delegate,
                 PACTDelegateABI,
                 _signerOrProvider
-            ).attach(addresses.delegator) as Contract & IPCTDelegate;
+            ).attach(addresses.delegator) as Contract & PACTDelegate;
 
             setContracts({
                 addresses,

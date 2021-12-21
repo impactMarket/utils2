@@ -21,5 +21,17 @@ export const ContractAddresses = new Map<
             PACTToken: '0x6FA09BC0CF975fABFAAAF8231886F66c1c22B53e',
             MerkleDistributor: '0xcbB604155ba079499AC638211d4aa0E10711f718'
         }
+    ],
+    [
+        42220,
+        {
+            cUSD: '0x765de816845861e75a25fca122bb6898b8b1282a',
+            DonationMiner: '0x1C51657af2ceBA3D5492bA0c5A17E562F7ba6593',
+            CommunityAdmin: '0xd61c407c3A00dFD8C355973f7a14c55ebaFDf6F9',
+            PACTDelegate: '0xAeEd98C1c5C268C3E23672166Ea0Bde908C90624',
+            PACTDelegator: '0x8f8BB984e652Cb8D0aa7C9D6712Ec2020EB1BAb4',
+            PACTToken: '0x46c9757C5497c5B1f2eb73aE79b6B67D119B0B58',
+            MerkleDistributor: '0xd2b20e06C19e7b7E7E385b0F1386Cdde8C6dCd2B'
+        }
     ]
 ]);

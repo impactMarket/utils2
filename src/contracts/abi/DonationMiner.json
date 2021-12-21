@@ -34,6 +34,37 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "oldStartingBlock",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "oldFirstRewardPerBlock",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newStartingBlock",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newFirstRewardPerBlock",
+        "type": "uint256"
+      }
+    ],
+    "name": "FirstRewardPeriodParamsUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "previousOwner",
@@ -183,7 +214,7 @@
   },
   {
     "inputs": [],
-    "name": "IPCT",
+    "name": "PACT",
     "outputs": [
       {
         "internalType": "contract IERC20",
@@ -211,7 +242,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "donor_",
+        "name": "_donorAddress",
         "type": "address"
       }
     ],
@@ -263,7 +294,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "amount_",
+        "name": "_amount",
         "type": "uint256"
       }
     ],
@@ -276,12 +307,12 @@
     "inputs": [
       {
         "internalType": "contract ICommunity",
-        "name": "community_",
+        "name": "_community",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "amount_",
+        "name": "_amount",
         "type": "uint256"
       }
     ],
@@ -356,12 +387,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "donor",
+        "name": "_donor",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "rewardPeriodIndex",
+        "name": "_rewardPeriodIndex",
         "type": "uint256"
       }
     ],
@@ -404,7 +435,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "donor_",
+        "name": "_donorAddress",
         "type": "address"
       }
     ],
@@ -436,42 +467,42 @@
     "inputs": [
       {
         "internalType": "contract IERC20",
-        "name": "cUSD_",
+        "name": "_cUSD",
         "type": "address"
       },
       {
         "internalType": "contract IERC20",
-        "name": "IPCT_",
+        "name": "_PACT",
         "type": "address"
       },
       {
         "internalType": "contract ITreasury",
-        "name": "treasury_",
+        "name": "_treasury",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "firstRewardPerBlock_",
+        "name": "_firstRewardPerBlock",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "rewardPeriodSize_",
+        "name": "_rewardPeriodSize",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "startingBlock_",
+        "name": "_startingBlock",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "decayNumerator_",
+        "name": "_decayNumerator",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "decayDenominator_",
+        "name": "_decayDenominator",
         "type": "uint256"
       }
     ],
@@ -530,12 +561,12 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "period",
+        "name": "_period",
         "type": "uint256"
       },
       {
         "internalType": "address",
-        "name": "donor",
+        "name": "_donor",
         "type": "address"
       }
     ],
@@ -606,17 +637,17 @@
     "inputs": [
       {
         "internalType": "contract IERC20",
-        "name": "token_",
+        "name": "_token",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "to_",
+        "name": "_to",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "amount_",
+        "name": "_amount",
         "type": "uint256"
       }
     ],
@@ -655,17 +686,35 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "newRewardPeriodSize_",
+        "name": "_startingBlock",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "newDecayNumerator_",
+        "name": "_firstRewardPerBlock",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateFirstRewardPeriodParams",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_newRewardPeriodSize",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "newDecayDenominator_",
+        "name": "_newDecayNumerator",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_newDecayDenominator",
         "type": "uint256"
       }
     ],
@@ -678,7 +727,7 @@
     "inputs": [
       {
         "internalType": "contract ITreasury",
-        "name": "newTreasury_",
+        "name": "_newTreasury",
         "type": "address"
       }
     ],

@@ -60,6 +60,25 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": false,
         "internalType": "uint256",
         "name": "id",
@@ -198,6 +217,31 @@
       }
     ],
     "name": "QuorumVotesSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "TransferERC20",
     "type": "event"
   },
   {
@@ -406,30 +450,10 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "_acceptAdmin",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newPendingAdmin",
-        "type": "address"
-      }
-    ],
-    "name": "_setPendingAdmin",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "newProposalThreshold",
+        "name": "_newProposalThreshold",
         "type": "uint256"
       }
     ],
@@ -442,7 +466,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "newQuorumVotes",
+        "name": "_newQuorumVotes",
         "type": "uint256"
       }
     ],
@@ -455,7 +479,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "newVotingDelay",
+        "name": "_newVotingDelay",
         "type": "uint256"
       }
     ],
@@ -468,7 +492,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "newVotingPeriod",
+        "name": "_newVotingPeriod",
         "type": "uint256"
       }
     ],
@@ -478,23 +502,10 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "admin",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "proposalId",
+        "name": "_proposalId",
         "type": "uint256"
       }
     ],
@@ -507,12 +518,12 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "proposalId",
+        "name": "_proposalId",
         "type": "uint256"
       },
       {
         "internalType": "uint8",
-        "name": "support",
+        "name": "_support",
         "type": "uint8"
       }
     ],
@@ -525,27 +536,27 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "proposalId",
+        "name": "_proposalId",
         "type": "uint256"
       },
       {
         "internalType": "uint8",
-        "name": "support",
+        "name": "_support",
         "type": "uint8"
       },
       {
         "internalType": "uint8",
-        "name": "v",
+        "name": "_v",
         "type": "uint8"
       },
       {
         "internalType": "bytes32",
-        "name": "r",
+        "name": "_r",
         "type": "bytes32"
       },
       {
         "internalType": "bytes32",
-        "name": "s",
+        "name": "_s",
         "type": "bytes32"
       }
     ],
@@ -558,17 +569,17 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "proposalId",
+        "name": "_proposalId",
         "type": "uint256"
       },
       {
         "internalType": "uint8",
-        "name": "support",
+        "name": "_support",
         "type": "uint8"
       },
       {
         "internalType": "string",
-        "name": "reason",
+        "name": "_reason",
         "type": "string"
       }
     ],
@@ -581,7 +592,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "proposalId",
+        "name": "_proposalId",
         "type": "uint256"
       }
     ],
@@ -594,7 +605,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "proposalId",
+        "name": "_proposalId",
         "type": "uint256"
       }
     ],
@@ -628,12 +639,12 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "proposalId",
+        "name": "_proposalId",
         "type": "uint256"
       },
       {
         "internalType": "address",
-        "name": "voter",
+        "name": "_voter",
         "type": "address"
       }
     ],
@@ -657,22 +668,9 @@
             "type": "uint96"
           }
         ],
-        "internalType": "struct IPCTDelegateStorageV1.Receipt",
+        "internalType": "struct PACTDelegateStorageV1.Receipt",
         "name": "",
         "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "implementation",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -682,37 +680,37 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "timelock_",
+        "name": "_timelock",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "token_",
+        "name": "_token",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "releaseToken_",
+        "name": "_releaseToken",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "votingPeriod_",
+        "name": "_votingPeriod",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "votingDelay_",
+        "name": "_votingDelay",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "proposalThreshold_",
+        "name": "_proposalThreshold",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "quorumVotes_",
+        "name": "_quorumVotes",
         "type": "uint256"
       }
     ],
@@ -742,7 +740,7 @@
   },
   {
     "inputs": [],
-    "name": "pendingAdmin",
+    "name": "owner",
     "outputs": [
       {
         "internalType": "address",
@@ -977,27 +975,27 @@
     "inputs": [
       {
         "internalType": "address[]",
-        "name": "targets",
+        "name": "_targets",
         "type": "address[]"
       },
       {
         "internalType": "uint256[]",
-        "name": "values",
+        "name": "_values",
         "type": "uint256[]"
       },
       {
         "internalType": "string[]",
-        "name": "signatures",
+        "name": "_signatures",
         "type": "string[]"
       },
       {
         "internalType": "bytes[]",
-        "name": "calldatas",
+        "name": "_calldatas",
         "type": "bytes[]"
       },
       {
         "internalType": "string",
-        "name": "description",
+        "name": "_description",
         "type": "string"
       }
     ],
@@ -1016,7 +1014,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "proposalId",
+        "name": "_proposalId",
         "type": "uint256"
       }
     ],
@@ -1052,17 +1050,24 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "proposalId",
+        "name": "_proposalId",
         "type": "uint256"
       }
     ],
     "name": "state",
     "outputs": [
       {
-        "internalType": "enum IPCTDelegateStorageV1.ProposalState",
+        "internalType": "enum PACTDelegateStorageV1.ProposalState",
         "name": "",
         "type": "uint8"
       }
@@ -1094,6 +1099,42 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "_token",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "transfer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

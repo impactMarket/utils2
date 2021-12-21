@@ -44,6 +44,7 @@ export interface CommunityInterface extends utils.Interface {
     "impactMarketAddress()": FunctionFragment;
     "incrementInterval()": FunctionFragment;
     "initialize(address[],uint256,uint256,uint256,uint256,uint256,uint256,uint256,address)": FunctionFragment;
+    "lastFundRequest()": FunctionFragment;
     "lastInterval(address)": FunctionFragment;
     "lock()": FunctionFragment;
     "lockBeneficiary(address)": FunctionFragment;
@@ -173,6 +174,10 @@ export interface CommunityInterface extends utils.Interface {
       BigNumberish,
       string
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lastFundRequest",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "lastInterval",
@@ -350,6 +355,10 @@ export interface CommunityInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "lastFundRequest",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "lastInterval",
     data: BytesLike
@@ -689,17 +698,17 @@ export interface Community extends BaseContract {
     _firstBlockTimestamp(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     addBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     addManager(
-      account_: string,
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     addTreasuryFunds(
-      amount_: BigNumberish,
+      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -737,7 +746,7 @@ export interface Community extends BaseContract {
     claimAmount(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     claimCooldown(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -746,8 +755,8 @@ export interface Community extends BaseContract {
     decreaseStep(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     donate(
-      sender_: string,
-      amount_: BigNumberish,
+      _sender: string,
+      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -758,10 +767,10 @@ export interface Community extends BaseContract {
     getVersion(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     grantRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
 
     hasRole(
       role: BytesLike,
@@ -774,20 +783,22 @@ export interface Community extends BaseContract {
     incrementInterval(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     initialize(
-      managers_: string[],
-      claimAmount_: BigNumberish,
-      maxClaim_: BigNumberish,
-      decreaseStep_: BigNumberish,
-      baseInterval_: BigNumberish,
-      incrementInterval_: BigNumberish,
-      minTranche_: BigNumberish,
-      maxTranche_: BigNumberish,
-      previousCommunity_: string,
+      _managers: string[],
+      _claimAmount: BigNumberish,
+      _maxClaim: BigNumberish,
+      _decreaseStep: BigNumberish,
+      _baseInterval: BigNumberish,
+      _incrementInterval: BigNumberish,
+      _minTranche: BigNumberish,
+      _maxTranche: BigNumberish,
+      _previousCommunity: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    lastFundRequest(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     lastInterval(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -796,7 +807,7 @@ export interface Community extends BaseContract {
     ): Promise<ContractTransaction>;
 
     lockBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -815,12 +826,12 @@ export interface Community extends BaseContract {
     privateFunds(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     removeBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     removeManager(
-      account_: string,
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -839,10 +850,10 @@ export interface Community extends BaseContract {
     ): Promise<ContractTransaction>;
 
     revokeRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -850,9 +861,9 @@ export interface Community extends BaseContract {
     ): Promise<[boolean]>;
 
     transfer(
-      token_: string,
-      to_: string,
-      amount_: BigNumberish,
+      _token: string,
+      _to: string,
+      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -868,32 +879,32 @@ export interface Community extends BaseContract {
     ): Promise<ContractTransaction>;
 
     unlockBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     updateBeneficiaryParams(
-      claimAmount_: BigNumberish,
-      maxClaim_: BigNumberish,
-      decreaseStep_: BigNumberish,
-      baseInterval_: BigNumberish,
-      incrementInterval_: BigNumberish,
+      _claimAmount: BigNumberish,
+      _maxClaim: BigNumberish,
+      _decreaseStep: BigNumberish,
+      _baseInterval: BigNumberish,
+      _incrementInterval: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     updateCommunityAdmin(
-      newCommunityAdmin_: string,
+      _newCommunityAdmin: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     updateCommunityParams(
-      minTranche_: BigNumberish,
-      maxTranche_: BigNumberish,
+      _minTranche: BigNumberish,
+      _maxTranche: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     updatePreviousCommunity(
-      newPreviousCommunity_: string,
+      _newPreviousCommunity: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -905,17 +916,17 @@ export interface Community extends BaseContract {
   _firstBlockTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
 
   addBeneficiary(
-    beneficiaryAddress_: string,
+    _beneficiaryAddress: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   addManager(
-    account_: string,
+    _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   addTreasuryFunds(
-    amount_: BigNumberish,
+    _amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -953,7 +964,7 @@ export interface Community extends BaseContract {
   claimAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
   claimCooldown(
-    beneficiaryAddress_: string,
+    _beneficiaryAddress: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -962,8 +973,8 @@ export interface Community extends BaseContract {
   decreaseStep(overrides?: CallOverrides): Promise<BigNumber>;
 
   donate(
-    sender_: string,
-    amount_: BigNumberish,
+    _sender: string,
+    _amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -974,10 +985,10 @@ export interface Community extends BaseContract {
   getVersion(overrides?: CallOverrides): Promise<BigNumber>;
 
   grantRole(
-    role: BytesLike,
-    account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+    arg0: BytesLike,
+    arg1: string,
+    overrides?: CallOverrides
+  ): Promise<void>;
 
   hasRole(
     role: BytesLike,
@@ -990,20 +1001,22 @@ export interface Community extends BaseContract {
   incrementInterval(overrides?: CallOverrides): Promise<BigNumber>;
 
   initialize(
-    managers_: string[],
-    claimAmount_: BigNumberish,
-    maxClaim_: BigNumberish,
-    decreaseStep_: BigNumberish,
-    baseInterval_: BigNumberish,
-    incrementInterval_: BigNumberish,
-    minTranche_: BigNumberish,
-    maxTranche_: BigNumberish,
-    previousCommunity_: string,
+    _managers: string[],
+    _claimAmount: BigNumberish,
+    _maxClaim: BigNumberish,
+    _decreaseStep: BigNumberish,
+    _baseInterval: BigNumberish,
+    _incrementInterval: BigNumberish,
+    _minTranche: BigNumberish,
+    _maxTranche: BigNumberish,
+    _previousCommunity: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  lastFundRequest(overrides?: CallOverrides): Promise<BigNumber>;
+
   lastInterval(
-    beneficiaryAddress_: string,
+    _beneficiaryAddress: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -1012,7 +1025,7 @@ export interface Community extends BaseContract {
   ): Promise<ContractTransaction>;
 
   lockBeneficiary(
-    beneficiaryAddress_: string,
+    _beneficiaryAddress: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1031,12 +1044,12 @@ export interface Community extends BaseContract {
   privateFunds(overrides?: CallOverrides): Promise<BigNumber>;
 
   removeBeneficiary(
-    beneficiaryAddress_: string,
+    _beneficiaryAddress: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   removeManager(
-    account_: string,
+    _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1055,10 +1068,10 @@ export interface Community extends BaseContract {
   ): Promise<ContractTransaction>;
 
   revokeRole(
-    role: BytesLike,
-    account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+    arg0: BytesLike,
+    arg1: string,
+    overrides?: CallOverrides
+  ): Promise<void>;
 
   supportsInterface(
     interfaceId: BytesLike,
@@ -1066,9 +1079,9 @@ export interface Community extends BaseContract {
   ): Promise<boolean>;
 
   transfer(
-    token_: string,
-    to_: string,
-    amount_: BigNumberish,
+    _token: string,
+    _to: string,
+    _amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1084,32 +1097,32 @@ export interface Community extends BaseContract {
   ): Promise<ContractTransaction>;
 
   unlockBeneficiary(
-    beneficiaryAddress_: string,
+    _beneficiaryAddress: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   updateBeneficiaryParams(
-    claimAmount_: BigNumberish,
-    maxClaim_: BigNumberish,
-    decreaseStep_: BigNumberish,
-    baseInterval_: BigNumberish,
-    incrementInterval_: BigNumberish,
+    _claimAmount: BigNumberish,
+    _maxClaim: BigNumberish,
+    _decreaseStep: BigNumberish,
+    _baseInterval: BigNumberish,
+    _incrementInterval: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   updateCommunityAdmin(
-    newCommunityAdmin_: string,
+    _newCommunityAdmin: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   updateCommunityParams(
-    minTranche_: BigNumberish,
-    maxTranche_: BigNumberish,
+    _minTranche: BigNumberish,
+    _maxTranche: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   updatePreviousCommunity(
-    newPreviousCommunity_: string,
+    _newPreviousCommunity: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1121,14 +1134,14 @@ export interface Community extends BaseContract {
     _firstBlockTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
 
     addBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    addManager(account_: string, overrides?: CallOverrides): Promise<void>;
+    addManager(_account: string, overrides?: CallOverrides): Promise<void>;
 
     addTreasuryFunds(
-      amount_: BigNumberish,
+      _amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1162,7 +1175,7 @@ export interface Community extends BaseContract {
     claimAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
     claimCooldown(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1171,8 +1184,8 @@ export interface Community extends BaseContract {
     decreaseStep(overrides?: CallOverrides): Promise<BigNumber>;
 
     donate(
-      sender_: string,
-      amount_: BigNumberish,
+      _sender: string,
+      _amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1183,8 +1196,8 @@ export interface Community extends BaseContract {
     getVersion(overrides?: CallOverrides): Promise<BigNumber>;
 
     grantRole(
-      role: BytesLike,
-      account: string,
+      arg0: BytesLike,
+      arg1: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1199,27 +1212,29 @@ export interface Community extends BaseContract {
     incrementInterval(overrides?: CallOverrides): Promise<BigNumber>;
 
     initialize(
-      managers_: string[],
-      claimAmount_: BigNumberish,
-      maxClaim_: BigNumberish,
-      decreaseStep_: BigNumberish,
-      baseInterval_: BigNumberish,
-      incrementInterval_: BigNumberish,
-      minTranche_: BigNumberish,
-      maxTranche_: BigNumberish,
-      previousCommunity_: string,
+      _managers: string[],
+      _claimAmount: BigNumberish,
+      _maxClaim: BigNumberish,
+      _decreaseStep: BigNumberish,
+      _baseInterval: BigNumberish,
+      _incrementInterval: BigNumberish,
+      _minTranche: BigNumberish,
+      _maxTranche: BigNumberish,
+      _previousCommunity: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    lastFundRequest(overrides?: CallOverrides): Promise<BigNumber>;
+
     lastInterval(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     lock(overrides?: CallOverrides): Promise<void>;
 
     lockBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1238,11 +1253,11 @@ export interface Community extends BaseContract {
     privateFunds(overrides?: CallOverrides): Promise<BigNumber>;
 
     removeBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    removeManager(account_: string, overrides?: CallOverrides): Promise<void>;
+    removeManager(_account: string, overrides?: CallOverrides): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -1255,8 +1270,8 @@ export interface Community extends BaseContract {
     requestFunds(overrides?: CallOverrides): Promise<void>;
 
     revokeRole(
-      role: BytesLike,
-      account: string,
+      arg0: BytesLike,
+      arg1: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1266,9 +1281,9 @@ export interface Community extends BaseContract {
     ): Promise<boolean>;
 
     transfer(
-      token_: string,
-      to_: string,
-      amount_: BigNumberish,
+      _token: string,
+      _to: string,
+      _amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1282,32 +1297,32 @@ export interface Community extends BaseContract {
     unlock(overrides?: CallOverrides): Promise<void>;
 
     unlockBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     updateBeneficiaryParams(
-      claimAmount_: BigNumberish,
-      maxClaim_: BigNumberish,
-      decreaseStep_: BigNumberish,
-      baseInterval_: BigNumberish,
-      incrementInterval_: BigNumberish,
+      _claimAmount: BigNumberish,
+      _maxClaim: BigNumberish,
+      _decreaseStep: BigNumberish,
+      _baseInterval: BigNumberish,
+      _incrementInterval: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     updateCommunityAdmin(
-      newCommunityAdmin_: string,
+      _newCommunityAdmin: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     updateCommunityParams(
-      minTranche_: BigNumberish,
-      maxTranche_: BigNumberish,
+      _minTranche: BigNumberish,
+      _maxTranche: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     updatePreviousCommunity(
-      newPreviousCommunity_: string,
+      _newPreviousCommunity: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1522,17 +1537,17 @@ export interface Community extends BaseContract {
     _firstBlockTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
 
     addBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     addManager(
-      account_: string,
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     addTreasuryFunds(
-      amount_: BigNumberish,
+      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1560,7 +1575,7 @@ export interface Community extends BaseContract {
     claimAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
     claimCooldown(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1569,8 +1584,8 @@ export interface Community extends BaseContract {
     decreaseStep(overrides?: CallOverrides): Promise<BigNumber>;
 
     donate(
-      sender_: string,
-      amount_: BigNumberish,
+      _sender: string,
+      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1584,9 +1599,9 @@ export interface Community extends BaseContract {
     getVersion(overrides?: CallOverrides): Promise<BigNumber>;
 
     grantRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     hasRole(
@@ -1600,20 +1615,22 @@ export interface Community extends BaseContract {
     incrementInterval(overrides?: CallOverrides): Promise<BigNumber>;
 
     initialize(
-      managers_: string[],
-      claimAmount_: BigNumberish,
-      maxClaim_: BigNumberish,
-      decreaseStep_: BigNumberish,
-      baseInterval_: BigNumberish,
-      incrementInterval_: BigNumberish,
-      minTranche_: BigNumberish,
-      maxTranche_: BigNumberish,
-      previousCommunity_: string,
+      _managers: string[],
+      _claimAmount: BigNumberish,
+      _maxClaim: BigNumberish,
+      _decreaseStep: BigNumberish,
+      _baseInterval: BigNumberish,
+      _incrementInterval: BigNumberish,
+      _minTranche: BigNumberish,
+      _maxTranche: BigNumberish,
+      _previousCommunity: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    lastFundRequest(overrides?: CallOverrides): Promise<BigNumber>;
+
     lastInterval(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1622,7 +1639,7 @@ export interface Community extends BaseContract {
     ): Promise<BigNumber>;
 
     lockBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1641,12 +1658,12 @@ export interface Community extends BaseContract {
     privateFunds(overrides?: CallOverrides): Promise<BigNumber>;
 
     removeBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     removeManager(
-      account_: string,
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1665,9 +1682,9 @@ export interface Community extends BaseContract {
     ): Promise<BigNumber>;
 
     revokeRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     supportsInterface(
@@ -1676,9 +1693,9 @@ export interface Community extends BaseContract {
     ): Promise<BigNumber>;
 
     transfer(
-      token_: string,
-      to_: string,
-      amount_: BigNumberish,
+      _token: string,
+      _to: string,
+      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1694,32 +1711,32 @@ export interface Community extends BaseContract {
     ): Promise<BigNumber>;
 
     unlockBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     updateBeneficiaryParams(
-      claimAmount_: BigNumberish,
-      maxClaim_: BigNumberish,
-      decreaseStep_: BigNumberish,
-      baseInterval_: BigNumberish,
-      incrementInterval_: BigNumberish,
+      _claimAmount: BigNumberish,
+      _maxClaim: BigNumberish,
+      _decreaseStep: BigNumberish,
+      _baseInterval: BigNumberish,
+      _incrementInterval: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     updateCommunityAdmin(
-      newCommunityAdmin_: string,
+      _newCommunityAdmin: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     updateCommunityParams(
-      minTranche_: BigNumberish,
-      maxTranche_: BigNumberish,
+      _minTranche: BigNumberish,
+      _maxTranche: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     updatePreviousCommunity(
-      newPreviousCommunity_: string,
+      _newPreviousCommunity: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1736,17 +1753,17 @@ export interface Community extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     addBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     addManager(
-      account_: string,
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     addTreasuryFunds(
-      amount_: BigNumberish,
+      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1779,7 +1796,7 @@ export interface Community extends BaseContract {
     claimAmount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     claimCooldown(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1788,8 +1805,8 @@ export interface Community extends BaseContract {
     decreaseStep(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     donate(
-      sender_: string,
-      amount_: BigNumberish,
+      _sender: string,
+      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1805,9 +1822,9 @@ export interface Community extends BaseContract {
     getVersion(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     grantRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     hasRole(
@@ -1823,20 +1840,22 @@ export interface Community extends BaseContract {
     incrementInterval(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     initialize(
-      managers_: string[],
-      claimAmount_: BigNumberish,
-      maxClaim_: BigNumberish,
-      decreaseStep_: BigNumberish,
-      baseInterval_: BigNumberish,
-      incrementInterval_: BigNumberish,
-      minTranche_: BigNumberish,
-      maxTranche_: BigNumberish,
-      previousCommunity_: string,
+      _managers: string[],
+      _claimAmount: BigNumberish,
+      _maxClaim: BigNumberish,
+      _decreaseStep: BigNumberish,
+      _baseInterval: BigNumberish,
+      _incrementInterval: BigNumberish,
+      _minTranche: BigNumberish,
+      _maxTranche: BigNumberish,
+      _previousCommunity: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    lastFundRequest(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     lastInterval(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1845,7 +1864,7 @@ export interface Community extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     lockBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1864,12 +1883,12 @@ export interface Community extends BaseContract {
     privateFunds(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     removeBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     removeManager(
-      account_: string,
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1888,9 +1907,9 @@ export interface Community extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     revokeRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     supportsInterface(
@@ -1899,9 +1918,9 @@ export interface Community extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     transfer(
-      token_: string,
-      to_: string,
-      amount_: BigNumberish,
+      _token: string,
+      _to: string,
+      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1917,32 +1936,32 @@ export interface Community extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     unlockBeneficiary(
-      beneficiaryAddress_: string,
+      _beneficiaryAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     updateBeneficiaryParams(
-      claimAmount_: BigNumberish,
-      maxClaim_: BigNumberish,
-      decreaseStep_: BigNumberish,
-      baseInterval_: BigNumberish,
-      incrementInterval_: BigNumberish,
+      _claimAmount: BigNumberish,
+      _maxClaim: BigNumberish,
+      _decreaseStep: BigNumberish,
+      _baseInterval: BigNumberish,
+      _incrementInterval: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     updateCommunityAdmin(
-      newCommunityAdmin_: string,
+      _newCommunityAdmin: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     updateCommunityParams(
-      minTranche_: BigNumberish,
-      maxTranche_: BigNumberish,
+      _minTranche: BigNumberish,
+      _maxTranche: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     updatePreviousCommunity(
-      newPreviousCommunity_: string,
+      _newPreviousCommunity: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
