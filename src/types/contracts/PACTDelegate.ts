@@ -30,7 +30,7 @@ export type ReceiptStructOutput = [boolean, number, BigNumber] & {
   votes: BigNumber;
 };
 
-export interface IPCTDelegateInterface extends utils.Interface {
+export interface PACTDelegateInterface extends utils.Interface {
   functions: {
     "BALLOT_TYPEHASH()": FunctionFragment;
     "DOMAIN_TYPEHASH()": FunctionFragment;
@@ -533,12 +533,12 @@ export type VotingPeriodSetEvent = TypedEvent<
 
 export type VotingPeriodSetEventFilter = TypedEventFilter<VotingPeriodSetEvent>;
 
-export interface IPCTDelegate extends BaseContract {
+export interface PACTDelegate extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: IPCTDelegateInterface;
+  interface: PACTDelegateInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -581,59 +581,59 @@ export interface IPCTDelegate extends BaseContract {
     PROPOSAL_MAX_OPERATIONS(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     _setProposalThreshold(
-      newProposalThreshold: BigNumberish,
+      _newProposalThreshold: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     _setQuorumVotes(
-      newQuorumVotes: BigNumberish,
+      _newQuorumVotes: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     _setVotingDelay(
-      newVotingDelay: BigNumberish,
+      _newVotingDelay: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     _setVotingPeriod(
-      newVotingPeriod: BigNumberish,
+      _newVotingPeriod: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     cancel(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     castVote(
-      proposalId: BigNumberish,
-      support: BigNumberish,
+      _proposalId: BigNumberish,
+      _support: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     castVoteBySig(
-      proposalId: BigNumberish,
-      support: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
+      _proposalId: BigNumberish,
+      _support: BigNumberish,
+      _v: BigNumberish,
+      _r: BytesLike,
+      _s: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     castVoteWithReason(
-      proposalId: BigNumberish,
-      support: BigNumberish,
-      reason: string,
+      _proposalId: BigNumberish,
+      _support: BigNumberish,
+      _reason: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     execute(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     getActions(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [string[], BigNumber[], string[], string[]] & {
@@ -645,19 +645,19 @@ export interface IPCTDelegate extends BaseContract {
     >;
 
     getReceipt(
-      proposalId: BigNumberish,
-      voter: string,
+      _proposalId: BigNumberish,
+      _voter: string,
       overrides?: CallOverrides
     ): Promise<[ReceiptStructOutput]>;
 
     initialize(
-      timelock_: string,
-      token_: string,
-      releaseToken_: string,
-      votingPeriod_: BigNumberish,
-      votingDelay_: BigNumberish,
-      proposalThreshold_: BigNumberish,
-      quorumVotes_: BigNumberish,
+      _timelock: string,
+      _token: string,
+      _releaseToken: string,
+      _votingPeriod: BigNumberish,
+      _votingDelay: BigNumberish,
+      _proposalThreshold: BigNumberish,
+      _quorumVotes: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -738,16 +738,16 @@ export interface IPCTDelegate extends BaseContract {
     >;
 
     propose(
-      targets: string[],
-      values: BigNumberish[],
-      signatures: string[],
-      calldatas: BytesLike[],
-      description: string,
+      _targets: string[],
+      _values: BigNumberish[],
+      _signatures: string[],
+      _calldatas: BytesLike[],
+      _description: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     queue(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -760,7 +760,7 @@ export interface IPCTDelegate extends BaseContract {
     ): Promise<ContractTransaction>;
 
     state(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[number]>;
 
@@ -769,9 +769,9 @@ export interface IPCTDelegate extends BaseContract {
     token(overrides?: CallOverrides): Promise<[string]>;
 
     transfer(
-      token_: string,
-      to_: string,
-      amount_: BigNumberish,
+      _token: string,
+      _to: string,
+      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -806,59 +806,59 @@ export interface IPCTDelegate extends BaseContract {
   PROPOSAL_MAX_OPERATIONS(overrides?: CallOverrides): Promise<BigNumber>;
 
   _setProposalThreshold(
-    newProposalThreshold: BigNumberish,
+    _newProposalThreshold: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   _setQuorumVotes(
-    newQuorumVotes: BigNumberish,
+    _newQuorumVotes: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   _setVotingDelay(
-    newVotingDelay: BigNumberish,
+    _newVotingDelay: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   _setVotingPeriod(
-    newVotingPeriod: BigNumberish,
+    _newVotingPeriod: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   cancel(
-    proposalId: BigNumberish,
+    _proposalId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   castVote(
-    proposalId: BigNumberish,
-    support: BigNumberish,
+    _proposalId: BigNumberish,
+    _support: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   castVoteBySig(
-    proposalId: BigNumberish,
-    support: BigNumberish,
-    v: BigNumberish,
-    r: BytesLike,
-    s: BytesLike,
+    _proposalId: BigNumberish,
+    _support: BigNumberish,
+    _v: BigNumberish,
+    _r: BytesLike,
+    _s: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   castVoteWithReason(
-    proposalId: BigNumberish,
-    support: BigNumberish,
-    reason: string,
+    _proposalId: BigNumberish,
+    _support: BigNumberish,
+    _reason: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   execute(
-    proposalId: BigNumberish,
+    _proposalId: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   getActions(
-    proposalId: BigNumberish,
+    _proposalId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
     [string[], BigNumber[], string[], string[]] & {
@@ -870,19 +870,19 @@ export interface IPCTDelegate extends BaseContract {
   >;
 
   getReceipt(
-    proposalId: BigNumberish,
-    voter: string,
+    _proposalId: BigNumberish,
+    _voter: string,
     overrides?: CallOverrides
   ): Promise<ReceiptStructOutput>;
 
   initialize(
-    timelock_: string,
-    token_: string,
-    releaseToken_: string,
-    votingPeriod_: BigNumberish,
-    votingDelay_: BigNumberish,
-    proposalThreshold_: BigNumberish,
-    quorumVotes_: BigNumberish,
+    _timelock: string,
+    _token: string,
+    _releaseToken: string,
+    _votingPeriod: BigNumberish,
+    _votingDelay: BigNumberish,
+    _proposalThreshold: BigNumberish,
+    _quorumVotes: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -963,16 +963,16 @@ export interface IPCTDelegate extends BaseContract {
   >;
 
   propose(
-    targets: string[],
-    values: BigNumberish[],
-    signatures: string[],
-    calldatas: BytesLike[],
-    description: string,
+    _targets: string[],
+    _values: BigNumberish[],
+    _signatures: string[],
+    _calldatas: BytesLike[],
+    _description: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   queue(
-    proposalId: BigNumberish,
+    _proposalId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -984,16 +984,16 @@ export interface IPCTDelegate extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  state(proposalId: BigNumberish, overrides?: CallOverrides): Promise<number>;
+  state(_proposalId: BigNumberish, overrides?: CallOverrides): Promise<number>;
 
   timelock(overrides?: CallOverrides): Promise<string>;
 
   token(overrides?: CallOverrides): Promise<string>;
 
   transfer(
-    token_: string,
-    to_: string,
-    amount_: BigNumberish,
+    _token: string,
+    _to: string,
+    _amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1028,53 +1028,56 @@ export interface IPCTDelegate extends BaseContract {
     PROPOSAL_MAX_OPERATIONS(overrides?: CallOverrides): Promise<BigNumber>;
 
     _setProposalThreshold(
-      newProposalThreshold: BigNumberish,
+      _newProposalThreshold: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     _setQuorumVotes(
-      newQuorumVotes: BigNumberish,
+      _newQuorumVotes: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     _setVotingDelay(
-      newVotingDelay: BigNumberish,
+      _newVotingDelay: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     _setVotingPeriod(
-      newVotingPeriod: BigNumberish,
+      _newVotingPeriod: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    cancel(proposalId: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    cancel(_proposalId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     castVote(
-      proposalId: BigNumberish,
-      support: BigNumberish,
+      _proposalId: BigNumberish,
+      _support: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     castVoteBySig(
-      proposalId: BigNumberish,
-      support: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
+      _proposalId: BigNumberish,
+      _support: BigNumberish,
+      _v: BigNumberish,
+      _r: BytesLike,
+      _s: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
     castVoteWithReason(
-      proposalId: BigNumberish,
-      support: BigNumberish,
-      reason: string,
+      _proposalId: BigNumberish,
+      _support: BigNumberish,
+      _reason: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    execute(proposalId: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    execute(
+      _proposalId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     getActions(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [string[], BigNumber[], string[], string[]] & {
@@ -1086,19 +1089,19 @@ export interface IPCTDelegate extends BaseContract {
     >;
 
     getReceipt(
-      proposalId: BigNumberish,
-      voter: string,
+      _proposalId: BigNumberish,
+      _voter: string,
       overrides?: CallOverrides
     ): Promise<ReceiptStructOutput>;
 
     initialize(
-      timelock_: string,
-      token_: string,
-      releaseToken_: string,
-      votingPeriod_: BigNumberish,
-      votingDelay_: BigNumberish,
-      proposalThreshold_: BigNumberish,
-      quorumVotes_: BigNumberish,
+      _timelock: string,
+      _token: string,
+      _releaseToken: string,
+      _votingPeriod: BigNumberish,
+      _votingDelay: BigNumberish,
+      _proposalThreshold: BigNumberish,
+      _quorumVotes: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1179,15 +1182,15 @@ export interface IPCTDelegate extends BaseContract {
     >;
 
     propose(
-      targets: string[],
-      values: BigNumberish[],
-      signatures: string[],
-      calldatas: BytesLike[],
-      description: string,
+      _targets: string[],
+      _values: BigNumberish[],
+      _signatures: string[],
+      _calldatas: BytesLike[],
+      _description: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    queue(proposalId: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    queue(_proposalId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     quorumVotes(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1195,16 +1198,19 @@ export interface IPCTDelegate extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    state(proposalId: BigNumberish, overrides?: CallOverrides): Promise<number>;
+    state(
+      _proposalId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<number>;
 
     timelock(overrides?: CallOverrides): Promise<string>;
 
     token(overrides?: CallOverrides): Promise<string>;
 
     transfer(
-      token_: string,
-      to_: string,
-      amount_: BigNumberish,
+      _token: string,
+      _to: string,
+      _amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1372,76 +1378,76 @@ export interface IPCTDelegate extends BaseContract {
     PROPOSAL_MAX_OPERATIONS(overrides?: CallOverrides): Promise<BigNumber>;
 
     _setProposalThreshold(
-      newProposalThreshold: BigNumberish,
+      _newProposalThreshold: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     _setQuorumVotes(
-      newQuorumVotes: BigNumberish,
+      _newQuorumVotes: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     _setVotingDelay(
-      newVotingDelay: BigNumberish,
+      _newVotingDelay: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     _setVotingPeriod(
-      newVotingPeriod: BigNumberish,
+      _newVotingPeriod: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     cancel(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     castVote(
-      proposalId: BigNumberish,
-      support: BigNumberish,
+      _proposalId: BigNumberish,
+      _support: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     castVoteBySig(
-      proposalId: BigNumberish,
-      support: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
+      _proposalId: BigNumberish,
+      _support: BigNumberish,
+      _v: BigNumberish,
+      _r: BytesLike,
+      _s: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     castVoteWithReason(
-      proposalId: BigNumberish,
-      support: BigNumberish,
-      reason: string,
+      _proposalId: BigNumberish,
+      _support: BigNumberish,
+      _reason: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     execute(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     getActions(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getReceipt(
-      proposalId: BigNumberish,
-      voter: string,
+      _proposalId: BigNumberish,
+      _voter: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     initialize(
-      timelock_: string,
-      token_: string,
-      releaseToken_: string,
-      votingPeriod_: BigNumberish,
-      votingDelay_: BigNumberish,
-      proposalThreshold_: BigNumberish,
-      quorumVotes_: BigNumberish,
+      _timelock: string,
+      _token: string,
+      _releaseToken: string,
+      _votingPeriod: BigNumberish,
+      _votingDelay: BigNumberish,
+      _proposalThreshold: BigNumberish,
+      _quorumVotes: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1492,16 +1498,16 @@ export interface IPCTDelegate extends BaseContract {
     ): Promise<BigNumber>;
 
     propose(
-      targets: string[],
-      values: BigNumberish[],
-      signatures: string[],
-      calldatas: BytesLike[],
-      description: string,
+      _targets: string[],
+      _values: BigNumberish[],
+      _signatures: string[],
+      _calldatas: BytesLike[],
+      _description: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     queue(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1514,7 +1520,7 @@ export interface IPCTDelegate extends BaseContract {
     ): Promise<BigNumber>;
 
     state(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1523,9 +1529,9 @@ export interface IPCTDelegate extends BaseContract {
     token(overrides?: CallOverrides): Promise<BigNumber>;
 
     transfer(
-      token_: string,
-      to_: string,
-      amount_: BigNumberish,
+      _token: string,
+      _to: string,
+      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1567,76 +1573,76 @@ export interface IPCTDelegate extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     _setProposalThreshold(
-      newProposalThreshold: BigNumberish,
+      _newProposalThreshold: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     _setQuorumVotes(
-      newQuorumVotes: BigNumberish,
+      _newQuorumVotes: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     _setVotingDelay(
-      newVotingDelay: BigNumberish,
+      _newVotingDelay: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     _setVotingPeriod(
-      newVotingPeriod: BigNumberish,
+      _newVotingPeriod: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     cancel(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     castVote(
-      proposalId: BigNumberish,
-      support: BigNumberish,
+      _proposalId: BigNumberish,
+      _support: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     castVoteBySig(
-      proposalId: BigNumberish,
-      support: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
+      _proposalId: BigNumberish,
+      _support: BigNumberish,
+      _v: BigNumberish,
+      _r: BytesLike,
+      _s: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     castVoteWithReason(
-      proposalId: BigNumberish,
-      support: BigNumberish,
-      reason: string,
+      _proposalId: BigNumberish,
+      _support: BigNumberish,
+      _reason: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     execute(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     getActions(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getReceipt(
-      proposalId: BigNumberish,
-      voter: string,
+      _proposalId: BigNumberish,
+      _voter: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     initialize(
-      timelock_: string,
-      token_: string,
-      releaseToken_: string,
-      votingPeriod_: BigNumberish,
-      votingDelay_: BigNumberish,
-      proposalThreshold_: BigNumberish,
-      quorumVotes_: BigNumberish,
+      _timelock: string,
+      _token: string,
+      _releaseToken: string,
+      _votingPeriod: BigNumberish,
+      _votingDelay: BigNumberish,
+      _proposalThreshold: BigNumberish,
+      _quorumVotes: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1687,16 +1693,16 @@ export interface IPCTDelegate extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     propose(
-      targets: string[],
-      values: BigNumberish[],
-      signatures: string[],
-      calldatas: BytesLike[],
-      description: string,
+      _targets: string[],
+      _values: BigNumberish[],
+      _signatures: string[],
+      _calldatas: BytesLike[],
+      _description: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     queue(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1709,7 +1715,7 @@ export interface IPCTDelegate extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     state(
-      proposalId: BigNumberish,
+      _proposalId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1718,9 +1724,9 @@ export interface IPCTDelegate extends BaseContract {
     token(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transfer(
-      token_: string,
-      to_: string,
-      amount_: BigNumberish,
+      _token: string,
+      _to: string,
+      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
