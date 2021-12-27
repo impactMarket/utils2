@@ -21,7 +21,7 @@ export const useDonationMiner = (): DonationMinerType => {
 
     const approve = async (value: string | number) => {
         try {
-            const amount = toToken(value);
+            const amount = toToken(value, { EXPONENTIAL_AT: 29 });
             const allowance = balance?.cusdAllowance || 0;
 
             if (
