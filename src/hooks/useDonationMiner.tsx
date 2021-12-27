@@ -52,7 +52,7 @@ export const useDonationMiner = (): DonationMinerType => {
 
     const donateToTreasury = async (value: string | number) => {
         try {
-            const amount = toToken(value);
+            const amount = toToken(value, { EXPONENTIAL_AT: 29 });
             const tx = await donationMiner?.donate(amount);
             const response = await tx.wait();
 
@@ -73,7 +73,7 @@ export const useDonationMiner = (): DonationMinerType => {
         value: string | number
     ) => {
         try {
-            const amount = toToken(value);
+            const amount = toToken(value, { EXPONENTIAL_AT: 29 });
             const tx = await donationMiner?.donateToCommunity(
                 community,
                 amount
