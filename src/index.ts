@@ -1,9 +1,10 @@
 export * from './components/ImpactMarketProvider';
 
 export * from './utils/wallets';
+export * from './utils/pact';
+export * from './utils/community';
 
 export * from './hooks/useBalance';
-export * from './hooks/useContracts';
 export * from './hooks/useDAO';
 export * from './hooks/useDonationMiner';
 export * from './hooks/useEpoch';
