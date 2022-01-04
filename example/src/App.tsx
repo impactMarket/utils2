@@ -8,12 +8,14 @@ import { ContractKitProvider, Alfajores, useContractKit, useConnectedSigner } fr
 import { ImpactMarketProvider } from '@impact-market/utils';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import PACTMetrics from './components/PACTMetrics';
+import Subgraph from './components/Subgraph';
 
 const components = [
     { label: 'Get wallets balance', component: WalletsBalance },
     { label: 'DAO Breakdown', component: DaoBreakdown },
     { label: 'DAO Hooks', component: DaoHooks },
     { label: 'PACT Metrics', component: PACTMetrics },
+    { label: 'Subgraph', component: Subgraph },
 ]
 
 const options = components.map(({ label }) => label);

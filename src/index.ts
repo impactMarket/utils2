@@ -3,6 +3,7 @@ export * from './components/ImpactMarketProvider';
 export * from './utils/wallets';
 export * from './utils/pact';
 export * from './utils/community';
+export * from './utils/subgraph';
 
 export * from './hooks/useBalance';
 export * from './hooks/useDAO';
