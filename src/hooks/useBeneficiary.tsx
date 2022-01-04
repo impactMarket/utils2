@@ -14,9 +14,6 @@ export const useBeneficiary = (communityAddress: string) => {
         claimedAmount: BigNumber.from(0),
         lastClaim: BigNumber.from(0)
     });
-    /**
-     * Use with `refreshClaimCooldown`
-     */
     const [claimCooldown, setClaimCooldown] = useState(new Date());
     const [contract, setContract] = useState<(Contract & Community) | null>(
         null
@@ -35,13 +32,6 @@ export const useBeneficiary = (communityAddress: string) => {
             claimedAmount,
             lastClaim
         });
-        localStorage.setItem(
-            `@beneficiary/claim-${communityAddress}`,
-            JSON.stringify({
-                claimedAmount: claimedAmount.toString(),
-                lastClaim: lastClaim.toString()
-            })
-        );
     };
 
     /**
@@ -68,38 +58,27 @@ export const useBeneficiary = (communityAddress: string) => {
     };
 
     useEffect(() => {
-        if (address) {
-            // Refresh beneficiary time for next claim
-            const _contract = communityContract(communityAddress);
-            setContract(_contract);
-            const refreshClaimCooldown = async (
-                _contract: Contract & Community
-            ) => {
-                const _cooldown = await _contract.claimCooldown(address);
-                const estimate = async () =>
-                    estimateBlockTime(
-                        await provider.getBlockNumber(),
-                        _cooldown.toNumber()
-                    );
-                refreshInterval = setInterval(async () => {
-                    setClaimCooldown(await estimate());
-                }, 10000);
+        // Refresh beneficiary time for next claim
+        const refreshClaimCooldown = async (
+            _address: string,
+            _contract: Contract & Community
+        ) => {
+            const _cooldown = await _contract.claimCooldown(_address);
+            const estimate = async () =>
+                estimateBlockTime(
+                    await provider.getBlockNumber(),
+                    _cooldown.toNumber()
+                );
+            refreshInterval = setInterval(async () => {
                 setClaimCooldown(await estimate());
-            };
-            refreshClaimCooldown(_contract);
-            //
-            const data = localStorage.getItem(
-                `@beneficiary/claim-${communityAddress}`
-            );
-            if (data) {
-                const parsed = JSON.parse(data);
-                setBeneficiary({
-                    claimedAmount: BigNumber.from(parsed.claimedAmount),
-                    lastClaim: BigNumber.from(parsed.lastClaim)
-                });
-            } else {
-                updateClaimData(_contract);
-            }
+            }, 10000);
+            setClaimCooldown(await estimate());
+        };
+        if (address) {
+            const contract_ = communityContract(communityAddress);
+            setContract(contract_);
+            refreshClaimCooldown(address, contract_);
+            updateClaimData(contract_);
         }
         return () => {
             clearInterval(refreshInterval);

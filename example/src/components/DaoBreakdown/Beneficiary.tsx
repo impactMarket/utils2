@@ -2,7 +2,7 @@ import React from 'react';
 import { useBeneficiary } from '@impact-market/utils';
 
 const Beneficiary = props => {
-    const { beneficiary, claimCooldown } = useBeneficiary('0xB137bfdB38A022a7B981d9f769DD133Fa0fB2E38') || {};
+    const { beneficiary, claimCooldown } = useBeneficiary('0x6dcf4B577309aF974216b46817e98833Ad27c0Ab') || {};
 
     return (
         <>
