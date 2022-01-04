@@ -1,6 +1,5 @@
 import React from 'react';
 import { useBalance } from './useBalance';
-import { useContracts } from './useContracts';
 import { useEpoch } from './useEpoch';
 import { useRewards } from './useRewards';
 import { toToken } from '../helpers/toToken';
@@ -13,11 +12,11 @@ type DonationMinerType = {
 };
 
 export const useDonationMiner = (): DonationMinerType => {
-    const { donationMiner, cusd } = useContracts();
     const { updateRewards } = useRewards();
     const { balance, updateBalance } = useBalance();
     const { updateEpoch } = useEpoch();
-    const { address } = React.useContext(ImpactMarketContext);
+    const { address, contracts } = React.useContext(ImpactMarketContext);
+    const { donationMiner, cusd } = contracts;
 
     const approve = async (value: string | number) => {
         try {

@@ -3,7 +3,6 @@ import {
     RewardsType
 } from '../components/ImpactMarketProvider';
 import { useBalance } from './useBalance';
-import { useContracts } from './useContracts';
 import React, { useEffect } from 'react';
 import { toNumber } from '../helpers/toNumber';
 
@@ -14,10 +13,10 @@ type UseRewardsType = {
 };
 
 export const useRewards = (): UseRewardsType => {
-    const { donationMiner } = useContracts();
     const { updateBalance } = useBalance();
-    const { rewards, setRewards, address } =
+    const { rewards, setRewards, address, contracts } =
         React.useContext(ImpactMarketContext);
+    const { donationMiner } = contracts;
 
     const getEstimatedClaimableRewards = async () => {
         if (!donationMiner?.provider || !address) {

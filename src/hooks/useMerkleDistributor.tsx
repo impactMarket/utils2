@@ -2,15 +2,15 @@ import { BigNumber } from 'bignumber.js';
 import React, { useEffect, useState } from 'react';
 import { toNumber } from '../helpers/toNumber';
 import { ImpactMarketContext } from '../components/ImpactMarketProvider';
-import { useContracts } from './useContracts';
 
 export const useMerkleDistributor = (treeAccount: {
     index: number;
     amount: string;
     proof: string[];
 }) => {
-    const { merkleDistributor: merkleDistributorContract } = useContracts();
-    const { address, signer } = React.useContext(ImpactMarketContext);
+    const { contracts, address, signer } =
+        React.useContext(ImpactMarketContext);
+    const { merkleDistributor: merkleDistributorContract } = contracts;
     const [hasClaim, setHasClaim] = useState(false);
     const [amountToClaim, setAmountToClaim] = useState(0);
 

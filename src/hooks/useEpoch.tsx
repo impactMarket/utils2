@@ -4,12 +4,11 @@ import {
     EpochType
 } from '../components/ImpactMarketProvider';
 import { toNumber } from '../helpers/toNumber';
-import { useContracts } from './useContracts';
 
 export const useEpoch = () => {
-    const { donationMiner: donationMinerContract } = useContracts();
-    const { epoch, setEpoch, address, provider } =
+    const { epoch, setEpoch, address, provider, contracts } =
         React.useContext(ImpactMarketContext);
+    const { donationMiner: donationMinerContract } = contracts;
 
     const updateEpoch = async () => {
         try {
