@@ -4,6 +4,9 @@ import { useBalance } from '@impact-market/utils';
 const Balance = () => {
     const { balance } = useBalance();
 
+    if (!balance) {
+        return null;
+    }
     return (
         <>
             <h3>Balance</h3>

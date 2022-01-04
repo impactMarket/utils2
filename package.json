@@ -28,11 +28,11 @@
         "version": "auto-changelog -p && git add CHANGELOG.md"
     },
     "peerDependencies": {
-        "@celo-tools/use-contractkit": "^1.3.0",
+        "@celo-tools/use-contractkit": "npm:@poofcash/use-contractkit@1.0.10",
         "react": "^16.0.0"
     },
     "devDependencies": {
-        "@celo-tools/use-contractkit": "^1.3.0",
+        "@celo-tools/use-contractkit": "npm:@poofcash/use-contractkit@1.0.10",
         "@testing-library/jest-dom": "^4.2.4",
         "@testing-library/react": "^9.5.0",
         "@testing-library/user-event": "^7.2.1",
@@ -78,5 +78,9 @@
         "axios": "^0.24.0",
         "bignumber.js": "^9.0.1",
         "ethers": "^5.5.1"
+    },
+    "resolutions": {
+        "@walletconnect/client": "1.2.0",
+        "@celo-tools/use-contractkit": "npm:@poofcash/use-contractkit@1.0.10"
     }
 }

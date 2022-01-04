@@ -3,7 +3,7 @@ import { defaultAbiCoder } from 'ethers/lib/utils';
 import { useContracts } from '../hooks/useContracts';
 
 type UseDAOType = {
-    addCommunity?: Function;
+    addCommunity: Function;
 };
 
 type CommunityArgs = {

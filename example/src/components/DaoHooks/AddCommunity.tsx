@@ -2,7 +2,7 @@ import { toNumber, frequencyToText, toToken, useDAO } from '@impact-market/utils
 import React, { useEffect, useState } from 'react';
 import { impactMarket } from '../../services/impactMarket';
 
-const Community = props => {
+const Community = (props: any) => {
     const { id, name, contract, requestByAddress } = props;
     const { addCommunity } = useDAO();
     const [isLoading, setIsLoading] = useState(false);

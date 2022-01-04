@@ -3,9 +3,9 @@ import { useDonationMiner } from '@impact-market/utils';
 
 const ApproveDonate = () => {
     const { approve, donateToTreasury } = useDonationMiner();
-    const [approvedAmount, setApprovedAmount] = useState(0);
+    const [approvedAmount, setApprovedAmount] = useState(false);
     const [donationIsLoading, setDonationIsLoading] = useState(false);
-    const [donationAmount, setDonationAmount] = useState(false);
+    const [donationAmount, setDonationAmount] = useState('');
 
     const approveDonation = async () => {
         setDonationIsLoading(true);

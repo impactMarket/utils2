@@ -7,9 +7,9 @@ import { toToken } from '../helpers/toToken';
 import { ImpactMarketContext } from '../components/ImpactMarketProvider';
 
 type DonationMinerType = {
-    approve?: Function;
-    donateToTreasury?: Function;
-    donateToCommunity?: Function;
+    approve: Function;
+    donateToTreasury: Function;
+    donateToCommunity: Function;
 };
 
 export const useDonationMiner = (): DonationMinerType => {

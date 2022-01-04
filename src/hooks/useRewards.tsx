@@ -8,7 +8,7 @@ import React, { useEffect } from 'react';
 import { toNumber } from '../helpers/toNumber';
 
 type UseRewardsType = {
-    claimRewards?: Function;
+    claimRewards: Function;
     rewards?: RewardsType;
     updateRewards: Function;
 };

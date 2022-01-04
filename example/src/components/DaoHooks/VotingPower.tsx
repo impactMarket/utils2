@@ -1,7 +1,7 @@
 import React from 'react';
 import { useVotingPower } from '@impact-market/utils';
 
-const VotingPower = props => {
+const VotingPower = () => {
     const { enoughVotingPowerToPropose } = useVotingPower()
     return (
         <div>
