@@ -7,16 +7,20 @@ import DaoHooks from './components/DaoHooks';
 import { ContractKitProvider, Alfajores, useContractKit, useConnectedSigner } from '@celo-tools/use-contractkit';
 import { ImpactMarketProvider } from '@impact-market/utils';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import PACTMetrics from './components/PACTMetrics';
+import Subgraph from './components/Subgraph';
 
 const components = [
     { label: 'Get wallets balance', component: WalletsBalance },
     { label: 'DAO Breakdown', component: DaoBreakdown },
     { label: 'DAO Hooks', component: DaoHooks },
+    { label: 'PACT Metrics', component: PACTMetrics },
+    { label: 'Subgraph', component: Subgraph },
 ]
 
 const options = components.map(({ label }) => label);
 
-const initialOption = options[1];
+const initialOption = options[3];
 
 const network = Alfajores;
 

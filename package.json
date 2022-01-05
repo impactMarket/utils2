@@ -3,8 +3,8 @@
     "version": "1.0.18",
     "description": "impactMarket utils",
     "repository": {
-      "type": "git",
-      "url": "git+https://github.com/impactMarket/utils.git"
+        "type": "git",
+        "url": "git+https://github.com/impactMarket/utils.git"
     },
     "author": "impact-market",
     "license": "Apache-2.0",
@@ -46,6 +46,7 @@
         "auto-changelog": "^2.3.0",
         "axios-mock-adapter": "^1.20.0",
         "babel-eslint": "^10.0.3",
+        "coveralls": "3.1.1",
         "cross-env": "^7.0.2",
         "eslint": "^6.8.0",
         "eslint-config-prettier": "^6.7.0",
@@ -64,20 +65,21 @@
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
         "react-scripts": "^3.4.1",
-        "typescript": "^3.7.5",
-        "coveralls": "3.1.1"
+        "typescript": "^3.7.5"
     },
     "files": [
         "dist"
     ],
     "dependencies": {
+        "@apollo/client": "^3.5.6",
         "@ethersproject/abi": "^5.5.0",
         "@ethersproject/abstract-signer": "^5.5.0",
         "@ethersproject/contracts": "^5.5.0",
         "@ethersproject/providers": "^5.5.1",
         "axios": "^0.24.0",
         "bignumber.js": "^9.0.1",
-        "ethers": "^5.5.1"
+        "ethers": "^5.5.1",
+        "graphql": "^16.2.0"
     },
     "resolutions": {
         "@walletconnect/client": "1.6.0",
