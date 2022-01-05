@@ -10,7 +10,7 @@
     "eject": "node ../node_modules/react-scripts/bin/react-scripts.js eject"
   },
   "dependencies": {
-    "@celo-tools/use-contractkit": "link:../node_modules/@celo-tools/use-contractkit",
+    "@celo-tools/use-contractkit": "npm:@poofcash/use-contractkit@1.0.10",
     "@impact-market/utils": "link:..",
     "@testing-library/jest-dom": "link:../node_modules/@testing-library/jest-dom",
     "@testing-library/react": "link:../node_modules/@testing-library/react",
@@ -26,6 +26,11 @@
   },
   "devDependencies": {
     "@babel/plugin-syntax-object-rest-spread": "^7.8.3"
+  },
+  "resolutions": {
+    "@walletconnect/client": "1.6.0",
+    "@walletconnect/types": "1.7.0",
+    "@celo-tools/use-contractkit": "npm:@poofcash/use-contractkit@1.0.10"
   },
   "eslintConfig": {
     "extends": "react-app"

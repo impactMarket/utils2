@@ -3,7 +3,7 @@ import { useMerkleDistributor } from '@impact-market/utils';
 import merkleTree from './merkleTree.json'
 
 const Balance = () => {
-    const { hasClaim, amountToClaim, claim } = useMerkleDistributor(merkleTree);
+    const { hasClaim, amountToClaim, claim } = useMerkleDistributor(merkleTree as any);
 
     return (
         <>

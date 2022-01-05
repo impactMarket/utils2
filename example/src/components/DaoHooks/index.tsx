@@ -3,7 +3,7 @@ import WalletConnection from '../WalletConnection';
 import AddCommunity from './AddCommunity';
 import VotingPower from './VotingPower';
 
-const DaoHooks = props => {
+const DaoHooks = () => {
     return (
         <WalletConnection title="DAO Hooks">
             <ul>

@@ -7,7 +7,7 @@ import EstimatedRewards from './EstimatedRewards';
 import WalletConnection from '../WalletConnection';
 import MerkleDistributor from './MerkleDistributor';
 
-const DaoBreakdown = props => {
+const DaoBreakdown = () => {
     return (
         <>
             <WalletConnection title="DAO Breakdown">

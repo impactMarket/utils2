@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEpoch } from '@impact-market/utils';
 
-const Epoch = props => {
+const Epoch = () => {
     const { epoch } = useEpoch() || {};
 
     return (
