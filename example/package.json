@@ -28,7 +28,8 @@
     "@babel/plugin-syntax-object-rest-spread": "^7.8.3"
   },
   "resolutions": {
-    "@walletconnect/client": "1.2.0",
+    "@walletconnect/client": "1.6.0",
+    "@walletconnect/types": "1.7.0",
     "@celo-tools/use-contractkit": "npm:@poofcash/use-contractkit@1.0.10"
   },
   "eslintConfig": {
