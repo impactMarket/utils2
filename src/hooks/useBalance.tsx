@@ -2,14 +2,13 @@ import {
     BalanceType,
     ImpactMarketContext
 } from '../components/ImpactMarketProvider';
-import { useContracts } from './useContracts';
 import React, { useEffect } from 'react';
 import { toNumber } from '../helpers/toNumber';
 
 export const useBalance = () => {
-    const { cusd, donationMiner, pact: pactContract } = useContracts();
-    const { balance, setBalance, address } =
+    const { balance, setBalance, address, contracts } =
         React.useContext(ImpactMarketContext);
+    const { cusd, donationMiner, pact: pactContract } = contracts;
 
     const updateBalance = async () => {
         if (

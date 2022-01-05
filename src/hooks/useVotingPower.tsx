@@ -1,13 +1,12 @@
-import { useContracts } from './useContracts';
 import React, { useEffect, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import { ImpactMarketContext } from '../components/ImpactMarketProvider';
 
 export const useVotingPower = () => {
-    const { pact: pactContract, delegate } = useContracts();
+    const { address, contracts } = React.useContext(ImpactMarketContext);
+    const { pact: pactContract, delegate } = contracts;
     const [enoughVotingPowerToPropose, setEnoughVotingPowerToPropose] =
         useState<boolean | undefined>(undefined);
-    const { address } = React.useContext(ImpactMarketContext);
 
     const updateVotingPower = async () => {
         if (
