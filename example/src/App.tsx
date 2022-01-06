@@ -9,11 +9,13 @@ import { ImpactMarketProvider } from '@impact-market/utils';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import PACTMetrics from './components/PACTMetrics';
 import Subgraph from './components/Subgraph';
+import Community from './components/Community';
 
 const components = [
     { label: 'Get wallets balance', component: WalletsBalance },
     { label: 'DAO Breakdown', component: DaoBreakdown },
     { label: 'DAO Hooks', component: DaoHooks },
+    { label: 'Community', component: Community },
     { label: 'PACT Metrics', component: PACTMetrics },
     { label: 'Subgraph', component: Subgraph },
 ]

@@ -5,13 +5,15 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { Community } from '../types/contracts/Community';
 import { Contract } from '@ethersproject/contracts';
 import { estimateBlockTime } from '../helpers/estimateBlockTime';
+import { toNumber } from '..';
 
 export const useBeneficiary = (communityAddress: string) => {
+    const [isReady, setIsReady] = useState(false);
     const [beneficiary, setBeneficiary] = useState<{
-        claimedAmount: BigNumber;
+        claimedAmount: number;
         lastClaim: BigNumber;
     }>({
-        claimedAmount: BigNumber.from(0),
+        claimedAmount: 0,
         lastClaim: BigNumber.from(0)
     });
     const [claimCooldown, setClaimCooldown] = useState(new Date());
@@ -29,9 +31,10 @@ export const useBeneficiary = (communityAddress: string) => {
             address
         );
         setBeneficiary({
-            claimedAmount,
+            claimedAmount: toNumber(claimedAmount),
             lastClaim
         });
+        setIsReady(true);
     };
 
     /**
@@ -74,16 +77,17 @@ export const useBeneficiary = (communityAddress: string) => {
             }, 10000);
             setClaimCooldown(await estimate());
         };
-        if (address) {
-            const contract_ = communityContract(communityAddress);
+        if (address && provider) {
+            const contract_ = communityContract(communityAddress, provider);
             setContract(contract_);
-            refreshClaimCooldown(address, contract_);
-            updateClaimData(contract_);
+            refreshClaimCooldown(address, contract_).then(() =>
+                updateClaimData(contract_)
+            );
         }
         return () => {
             clearInterval(refreshInterval);
         };
-    }, [address]);
+    }, []);
 
-    return { claim, beneficiary, claimCooldown };
+    return { claim, beneficiary, claimCooldown, isReady };
 };
