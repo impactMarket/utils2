@@ -4,6 +4,7 @@ import { ContractAddresses } from '../contracts';
 import { BaseProvider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import axios from 'axios';
 
 const client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/ubeswap/ubeswap',
@@ -44,7 +45,8 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
     priceUSD: string;
     dailyVolumeUSD: string;
     totalLiquidityUSD: string;
-    txCount: string;
+    tokenHolders: number;
+    transfers: number;
 }> {
     const { chainId } = await provider.getNetwork();
     const contractAddresses = ContractAddresses.get(chainId)!;
@@ -64,14 +66,15 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
                     dailyVolumeUSD
                     totalLiquidityUSD
                 }
-                token(id: "${PACTToken.toLowerCase()}") {
-                    txCount
-                }
             }
             `
     });
+    const counters = await axios.get(
+        `https://explorer.celo.org/token-counters?id=${PACTToken.toLowerCase()}`
+    );
     return {
         ...result.data.tokenDayDatas[0],
-        txCount: result.data.token.txCount
+        tokenHolders: counters.data.token_holder_count,
+        transfers: counters.data.transfer_count
     };
 }
