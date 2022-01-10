@@ -21,11 +21,11 @@ type CommunityArgs = {
 };
 
 export const useDAO = (): UseDAOType => {
-    const { provider } = React.useContext(ImpactMarketContext);
+    const { provider, signer } = React.useContext(ImpactMarketContext);
 
     const addCommunity = async (community: CommunityArgs) => {
         const { delegate, addresses } = await getContracts(provider);
-        if (!delegate || !addresses?.communityAdmin) {
+        if (!delegate || !addresses?.communityAdmin || !signer) {
             return;
         }
 
@@ -72,13 +72,15 @@ export const useDAO = (): UseDAOType => {
                 )
             ];
 
-            const tx = await delegate.propose(
-                targets,
-                values,
-                signatures,
-                calldatas,
-                proposalDescription
-            );
+            const tx = await delegate
+                .connect(signer)
+                .propose(
+                    targets,
+                    values,
+                    signatures,
+                    calldatas,
+                    proposalDescription
+                );
 
             const response = await tx.wait();
 
