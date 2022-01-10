@@ -9,8 +9,9 @@ const PACTMetrics = () => {
         priceUSD: string;
         dailyVolumeUSD: string;
         totalLiquidityUSD: string;
-        txCount: string;
-    }>({ priceUSD: '', dailyVolumeUSD: '', totalLiquidityUSD: '', txCount: '' });
+        tokenHolders: number;
+        transfers: number;
+    }>({ priceUSD: '', dailyVolumeUSD: '', totalLiquidityUSD: '', tokenHolders: 0, transfers: 0 });
 
     useEffect(() => {
         const loadPactPriceVolumeLiquidity = async () => {
@@ -33,7 +34,10 @@ const PACTMetrics = () => {
                     <div>totalLiquidityUSD {pactTradingMetrics.totalLiquidityUSD}</div>
                 </li>
                 <li style={{ marginTop: 16 }}>
-                    <div>txCount {pactTradingMetrics.txCount}</div>
+                    <div>tokenHolders {pactTradingMetrics.tokenHolders}</div>
+                </li>
+                <li style={{ marginTop: 16 }}>
+                    <div>transfers {pactTradingMetrics.transfers}</div>
                 </li>
             </ul>
         </WalletConnection>
