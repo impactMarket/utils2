@@ -1,9 +1,8 @@
 import React from 'react';
-import { useBalance } from './useBalance';
-import { useEpoch } from './useEpoch';
-import { useRewards } from './useRewards';
 import { toToken } from '../helpers/toToken';
 import { ImpactMarketContext } from '../components/ImpactMarketProvider';
+import { toNumber } from '../helpers/toNumber';
+import { getContracts } from '../utils/contracts';
 
 type DonationMinerType = {
     approve: Function;
@@ -12,34 +11,46 @@ type DonationMinerType = {
 };
 
 export const useDonationMiner = (): DonationMinerType => {
-    const { updateRewards } = useRewards();
-    const { balance, updateBalance } = useBalance();
-    const { updateEpoch } = useEpoch();
-    const { address, contracts } = React.useContext(ImpactMarketContext);
-    const { donationMiner, cusd } = contracts;
+    const {
+        address,
+        signer,
+        provider,
+        updateCUSDBalance,
+        updateRewards,
+        updateEpoch
+    } = React.useContext(ImpactMarketContext);
 
     const approve = async (value: string | number) => {
         try {
+            const { cusd, donationMiner } = await getContracts(provider);
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-            const allowance = balance?.cusdAllowance || 0;
-
             if (
-                !donationMiner?.address ||
                 !address ||
-                !amount ||
-                !cusd?.address
+                !signer ||
+                !donationMiner?.provider ||
+                !cusd?.provider ||
+                !amount
             ) {
                 return;
             }
+
+            const cUSDAllowance = await cusd.allowance(
+                address,
+                donationMiner.address
+            );
+            const cusdAllowance = toNumber(cUSDAllowance);
+            const allowance = cusdAllowance || 0;
 
             if (allowance >= Number(value)) {
                 return { status: true };
             }
 
-            const tx = await cusd.approve(donationMiner.address, amount);
+            const tx = await cusd
+                .connect(signer)
+                .approve(donationMiner.address, amount);
             const response = await tx.wait();
 
-            await updateBalance();
+            await updateCUSDBalance();
 
             return response;
         } catch (error) {
@@ -51,12 +62,16 @@ export const useDonationMiner = (): DonationMinerType => {
 
     const donateToTreasury = async (value: string | number) => {
         try {
+            if (!signer) {
+                return;
+            }
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-            const tx = await donationMiner?.donate(amount);
+            const { donationMiner } = await getContracts(provider);
+            const tx = await donationMiner.connect(signer).donate(amount);
             const response = await tx.wait();
 
             await Promise.all([
-                updateBalance(),
+                updateCUSDBalance(),
                 updateRewards(),
                 updateEpoch()
             ]);
@@ -72,15 +87,18 @@ export const useDonationMiner = (): DonationMinerType => {
         value: string | number
     ) => {
         try {
+            if (!signer) {
+                return;
+            }
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-            const tx = await donationMiner?.donateToCommunity(
-                community,
-                amount
-            );
+            const { donationMiner } = await getContracts(provider);
+            const tx = await donationMiner
+                .connect(signer)
+                .donateToCommunity(community, amount);
             const response = await tx.wait();
 
             await Promise.all([
-                updateBalance(),
+                updateCUSDBalance(),
                 updateRewards(),
                 updateEpoch()
             ]);

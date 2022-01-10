@@ -2,7 +2,7 @@ import React from 'react';
 import { useEpoch } from '@impact-market/utils';
 
 const Epoch = () => {
-    const { epoch } = useEpoch() || {};
+    const { epoch } = useEpoch();
 
     return (
         <>

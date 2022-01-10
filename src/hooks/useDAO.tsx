@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import { defaultAbiCoder } from 'ethers/lib/utils';
 import React from 'react';
 import { ImpactMarketContext } from '../components/ImpactMarketProvider';
+import { getContracts } from '../utils/contracts';
 
 type UseDAOType = {
     addCommunity: Function;
@@ -20,10 +21,10 @@ type CommunityArgs = {
 };
 
 export const useDAO = (): UseDAOType => {
-    const { contracts } = React.useContext(ImpactMarketContext);
-    const { addresses, delegate } = contracts;
+    const { provider } = React.useContext(ImpactMarketContext);
 
     const addCommunity = async (community: CommunityArgs) => {
+        const { delegate, addresses } = await getContracts(provider);
         if (!delegate || !addresses?.communityAdmin) {
             return;
         }

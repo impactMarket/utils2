@@ -1,4 +1,3 @@
-import { Signer } from '@ethersproject/abstract-signer';
 import { Contract } from '@ethersproject/contracts';
 import { BaseProvider } from '@ethersproject/providers';
 import { ContractAddresses } from '../contracts';
@@ -10,11 +9,13 @@ import { PACTDelegate } from '../types/contracts/PACTDelegate';
 import { PACTToken } from '../types/contracts/PACTToken';
 import MerkleDistributorABI from '../contracts/abi/MerkleDistributor.json';
 
-export const getContracts = async (
-    provider: BaseProvider,
-    signer: Signer | null
-) => {
-    const { chainId } = await provider.getNetwork();
+export const getContracts = async (provider: BaseProvider) => {
+    // do not request the network, if information exists
+    let chainId = provider.network?.chainId;
+    if (!chainId) {
+        const _network = await provider?.getNetwork();
+        chainId = _network?.chainId;
+    }
     const contractAddresses = ContractAddresses.get(chainId)!;
 
     const {
@@ -37,32 +38,30 @@ export const getContracts = async (
         merkleDistributor: MerkleDistributor || ''
     };
 
-    const _signerOrProvider = signer || provider || undefined;
-
     const merkleDistributor = new Contract(
         addresses.merkleDistributor,
         MerkleDistributorABI,
-        _signerOrProvider
+        provider
     );
 
     const donationMiner = new Contract(
         addresses.donationMiner,
         DonationMinerABI,
-        _signerOrProvider
+        provider
     );
 
-    const cusd = new Contract(addresses.cusd, BaseERC20ABI, _signerOrProvider);
+    const cusd = new Contract(addresses.cusd, BaseERC20ABI, provider);
 
     const pact = new Contract(
         addresses.pactToken,
         PACTTokenABI,
-        _signerOrProvider
+        provider
     ) as Contract & PACTToken;
 
     const delegate = new Contract(
         addresses.delegate,
         PACTDelegateABI,
-        _signerOrProvider
+        provider
     ).attach(addresses.delegator) as Contract & PACTDelegate;
 
     return {
