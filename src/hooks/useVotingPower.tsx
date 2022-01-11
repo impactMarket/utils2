@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import { ImpactMarketContext } from '../components/ImpactMarketProvider';
+import { getContracts } from '../utils/contracts';
 
 export const useVotingPower = () => {
-    const { address, contracts } = React.useContext(ImpactMarketContext);
-    const { pact: pactContract, delegate } = contracts;
+    const { address, provider } = React.useContext(ImpactMarketContext);
     const [enoughVotingPowerToPropose, setEnoughVotingPowerToPropose] =
         useState<boolean | undefined>(undefined);
 
     const updateVotingPower = async () => {
+        const { pact: pactContract, delegate } = await getContracts(provider);
         if (
             address === null ||
             !delegate?.address ||
@@ -37,7 +38,7 @@ export const useVotingPower = () => {
 
     useEffect(() => {
         updateVotingPower();
-    }, [delegate, pactContract]);
+    }, []);
 
     return { enoughVotingPowerToPropose };
 };

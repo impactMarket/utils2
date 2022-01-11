@@ -1,9 +1,8 @@
 import React from 'react';
 import ApproveDonate from './ApproveDonate';
 import Balance from './Balance';
-import ClaimableRewards from './ClaimableRewards';
+import Rewards from './Rewards';
 import Epoch from './Epoch';
-import EstimatedRewards from './EstimatedRewards';
 import WalletConnection from '../WalletConnection';
 import MerkleDistributor from './MerkleDistributor';
 
@@ -19,10 +18,7 @@ const DaoBreakdown = () => {
                         <ApproveDonate />
                     </li>
                     <li style={{ marginTop: 16 }}>
-                        <ClaimableRewards />
-                    </li>
-                    <li style={{ marginTop: 16 }}>
-                        <EstimatedRewards />
+                        <Rewards />
                     </li>
                     <li style={{ marginTop: 16 }}>
                         <MerkleDistributor />

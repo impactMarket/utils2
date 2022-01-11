@@ -2,32 +2,32 @@ import { BigNumber } from 'bignumber.js';
 import React, { useEffect, useState } from 'react';
 import { toNumber } from '../helpers/toNumber';
 import { ImpactMarketContext } from '../components/ImpactMarketProvider';
+import { getContracts } from '../utils/contracts';
 
 export const useMerkleDistributor = (treeAccount: {
     index: number;
     amount: string;
     proof: string[];
 }) => {
-    const { contracts, address, signer } =
-        React.useContext(ImpactMarketContext);
-    const { merkleDistributor: merkleDistributorContract } = contracts;
+    const { address, signer, provider } = React.useContext(ImpactMarketContext);
     const [hasClaim, setHasClaim] = useState(false);
     const [amountToClaim, setAmountToClaim] = useState(0);
 
     const claim = async () => {
         try {
-            if (!address || !merkleDistributorContract || !signer) {
+            const { merkleDistributor } = await getContracts(provider);
+            if (!address || !signer) {
                 return;
             }
 
-            const merkleDistributor = merkleDistributorContract.connect(signer);
-
-            const tx = await merkleDistributor.claim(
-                treeAccount.index,
-                address,
-                treeAccount.amount,
-                treeAccount.proof
-            );
+            const tx = await merkleDistributor
+                .connect(signer)
+                .claim(
+                    treeAccount.index,
+                    address,
+                    treeAccount.amount,
+                    treeAccount.proof
+                );
             const response = await tx.wait();
 
             return response;
@@ -40,12 +40,13 @@ export const useMerkleDistributor = (treeAccount: {
 
     useEffect(() => {
         const verifyClaim = async () => {
-            if (!address || !merkleDistributorContract?.provider || !signer) {
+            const { merkleDistributor } = await getContracts(provider);
+            if (!address || !signer) {
                 return;
             }
 
             if (treeAccount) {
-                const _isClaimed = await merkleDistributorContract.isClaimed(
+                const _isClaimed = await merkleDistributor.isClaimed(
                     treeAccount.index
                 );
                 setAmountToClaim(
@@ -55,7 +56,7 @@ export const useMerkleDistributor = (treeAccount: {
             }
         };
         verifyClaim();
-    }, [merkleDistributorContract, signer]);
+    }, [address]);
 
     return { hasClaim, amountToClaim, claim };
 };

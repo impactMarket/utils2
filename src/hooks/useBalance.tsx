@@ -1,52 +1,26 @@
-import {
-    BalanceType,
-    ImpactMarketContext
-} from '../components/ImpactMarketProvider';
+import { ImpactMarketContext } from '../components/ImpactMarketProvider';
 import React, { useEffect } from 'react';
-import { toNumber } from '../helpers/toNumber';
 
-export const useBalance = () => {
-    const { balance, setBalance, address, contracts } =
+export const usePACTBalance = () => {
+    const { balance, updatePACTBalance } =
         React.useContext(ImpactMarketContext);
-    const { cusd, donationMiner, pact: pactContract } = contracts;
-
-    const updateBalance = async () => {
-        if (
-            !address ||
-            !donationMiner?.provider ||
-            !cusd?.provider ||
-            !pactContract?.provider
-        ) {
-            return;
-        }
-
-        try {
-            const [cUSDAllowance, cUSDBalance, pactBalance] = await Promise.all(
-                [
-                    cusd.allowance(address, donationMiner.address),
-                    cusd?.balanceOf(address),
-                    pactContract?.balanceOf(address)
-                ]
-            );
-
-            const cusdAllowance = toNumber(cUSDAllowance);
-            const cUSD = toNumber(cUSDBalance);
-            const pact = toNumber(pactBalance);
-
-            return setBalance((balance: BalanceType) => ({
-                ...balance,
-                cusdAllowance,
-                cusd: cUSD,
-                pact
-            }));
-        } catch (error) {
-            console.log(`Error getting balance...\n${error}`);
-        }
-    };
 
     useEffect(() => {
-        updateBalance();
-    }, [cusd, pactContract]);
+        updatePACTBalance();
+    }, []);
 
-    return { balance, updateBalance };
+    return { balance: balance?.pact };
+};
+
+export const useCUSDBalance = () => {
+    const { balance, updateCUSDBalance } =
+        React.useContext(ImpactMarketContext);
+
+    useEffect(() => {
+        updateCUSDBalance();
+    }, []);
+
+    return {
+        balance: balance?.cusd
+    };
 };

@@ -1,10 +1,11 @@
 import React from 'react';
-import { useBalance } from '@impact-market/utils';
+import { useCUSDBalance, usePACTBalance } from '@impact-market/utils';
 
 const Balance = () => {
-    const { balance } = useBalance();
+    const { balance: balanceCUSD } = useCUSDBalance();
+    const { balance: balancePACT } = usePACTBalance();
 
-    if (!balance) {
+    if (!balanceCUSD || !balancePACT) {
         return null;
     }
     return (
@@ -12,11 +13,12 @@ const Balance = () => {
             <h3>Balance</h3>
             <div style={{ marginTop: 8 }}>
                 <ul>
-                    {Object.entries(balance).map(([key, value], index) => (
-                        <li key={index}>
-                            <b>{key}:</b><span style={{ marginLeft: 8 }}>{value}</span>
-                        </li>
-                    ))}
+                    <li key='balanceCUSD'>
+                        <b>balanceCUSD:</b><span style={{ marginLeft: 8 }}>{balanceCUSD}</span>
+                    </li>
+                    <li key='balancePACT'>
+                        <b>balancePACT:</b><span style={{ marginLeft: 8 }}>{balancePACT}</span>
+                    </li>
                 </ul>
             </div>
         </>

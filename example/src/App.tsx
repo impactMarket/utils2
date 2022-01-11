@@ -4,9 +4,9 @@ import Intro from './components/Intro';
 import WalletsBalance from './components/WalletsBalance';
 import DaoBreakdown from './components/DaoBreakdown';
 import DaoHooks from './components/DaoHooks';
-import { ContractKitProvider, Alfajores, useContractKit, useConnectedSigner } from '@celo-tools/use-contractkit';
+import { ContractKitProvider, Alfajores, useContractKit, useProviderOrSigner } from '@celo-tools/use-contractkit';
 import { ImpactMarketProvider } from '@impact-market/utils';
-import { JsonRpcProvider } from '@ethersproject/providers';
+import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import PACTMetrics from './components/PACTMetrics';
 import Subgraph from './components/Subgraph';
 
@@ -20,13 +20,13 @@ const components = [
 
 const options = components.map(({ label }) => label);
 
-const initialOption = options[3];
+const initialOption = options[1];
 
 const network = Alfajores;
 
+const provider = new JsonRpcProvider(network.rpcUrl);
 function App() {
-    const provider = new JsonRpcProvider(network.rpcUrl);
-    const signer = useConnectedSigner();
+    const signer = useProviderOrSigner();
     const { address, initialised, network: walletNetwork } = useContractKit();
     const [selectedOption, setSelectedOption] = useState<string>(initialOption);
     const [providerNetworkChainId, setProviderNetworkChainId] = useState<number | undefined>();
@@ -35,16 +35,21 @@ function App() {
 
     useEffect(() => {
         const setChainId = async () => {
-            const network = await provider?.getNetwork();
+            // do not request the network, if information exists
+            let chainId = provider.network?.chainId;
+            if (!chainId) {
+                const _network = await provider?.getNetwork();
+                chainId = _network?.chainId;
+            }
 
-            if (providerNetworkChainId !== network?.chainId) {
-                setProviderNetworkChainId(network?.chainId)
+            if (providerNetworkChainId !== chainId) {
+                setProviderNetworkChainId(chainId)
             }
         }
-        if (provider) {
+        if (!providerNetworkChainId) {
             setChainId();
         }
-    }, [provider, providerNetworkChainId])
+    }, [providerNetworkChainId])
 
     if (!initialised || !providerNetworkChainId) {
         return <div>Loading...</div>
@@ -60,7 +65,11 @@ function App() {
 
     return (
         <>
-            <ImpactMarketProvider address={isSameNetwork ? address : null} provider={provider} signer={signer}>
+            <ImpactMarketProvider
+                address={isSameNetwork ? address : null}
+                provider={provider}
+                signer={signer instanceof JsonRpcSigner ? signer : null}
+            >
                 <Intro handleChange={setSelectedOption} initialOption={initialOption} options={options} />
                 {!!Component && <Component />}
             </ImpactMarketProvider>
