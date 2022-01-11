@@ -15,6 +15,8 @@ yarn add @impact-market/utils
 
 - `getWalletsBalance`
 - `communityContract` (instantiate a community using the address)
+- `getPACTTradingMetrics`
+- `circulatingSupply` ($PACT circulating supply)
 
 ### Available Helpers
 
