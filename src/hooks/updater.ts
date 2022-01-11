@@ -62,8 +62,13 @@ export const getEstimatedClaimableRewards = async (
     donationMiner: Contract,
     address: string
 ) => {
-    const value = await donationMiner.calculateClaimableRewards(address);
-    return toNumber(value);
+    const pastEpochsDonations = await donationMiner.calculateClaimableRewards(
+        address
+    );
+    const currentEpochDonations = await donationMiner.estimateClaimableReward(
+        address
+    );
+    return toNumber(pastEpochsDonations) + toNumber(currentEpochDonations);
 };
 
 export const getClaimableRewards = async (
