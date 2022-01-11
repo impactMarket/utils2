@@ -3,6 +3,25 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "oldClaimDelay",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newClaimDelay",
+        "type": "uint256"
+      }
+    ],
+    "name": "ClaimDelayUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "uint256",
         "name": "donationId",
@@ -28,37 +47,6 @@
       }
     ],
     "name": "DonationAdded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "oldStartingBlock",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "oldFirstRewardPerBlock",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newStartingBlock",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newFirstRewardPerBlock",
-        "type": "uint256"
-      }
-    ],
-    "name": "FirstRewardPeriodParamsUpdated",
     "type": "event"
   },
   {
@@ -247,6 +235,43 @@
       }
     ],
     "name": "calculateClaimableRewards",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_donorAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_lastPeriodNumber",
+        "type": "uint256"
+      }
+    ],
+    "name": "calculateClaimableRewardsByPeriodNumber",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "claimDelay",
     "outputs": [
       {
         "internalType": "uint256",
@@ -464,54 +489,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "_cUSD",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "_PACT",
-        "type": "address"
-      },
-      {
-        "internalType": "contract ITreasury",
-        "name": "_treasury",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_firstRewardPerBlock",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_rewardPeriodSize",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_startingBlock",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_decayNumerator",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_decayDenominator",
-        "type": "uint256"
-      }
-    ],
-    "name": "initialize",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "owner",
     "outputs": [
@@ -686,16 +663,11 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_startingBlock",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_firstRewardPerBlock",
+        "name": "_newClaimDelay",
         "type": "uint256"
       }
     ],
-    "name": "updateFirstRewardPeriodParams",
+    "name": "updateClaimDelay",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
