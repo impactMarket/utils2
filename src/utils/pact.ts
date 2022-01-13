@@ -69,9 +69,12 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
             }
             `
     });
-    const counters = await axios.get(
-        `https://explorer.celo.org/token-counters?id=${PACTToken.toLowerCase()}`
-    );
+    let counters = { data: { token_holder_count: 0, transfer_count: 0 } };
+    try {
+        counters = await axios.get(
+            `https://explorer.celo.org/token-counters?id=${PACTToken}`
+        );
+    } catch (_) {}
     return {
         ...result.data.tokenDayDatas[0],
         tokenHolders: counters.data.token_holder_count,
