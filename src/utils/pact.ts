@@ -49,6 +49,16 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
     transfers: number;
 }> {
     const { chainId } = await provider.getNetwork();
+    // if not on mainnet
+    if (chainId !== 42220) {
+        return {
+            priceUSD: '0',
+            dailyVolumeUSD: '0',
+            totalLiquidityUSD: '0',
+            tokenHolders: 0,
+            transfers: 0
+        };
+    }
     const contractAddresses = ContractAddresses.get(chainId)!;
 
     const { PACTToken } = contractAddresses;
