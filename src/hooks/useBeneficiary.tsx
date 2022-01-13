@@ -5,7 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { Community } from '../types/contracts/Community';
 import { Contract } from '@ethersproject/contracts';
 import { estimateBlockTime } from '../helpers/estimateBlockTime';
-import { toNumber } from '..';
+import { toNumber } from '../helpers/toNumber';
 
 export const useBeneficiary = (communityAddress: string) => {
     const [isReady, setIsReady] = useState(false);
