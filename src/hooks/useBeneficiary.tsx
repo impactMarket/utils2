@@ -68,7 +68,6 @@ export const useBeneficiary = (communityAddress: string) => {
         ) => {
             const _cooldown = await _contract.claimCooldown(_address);
             const _currentBlockNumber = await provider.getBlockNumber();
-            console.log(_cooldown.toNumber(), _currentBlockNumber);
             if (_cooldown.toNumber() > _currentBlockNumber) {
                 const estimate = async () =>
                     estimateBlockTime(
