@@ -58,19 +58,41 @@ export const updateUserContributionData = async (
     };
 };
 
+/**
+ * Estimated rewards for the current period + the claim delay window.
+ * @returns a number
+ */
 export const getEstimatedClaimableRewards = async (
     donationMiner: Contract,
     address: string
 ) => {
-    const pastEpochsDonations = await donationMiner.calculateClaimableRewards(
-        address
-    );
+    const rewardPeriodCount = await donationMiner.rewardPeriodCount();
+    const claimDelay = await donationMiner.claimDelay();
+    const claimableDonations =
+        await donationMiner.calculateClaimableRewardsByPeriodNumber(
+            address,
+            parseInt(rewardPeriodCount.toString(), 10) -
+                parseInt(claimDelay.toString(), 10)
+        );
+    const allDonations =
+        await donationMiner.calculateClaimableRewardsByPeriodNumber(
+            address,
+            parseInt(rewardPeriodCount.toString(), 10)
+        );
     const currentEpochDonations = await donationMiner.estimateClaimableReward(
         address
     );
-    return toNumber(pastEpochsDonations) + toNumber(currentEpochDonations);
+    return (
+        toNumber(allDonations) -
+        toNumber(claimableDonations) +
+        toNumber(currentEpochDonations)
+    );
 };
 
+/**
+ * Claimable rewards at the moment.
+ * @returns a number
+ */
 export const getClaimableRewards = async (
     donationMiner: Contract,
     address: string
