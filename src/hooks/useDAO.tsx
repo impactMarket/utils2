@@ -17,6 +17,7 @@ type CommunityArgs = {
     maxClaim: string | BigNumber;
     maxTranche: string | BigNumber;
     minTranche: string | BigNumber;
+    proposalTitle: string;
     proposalDescription: string;
 };
 
@@ -39,6 +40,7 @@ export const useDAO = (): UseDAOType => {
                 maxClaim,
                 maxTranche,
                 minTranche,
+                proposalTitle,
                 proposalDescription
             } = community;
             const targets = [addresses.communityAdmin];
@@ -72,15 +74,16 @@ export const useDAO = (): UseDAOType => {
                 )
             ];
 
-            const tx = await delegate
-                .connect(signer)
-                .propose(
-                    targets,
-                    values,
-                    signatures,
-                    calldatas,
-                    proposalDescription
-                );
+            const tx = await delegate.connect(signer).propose(
+                targets,
+                values,
+                signatures,
+                calldatas,
+                JSON.stringify({
+                    title: proposalTitle,
+                    description: proposalDescription
+                })
+            );
 
             const response = await tx.wait();
 

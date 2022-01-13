@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { impactMarket } from '../../services/impactMarket';
 
 const Community = (props: any) => {
-    const { id, name, contract, requestByAddress } = props;
+    const { id, name, description, contract, requestByAddress } = props;
     const { addCommunity } = useDAO();
     const [isLoading, setIsLoading] = useState(false);
     const [isAdded, setIsAdded] = useState(false);
@@ -17,7 +17,8 @@ const Community = (props: any) => {
             managers: [requestByAddress],
             maxTranche: toToken(0.1, { EXPONENTIAL_AT: 25 }),
             minTranche: toToken(0.01),
-            proposalDescription: `${name} |\nclaim amount: ${toNumber(contract.claimAmount)}\nmax claim: ${toNumber(contract.maxClaim)}\nbase interval: ${frequencyToText(contract.baseInterval)}\n${process.env.BASE_URL}/communities/${id}`
+            proposalTitle: `[New Community] ${name}`,
+            proposalDescription: `## Description:\n${description}\n\nUBI Contract Parameters:\nClaim Amount: ${toNumber(contract.claimAmount)}\nMax Claim: ${toNumber(contract.maxClaim)}\nBase Interval: ${frequencyToText(contract.baseInterval)}\nIncrement Interval: ${contract.incrementInterval * 5 / 60} minutes\n\n\nMore details: ${process.env.BASE_URL}/communities/${id}`
         };
 
         const response = await addCommunity(data)
