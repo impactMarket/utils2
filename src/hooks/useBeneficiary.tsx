@@ -16,7 +16,7 @@ export const useBeneficiary = (communityAddress: string) => {
         claimedAmount: 0,
         lastClaim: BigNumber.from(0)
     });
-    const [claimCooldown, setClaimCooldown] = useState(new Date());
+    const [claimCooldown, setClaimCooldown] = useState(new Date(0));
     const [contract, setContract] = useState<(Contract & Community) | null>(
         null
     );
@@ -67,15 +67,19 @@ export const useBeneficiary = (communityAddress: string) => {
             _contract: Contract & Community
         ) => {
             const _cooldown = await _contract.claimCooldown(_address);
-            const estimate = async () =>
-                estimateBlockTime(
-                    await provider.getBlockNumber(),
-                    _cooldown.toNumber()
-                );
-            refreshInterval = setInterval(async () => {
+            const _currentBlockNumber = await provider.getBlockNumber();
+            console.log(_cooldown.toNumber(), _currentBlockNumber);
+            if (_cooldown.toNumber() > _currentBlockNumber) {
+                const estimate = async () =>
+                    estimateBlockTime(
+                        _currentBlockNumber,
+                        _cooldown.toNumber()
+                    );
+                refreshInterval = setInterval(async () => {
+                    setClaimCooldown(await estimate());
+                }, 10000);
                 setClaimCooldown(await estimate());
-            }, 10000);
-            setClaimCooldown(await estimate());
+            }
         };
         if (address && provider) {
             const contract_ = communityContract(communityAddress, provider);
