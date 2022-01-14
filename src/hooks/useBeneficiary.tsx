@@ -9,6 +9,7 @@ import { toNumber } from '../helpers/toNumber';
 
 export const useBeneficiary = (communityAddress: string) => {
     const [isReady, setIsReady] = useState(false);
+    const [isClaimable, setIsClaimable] = useState(false);
     const [beneficiary, setBeneficiary] = useState<{
         claimedAmount: number;
         lastClaim: BigNumber;
@@ -22,6 +23,7 @@ export const useBeneficiary = (communityAddress: string) => {
     );
     const { address, signer, provider } = React.useContext(ImpactMarketContext);
     let refreshInterval: NodeJS.Timeout;
+    let timeoutInterval: NodeJS.Timeout;
 
     const updateClaimData = async (_contract: Contract & Community) => {
         if (!_contract || !address) {
@@ -47,7 +49,7 @@ export const useBeneficiary = (communityAddress: string) => {
      * @throws {Error} "ERC20: transfer amount exceeds balance"
      */
     const claim = async () => {
-        if (!contract || !signer) {
+        if (!contract || !signer || !address) {
             return;
         }
         const tx = await (
@@ -56,9 +58,35 @@ export const useBeneficiary = (communityAddress: string) => {
         const response = await tx.wait();
 
         updateClaimData(contract);
+        const _cooldown = await contract.claimCooldown(address);
+        const _currentBlockNumber = await provider.getBlockNumber();
+        setClaimCooldown(
+            estimateBlockTime(_currentBlockNumber, _cooldown.toNumber())
+        );
+        setIsClaimable(false);
 
         return response;
     };
+
+    useEffect(() => {
+        if (
+            claimCooldown.getTime() !== new Date(0).getTime() &&
+            timeoutInterval === undefined
+        ) {
+            const end = claimCooldown;
+            const now = new Date();
+            // 10 minutes
+            if (end.getTime() - now.getTime() < 600000) {
+                timeoutInterval = setTimeout(
+                    () => setIsClaimable(true),
+                    end.getTime() - now.getTime() - 1000
+                );
+            }
+        }
+        return () => {
+            clearTimeout(timeoutInterval);
+        };
+    }, [claimCooldown]);
 
     useEffect(() => {
         // Refresh beneficiary time for next claim
@@ -71,13 +99,16 @@ export const useBeneficiary = (communityAddress: string) => {
             if (_cooldown.toNumber() > _currentBlockNumber) {
                 const estimate = async () =>
                     estimateBlockTime(
-                        _currentBlockNumber,
+                        await provider.getBlockNumber(),
                         _cooldown.toNumber()
                     );
-                refreshInterval = setInterval(async () => {
-                    setClaimCooldown(await estimate());
-                }, 10000);
+                refreshInterval = setInterval(
+                    () => estimate().then(setClaimCooldown),
+                    300000 // 5 minutes
+                );
                 setClaimCooldown(await estimate());
+            } else {
+                setIsClaimable(true);
             }
         };
         if (address && provider) {
@@ -87,10 +118,8 @@ export const useBeneficiary = (communityAddress: string) => {
                 updateClaimData(contract_)
             );
         }
-        return () => {
-            clearInterval(refreshInterval);
-        };
+        return () => clearInterval(refreshInterval);
     }, []);
 
-    return { claim, beneficiary, claimCooldown, isReady };
+    return { claim, beneficiary, claimCooldown, isClaimable, isReady };
 };

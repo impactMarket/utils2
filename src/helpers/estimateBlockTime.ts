@@ -8,5 +8,5 @@ export const estimateBlockTime = (currentBlock: number, endBlock: number) => {
     const blockTime =
         (endBlock - currentBlock + (isFuture ? blocksPerDay : 0)) * 5000;
 
-    return new Date(new Date().getTime() + blockTime);
+    return new Date(new Date().getTime() + blockTime + 2000); // 2s overflow
 };

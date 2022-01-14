@@ -2,7 +2,13 @@ import React from 'react';
 import { useBeneficiary } from '@impact-market/utils';
 
 const Beneficiary = () => {
-    const { beneficiary, claimCooldown, isReady } = useBeneficiary('0x6dcf4B577309aF974216b46817e98833Ad27c0Ab');
+    const {
+        beneficiary,
+        claimCooldown,
+        isClaimable,
+        isReady,
+        claim
+    } = useBeneficiary('0x6dcf4B577309aF974216b46817e98833Ad27c0Ab');
 
     if(!isReady) {
         return <div>Loading</div>;
@@ -20,6 +26,10 @@ const Beneficiary = () => {
             <div style={{ marginTop: 8 }}>
                 lastClaim: {beneficiary.lastClaim.toString()}
             </div>
+            <div style={{ marginTop: 8 }}>
+                isClaimable: {isClaimable.toString()}
+            </div>
+            <button onClick={() => claim()}>claim</button>
         </>
     )
 }

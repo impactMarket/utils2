@@ -1,5 +1,6 @@
 import { Contract } from '@ethersproject/contracts';
 import { BaseProvider } from '@ethersproject/providers';
+import { estimateBlockTime } from '../helpers/estimateBlockTime';
 import { toNumber } from '../helpers/toNumber';
 import { getContracts } from '../utils/contracts';
 
@@ -8,23 +9,17 @@ export const updateEpochData = async (provider: BaseProvider) => {
 
     const currentBlock = await provider.getBlockNumber();
     const period = await donationMiner.rewardPeriodCount();
-
     const response = await donationMiner.rewardPeriods(period);
+    const { rewardAmount, endBlock, donationsAmount } = response;
 
-    const { rewardAmount, endBlock, donationsAmount } = response || {};
-
-    // calculate remaining time until the end block, in seconds.
-    // If the end block was in the past, add another epoch.
     const isFuture = currentBlock > endBlock.toNumber();
-    const blocksPerDay = 12 * 60 * 24; // ~ amount of blocks in a day
-    const blockTime =
-        (endBlock.toNumber() - currentBlock + (isFuture ? blocksPerDay : 0)) *
-        5000;
-
-    const endPeriod = new Date(new Date().getTime() + blockTime);
-
-    const rewards = toNumber(rewardAmount);
-    const totalRaised = isFuture ? 0 : toNumber(donationsAmount);
+    const endPeriod = estimateBlockTime(currentBlock, endBlock.toNumber());
+    let rewards = 0;
+    let totalRaised = 0;
+    if (isFuture) {
+        rewards = toNumber(rewardAmount);
+        totalRaised = toNumber(donationsAmount);
+    }
 
     return {
         endPeriod: endPeriod.toISOString(),
