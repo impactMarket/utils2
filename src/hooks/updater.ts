@@ -77,7 +77,7 @@ export const getEstimatedClaimableRewards = async (
     const allDonations =
         await donationMiner.calculateClaimableRewardsByPeriodNumber(
             address,
-            parseInt(rewardPeriodCount.toString(), 10)
+            parseInt(rewardPeriodCount.toString(), 10) - 1
         );
     const currentEpochDonations = await donationMiner.estimateClaimableReward(
         address
