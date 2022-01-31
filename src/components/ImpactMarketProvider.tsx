@@ -17,13 +17,23 @@ export type EpochType = {
     rewards?: number;
     totalRaised?: number;
     userContribution?: number;
+    donations: {
+        user: number;
+        everyone: number;
+    };
+    initialised?: boolean;
 };
 
 const initialEpoch = {
     endPeriod: undefined,
     rewards: 0,
     totalRaised: 0,
-    userContribution: 0
+    userContribution: 0,
+    donations: {
+        user: 0,
+        everyone: 0
+    },
+    initialised: false
 };
 
 export type BalanceType = {
@@ -39,20 +49,12 @@ const initialBalance: BalanceType = {
 export type RewardsType = {
     claimable?: number;
     estimated?: number;
-    donations: {
-        user: number;
-        everyone: number;
-    };
     initialised?: boolean;
 };
 
 const initialRewards: RewardsType = {
     claimable: 0,
     estimated: 0,
-    donations: {
-        user: 0,
-        everyone: 0
-    },
     initialised: false
 };
 
@@ -141,10 +143,9 @@ export const ImpactMarketProvider = (props: ProviderProps) => {
             return;
         }
         const { donationMiner } = await getContracts(provider);
-        const [estimated, claimable, donations] = await Promise.all([
+        const [estimated, claimable] = await Promise.all([
             getEstimatedClaimableRewards(donationMiner, address),
             getClaimableRewards(donationMiner, address),
-            getLastEpochsDonations(donationMiner, address),
             updatePACTBalance!()
         ]);
 
@@ -152,7 +153,6 @@ export const ImpactMarketProvider = (props: ProviderProps) => {
             ...rewards,
             estimated,
             claimable,
-            donations,
             initialised: true
         }));
     };
@@ -161,14 +161,18 @@ export const ImpactMarketProvider = (props: ProviderProps) => {
         if (!address) {
             return;
         }
-        const [epochData, userContributionData] = await Promise.all([
+        const { donationMiner } = await getContracts(provider);
+        const [epochData, userContributionData, donations] = await Promise.all([
             updateEpochData(provider),
-            updateUserContributionData(provider, address)
+            updateUserContributionData(provider, address),
+            getLastEpochsDonations(donationMiner, address)
         ]);
         setEpoch((epoch: EpochType) => ({
             ...epoch,
             ...epochData,
-            ...userContributionData
+            ...userContributionData,
+            donations,
+            initialised: true
         }));
     };
 

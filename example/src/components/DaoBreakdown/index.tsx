@@ -25,7 +25,11 @@ const DaoBreakdown = () => {
                     </li>
                 </ul>
             </WalletConnection>
-            <Epoch />
+            <ul>
+                <li style={{ marginTop: 16 }}>
+                    <Epoch />
+                </li>
+            </ul>
         </>
     );
 }

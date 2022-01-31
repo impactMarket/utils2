@@ -8,13 +8,28 @@ const Epoch = () => {
         <>
             <h3>Epoch info</h3>
             <div style={{ marginTop: 8 }}>
-                <ul>
-                    {!!epoch && Object.entries(epoch).map(([key, value], index) => (
-                        <li key={index}>
-                            <b>{key}:</b><span style={{ marginLeft: 8 }}>{value}</span>
-                        </li>
-                    ))}
-                </ul>
+                <div style={{ marginTop: 8 }}>
+                    initialised {epoch?.initialised.toString()}
+                </div>
+                <div style={{ marginTop: 8 }}>
+                    endPeriod {epoch?.endPeriod}
+                </div>
+                <div style={{ marginTop: 8 }}>
+                    rewards {epoch?.rewards}
+                </div>
+                <div style={{ marginTop: 8 }}>
+                    totalRaised {epoch?.totalRaised}
+                </div>
+                <div style={{ marginTop: 8 }}>
+                    userContribution {epoch?.userContribution}
+                </div>
+                <h5>Donations (x days)</h5>
+                <div style={{ marginTop: 8 }}>
+                    {epoch?.donations.user}
+                </div>
+                <div style={{ marginTop: 8 }}>
+                    {epoch?.donations.everyone}
+                </div>
             </div>
         </>
     )
