@@ -7,6 +7,7 @@ import { toNumber } from '../helpers/toNumber';
 import {
     getClaimableRewards,
     getEstimatedClaimableRewards,
+    getLastEpochsDonations,
     updateEpochData,
     updateUserContributionData
 } from '../hooks/updater';
@@ -38,12 +39,20 @@ const initialBalance: BalanceType = {
 export type RewardsType = {
     claimable?: number;
     estimated?: number;
+    donations: {
+        user: number;
+        everyone: number;
+    };
     initialised?: boolean;
 };
 
 const initialRewards: RewardsType = {
     claimable: 0,
     estimated: 0,
+    donations: {
+        user: 0,
+        everyone: 0
+    },
     initialised: false
 };
 
@@ -132,9 +141,10 @@ export const ImpactMarketProvider = (props: ProviderProps) => {
             return;
         }
         const { donationMiner } = await getContracts(provider);
-        const [estimated, claimable] = await Promise.all([
+        const [estimated, claimable, donations] = await Promise.all([
             getEstimatedClaimableRewards(donationMiner, address),
             getClaimableRewards(donationMiner, address),
+            getLastEpochsDonations(donationMiner, address),
             updatePACTBalance!()
         ]);
 
@@ -142,6 +152,7 @@ export const ImpactMarketProvider = (props: ProviderProps) => {
             ...rewards,
             estimated,
             claimable,
+            donations,
             initialised: true
         }));
     };

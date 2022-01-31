@@ -106,3 +106,39 @@ export const getClaimableRewards = async (
     );
     return toNumber(value);
 };
+
+/**
+ * Get total donated on X last epochs by a given address and everyone else.
+ * @returns donated and userDonated as numbers
+ */
+export const getLastEpochsDonations = async (
+    donationMiner: Contract,
+    address: string
+) => {
+    const rewardPeriodCount = (
+        await donationMiner.rewardPeriodCount()
+    ).toNumber();
+    // (await donationMiner.againstPeriods()).toNumber();
+    const againstPeriods = 30;
+    let valueDonated = 0;
+    let valueUserDonated = 0;
+    // note: doing it this way adds (epochs*2)+2 request to the network.
+    // but this is temporary.
+    for (
+        let i = rewardPeriodCount - againstPeriods;
+        i <= rewardPeriodCount;
+        i++
+    ) {
+        const value = await donationMiner.rewardPeriods(i);
+        const valueUser = await donationMiner.rewardPeriodDonorAmount(
+            i,
+            address
+        );
+        valueDonated += toNumber(value.donationsAmount);
+        valueUserDonated += toNumber(valueUser);
+    }
+    return {
+        everyone: valueDonated,
+        user: valueUserDonated
+    };
+};
