@@ -27,13 +27,6 @@ const ClaimableRewards = () => {
             <div style={{ marginTop: 8 }}>
                 {rewards?.estimated}
             </div>
-            <h5>Donations</h5>
-            <div style={{ marginTop: 8 }}>
-                {rewards?.donations.user}
-            </div>
-            <div style={{ marginTop: 8 }}>
-                {rewards?.donations.everyone}
-            </div>
         </>
     )
 }
