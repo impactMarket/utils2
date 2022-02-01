@@ -70,11 +70,9 @@ export const useDonationMiner = (): DonationMinerType => {
             const tx = await donationMiner.connect(signer).donate(amount);
             const response = await tx.wait();
 
-            await Promise.all([
-                updateCUSDBalance(),
-                updateRewards(),
-                updateEpoch()
-            ]);
+            await updateCUSDBalance();
+            updateRewards();
+            updateEpoch();
 
             return response;
         } catch (error) {
@@ -97,11 +95,9 @@ export const useDonationMiner = (): DonationMinerType => {
                 .donateToCommunity(community, amount);
             const response = await tx.wait();
 
-            await Promise.all([
-                updateCUSDBalance(),
-                updateRewards(),
-                updateEpoch()
-            ]);
+            await updateCUSDBalance();
+            updateRewards();
+            updateEpoch();
 
             return response;
         } catch (error) {

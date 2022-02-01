@@ -27,6 +27,14 @@ const ClaimableRewards = () => {
             <div style={{ marginTop: 8 }}>
                 {rewards?.estimated}
             </div>
+            <h5>Allocated</h5>
+            <div style={{ marginTop: 8 }}>
+                {rewards?.allocated}
+            </div>
+            <h5>Current Epoch</h5>
+            <div style={{ marginTop: 8 }}>
+                {rewards?.currentEpoch}
+            </div>
         </>
     )
 }
