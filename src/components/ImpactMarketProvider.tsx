@@ -148,6 +148,10 @@ export const ImpactMarketProvider = (props: ProviderProps) => {
         if (!address) {
             return;
         }
+        setRewards((rewards: RewardsType) => ({
+            ...rewards,
+            initialised: false
+        }));
         const { donationMiner } = await getContracts(provider);
         const [estimated, claimable, currentEpoch, allocated] =
             await Promise.all([
