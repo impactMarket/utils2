@@ -5,7 +5,9 @@ import { BaseProvider } from '@ethersproject/providers';
 import { getContracts } from '../utils/contracts';
 import { toNumber } from '../helpers/toNumber';
 import {
+    getAllocatedRewards,
     getClaimableRewards,
+    getCurrentEpochEstimatedRewards,
     getEstimatedClaimableRewards,
     getLastEpochsDonations,
     updateEpochData,
@@ -14,14 +16,14 @@ import {
 
 export type EpochType = {
     endPeriod?: string;
-    rewards?: number;
-    totalRaised?: number;
-    userContribution?: number;
+    rewards: number;
+    totalRaised: number;
+    userContribution: number;
     donations: {
         user: number;
         everyone: number;
     };
-    initialised?: boolean;
+    initialised: boolean;
 };
 
 const initialEpoch = {
@@ -47,12 +49,16 @@ const initialBalance: BalanceType = {
 };
 
 export type RewardsType = {
-    claimable?: number;
-    estimated?: number;
-    initialised?: boolean;
+    allocated: number;
+    currentEpoch: number;
+    claimable: number;
+    estimated: number;
+    initialised: boolean;
 };
 
 const initialRewards: RewardsType = {
+    allocated: 0,
+    currentEpoch: 0,
     claimable: 0,
     estimated: 0,
     initialised: false
@@ -143,16 +149,21 @@ export const ImpactMarketProvider = (props: ProviderProps) => {
             return;
         }
         const { donationMiner } = await getContracts(provider);
-        const [estimated, claimable] = await Promise.all([
-            getEstimatedClaimableRewards(donationMiner, address),
-            getClaimableRewards(donationMiner, address),
-            updatePACTBalance!()
-        ]);
+        const [estimated, claimable, currentEpoch, allocated] =
+            await Promise.all([
+                getEstimatedClaimableRewards(donationMiner, address),
+                getClaimableRewards(donationMiner, address),
+                getCurrentEpochEstimatedRewards(donationMiner, address),
+                getAllocatedRewards(donationMiner, address),
+                updatePACTBalance!()
+            ]);
 
         setRewards((rewards: RewardsType) => ({
             ...rewards,
             estimated,
             claimable,
+            currentEpoch,
+            allocated,
             initialised: true
         }));
     };
@@ -161,6 +172,10 @@ export const ImpactMarketProvider = (props: ProviderProps) => {
         if (!address) {
             return;
         }
+        setEpoch((epoch: EpochType) => ({
+            ...epoch,
+            initialised: false
+        }));
         const { donationMiner } = await getContracts(provider);
         const [epochData, userContributionData, donations] = await Promise.all([
             updateEpochData(provider),

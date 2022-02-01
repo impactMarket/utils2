@@ -90,6 +90,37 @@ export const getEstimatedClaimableRewards = async (
 };
 
 /**
+ * Get allocated rewards.
+ * @returns a number
+ */
+export const getAllocatedRewards = async (
+    donationMiner: Contract,
+    address: string
+) => {
+    const rewardPeriodCount = await donationMiner.rewardPeriodCount();
+    const pastDonations =
+        await donationMiner.calculateClaimableRewardsByPeriodNumber(
+            address,
+            parseInt(rewardPeriodCount.toString(), 10) - 1
+        );
+    return toNumber(pastDonations);
+};
+
+/**
+ * Estimated rewards for the current epoch.
+ * @returns a number
+ */
+export const getCurrentEpochEstimatedRewards = async (
+    donationMiner: Contract,
+    address: string
+) => {
+    const currentEpochDonations = await donationMiner.estimateClaimableReward(
+        address
+    );
+    return toNumber(currentEpochDonations);
+};
+
+/**
  * Claimable rewards at the moment.
  * @returns a number
  */
@@ -102,7 +133,8 @@ export const getClaimableRewards = async (
     const value = await donationMiner.calculateClaimableRewardsByPeriodNumber(
         address,
         parseInt(rewardPeriodCount.toString(), 10) -
-            parseInt(claimDelay.toString(), 10)
+            parseInt(claimDelay.toString(), 10) -
+            1
     );
     return toNumber(value);
 };
@@ -118,8 +150,7 @@ export const getLastEpochsDonations = async (
     const rewardPeriodCount = (
         await donationMiner.rewardPeriodCount()
     ).toNumber();
-    // (await donationMiner.againstPeriods()).toNumber();
-    const againstPeriods = 30;
+    const againstPeriods = (await donationMiner.againstPeriods()).toNumber();
     let valueDonated = 0;
     let valueUserDonated = 0;
     // note: doing it this way adds (epochs*2)+2 request to the network.
