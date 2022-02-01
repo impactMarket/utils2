@@ -133,7 +133,8 @@ export const getClaimableRewards = async (
     const value = await donationMiner.calculateClaimableRewardsByPeriodNumber(
         address,
         parseInt(rewardPeriodCount.toString(), 10) -
-            parseInt(claimDelay.toString(), 10)
+            parseInt(claimDelay.toString(), 10) -
+            1
     );
     return toNumber(value);
 };
