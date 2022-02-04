@@ -1,7 +1,15 @@
-import { AppMediaContent } from '../types';
-
 export function chooseMediaThumbnail(
-    media: AppMediaContent,
+    media: {
+        url: string;
+        thumbnails: [
+            {
+                url: string;
+                width: number;
+                height: number;
+                pixelRatio: number;
+            }
+        ];
+    },
     size: { heigth: number; width: number },
     pixelRatio?: number
 ) {

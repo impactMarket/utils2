@@ -1,10 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
-import LanguagesJSON from '../assets/languages.json';
+import LanguagesJSON from './languages.json';
 
 const languages: {
     [key: string]: {
         name: string;
-        nativeName: string;
     };
 } = LanguagesJSON;
 

@@ -1,4 +1,4 @@
-import { toNumber } from '../helpers/toNumber';
+import { toNumber } from './toNumber';
 import axios, { AxiosResponse } from 'axios';
 
 const instance = axios.create({

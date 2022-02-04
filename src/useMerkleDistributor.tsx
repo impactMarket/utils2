@@ -1,18 +1,28 @@
 import { BigNumber } from 'bignumber.js';
-import React, { useEffect, useState } from 'react';
-import { toNumber } from '../helpers/toNumber';
-import { ImpactMarketContext } from '../components/ImpactMarketProvider';
-import { getContracts } from '../utils/contracts';
+import { useEffect, useState } from 'react';
+import { toNumber } from './toNumber';
+import { getContracts } from './contracts';
+import { Signer } from '@ethersproject/abstract-signer';
+import { BaseProvider } from '@ethersproject/providers';
 
-export const useMerkleDistributor = (treeAccount: {
-    index: number;
-    amount: string;
-    proof: string[];
+export const useMerkleDistributor = (props: {
+    treeAccount: {
+        index: number;
+        amount: string;
+        proof: string[];
+    };
+    address: string;
+    signer: Signer | null;
+    provider: BaseProvider;
 }) => {
-    const { address, signer, provider } = React.useContext(ImpactMarketContext);
+    const { treeAccount, address, signer, provider } = props;
     const [hasClaim, setHasClaim] = useState(false);
     const [amountToClaim, setAmountToClaim] = useState(0);
 
+    /**
+     * Claims airgrab (should update balance once finished)
+     * @returns
+     */
     const claim = async () => {
         try {
             const { merkleDistributor } = await getContracts(provider);

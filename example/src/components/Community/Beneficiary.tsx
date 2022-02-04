@@ -1,8 +1,15 @@
 import React from 'react';
 import { useBeneficiary } from '@impact-market/utils';
+import { JsonRpcProvider } from '@ethersproject/providers';
 
+const provider = new JsonRpcProvider("https://alfajores-forno.celo-testnet.org");
 const Beneficiary = () => {
-    const { beneficiary, claimCooldown, isReady } = useBeneficiary('0x6dcf4B577309aF974216b46817e98833Ad27c0Ab');
+    const { beneficiary, claimCooldown, isReady } = useBeneficiary({
+        communityAddress: '0x6dcf4B577309aF974216b46817e98833Ad27c0Ab',
+        address: '0x7110b4Df915cb92F53Bc01cC9Ab15F51e5DBb52F',
+        signer: null,
+        provider,
+    });
 
     if(!isReady) {
         return <div>Loading</div>;
@@ -16,9 +23,6 @@ const Beneficiary = () => {
             </div>
             <div style={{ marginTop: 8 }}>
                 claimedAmount: {beneficiary.claimedAmount.toString()}
-            </div>
-            <div style={{ marginTop: 8 }}>
-                lastClaim: {beneficiary.lastClaim.toString()}
             </div>
         </>
     )

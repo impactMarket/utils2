@@ -1,44 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { ImpactMarketContext } from '../components/ImpactMarketProvider';
-import { communityContract } from '../utils/community';
-import { BigNumber } from '@ethersproject/bignumber';
-import { Community } from '../types/contracts/Community';
+import { useEffect, useState } from 'react';
+import { communityContract } from './community';
 import { Contract } from '@ethersproject/contracts';
-import { estimateBlockTime } from '../helpers/estimateBlockTime';
-import { toNumber } from '../helpers/toNumber';
+import { estimateBlockTime } from './estimateBlockTime';
+import { toNumber } from './toNumber';
+import { BaseProvider } from '@ethersproject/providers';
+import { Signer } from '@ethersproject/abstract-signer';
 
-export const useBeneficiary = (communityAddress: string) => {
+export const useBeneficiary = (props: {
+    communityAddress: string;
+    address: string;
+    signer: Signer | null;
+    provider: BaseProvider;
+}) => {
     const [isReady, setIsReady] = useState(false);
     const [beneficiary, setBeneficiary] = useState<{
         claimedAmount: number;
-        lastClaim: BigNumber;
     }>({
-        claimedAmount: 0,
-        lastClaim: BigNumber.from(0)
+        claimedAmount: 0
     });
     const [claimCooldown, setClaimCooldown] = useState(new Date(0));
-    const [contract, setContract] = useState<(Contract & Community) | null>(
-        null
-    );
-    const { address, signer, provider } = React.useContext(ImpactMarketContext);
+    const [contract, setContract] = useState<Contract | null>(null);
+    const { address, signer, provider, communityAddress } = props;
     let refreshInterval: NodeJS.Timeout;
 
-    const updateClaimData = async (_contract: Contract & Community) => {
+    const updateClaimData = async (_contract: Contract) => {
         if (!_contract || !address) {
             return;
         }
-        const { claimedAmount, lastClaim } = await _contract.beneficiaries(
-            address
-        );
+        const { claimedAmount } = await _contract.beneficiaries(address);
         setBeneficiary({
-            claimedAmount: toNumber(claimedAmount),
-            lastClaim
+            claimedAmount: toNumber(claimedAmount)
         });
         setIsReady(true);
     };
 
     /**
-     * Beneficiary claim
+     * Beneficiary claim.
+     * Should update cUSD balance by the end of the claim.
      * @returns `ethers.ContractReceipt`
      * @throws {Error} "LOCKED"
      * @throws {Error} "Community: NOT_VALID_BENEFICIARY"
@@ -50,9 +48,7 @@ export const useBeneficiary = (communityAddress: string) => {
         if (!contract || !signer) {
             return;
         }
-        const tx = await (
-            contract.connect(signer) as Contract & Community
-        ).claim();
+        const tx = await (contract.connect(signer) as Contract).claim();
         const response = await tx.wait();
 
         updateClaimData(contract);
@@ -64,7 +60,7 @@ export const useBeneficiary = (communityAddress: string) => {
         // Refresh beneficiary time for next claim
         const refreshClaimCooldown = async (
             _address: string,
-            _contract: Contract & Community
+            _contract: Contract
         ) => {
             const _cooldown = await _contract.claimCooldown(_address);
             const _currentBlockNumber = await provider.getBlockNumber();

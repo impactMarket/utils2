@@ -1,12 +1,8 @@
+import { Signer } from '@ethersproject/abstract-signer';
+import { BaseProvider } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
-import { defaultAbiCoder } from 'ethers/lib/utils';
-import React from 'react';
-import { ImpactMarketContext } from '../components/ImpactMarketProvider';
-import { getContracts } from '../utils/contracts';
-
-type UseDAOType = {
-    addCommunity: Function;
-};
+import { defaultAbiCoder } from '@ethersproject/abi';
+import { getContracts } from './contracts';
 
 type CommunityArgs = {
     baseInterval: string | BigNumber;
@@ -21,12 +17,18 @@ type CommunityArgs = {
     proposalDescription: string;
 };
 
-export const useDAO = (): UseDAOType => {
-    const { provider, signer } = React.useContext(ImpactMarketContext);
+export class DAO {
+    private provider: BaseProvider;
+    private signer: Signer | null;
 
-    const addCommunity = async (community: CommunityArgs) => {
-        const { delegate, addresses } = await getContracts(provider);
-        if (!delegate || !addresses?.communityAdmin || !signer) {
+    constructor(_provider: BaseProvider, _signer: Signer | null) {
+        this.provider = _provider;
+        this.signer = _signer;
+    }
+
+    addCommunity = async (community: CommunityArgs) => {
+        const { delegate, addresses } = await getContracts(this.provider);
+        if (!delegate || !addresses?.communityAdmin || !this.signer) {
             return;
         }
 
@@ -74,7 +76,7 @@ export const useDAO = (): UseDAOType => {
                 )
             ];
 
-            const tx = await delegate.connect(signer).propose(
+            const tx = await delegate.connect(this.signer).propose(
                 targets,
                 values,
                 signatures,
@@ -93,6 +95,4 @@ export const useDAO = (): UseDAOType => {
             return undefined;
         }
     };
-
-    return { addCommunity };
-};
+}

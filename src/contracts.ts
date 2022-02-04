@@ -1,13 +1,11 @@
 import { Contract } from '@ethersproject/contracts';
 import { BaseProvider } from '@ethersproject/providers';
-import { ContractAddresses } from '../contracts';
-import BaseERC20ABI from '../contracts/abi/BaseERC20.json';
-import DonationMinerABI from '../contracts/abi/DonationMiner.json';
-import PACTTokenABI from '../contracts/abi/PACTToken.json';
-import PACTDelegateABI from '../contracts/abi/PACTDelegate.json';
-import { PACTDelegate } from '../types/contracts/PACTDelegate';
-import { PACTToken } from '../types/contracts/PACTToken';
-import MerkleDistributorABI from '../contracts/abi/MerkleDistributor.json';
+import { ContractAddresses } from './contractAddress';
+import BaseERC20ABI from './abi/BaseERC20.json';
+import DonationMinerABI from './abi/DonationMiner.json';
+import PACTTokenABI from './abi/PACTToken.json';
+import PACTDelegateABI from './abi/PACTDelegate.json';
+import MerkleDistributorABI from './abi/MerkleDistributor.json';
 
 export const getContracts = async (provider: BaseProvider) => {
     // do not request the network, if information exists
@@ -52,17 +50,13 @@ export const getContracts = async (provider: BaseProvider) => {
 
     const cusd = new Contract(addresses.cusd, BaseERC20ABI, provider);
 
-    const pact = new Contract(
-        addresses.pactToken,
-        PACTTokenABI,
-        provider
-    ) as Contract & PACTToken;
+    const pact = new Contract(addresses.pactToken, PACTTokenABI, provider);
 
     const delegate = new Contract(
         addresses.delegate,
         PACTDelegateABI,
         provider
-    ).attach(addresses.delegator) as Contract & PACTDelegate;
+    ).attach(addresses.delegator);
 
     return {
         addresses,

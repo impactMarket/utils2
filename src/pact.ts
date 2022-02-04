@@ -1,10 +1,11 @@
-import ERC20ABI from '../contracts/abi/BaseERC20.json';
+import ERC20ABI from './abi/BaseERC20.json';
 import { BigNumber } from 'bignumber.js';
-import { ContractAddresses } from '../contracts';
+import { ContractAddresses } from './contractAddress';
 import { BaseProvider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 import axios from 'axios';
+import { getContracts } from './contracts';
 
 const client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/ubeswap/ubeswap',
@@ -90,4 +91,34 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
         tokenHolders: counters.data.token_holder_count,
         transfers: counters.data.transfer_count
     };
+}
+
+export async function hasPACTVotingPower(
+    provider: BaseProvider,
+    address: string
+) {
+    const { pact: pactContract, delegate } = await getContracts(provider);
+    if (
+        address === null ||
+        !delegate?.address ||
+        !delegate?.provider ||
+        !pactContract?.address ||
+        !pactContract?.provider
+    ) {
+        return;
+    }
+
+    try {
+        const [proposalThreshold, currentVotes] = await Promise.all([
+            delegate.proposalThreshold(),
+            pactContract.getCurrentVotes(address)
+        ]);
+
+        return new BigNumber(currentVotes.toString()).gte(
+            proposalThreshold.toString()
+        );
+    } catch (error) {
+        console.log(`Error getting voting power...\n${error}`);
+        return false;
+    }
 }

@@ -1,10 +1,16 @@
-import { UbiCommunityContract, UbiCommunityState } from '../types';
 import { BigNumber } from 'bignumber.js';
 import { frequencyToText } from './frequencyToText';
 
 export function estimateCommunityRemainFunds(community: {
-    contract: UbiCommunityContract;
-    state: UbiCommunityState;
+    contract: {
+        baseInterval: number;
+        claimAmount: BigNumber;
+    };
+    state: {
+        beneficiaries: number;
+        raised: BigNumber;
+        claimed: BigNumber;
+    };
 }): number {
     if (community.contract === undefined || community.state === undefined) {
         return 0;

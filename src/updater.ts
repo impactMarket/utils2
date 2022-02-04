@@ -1,7 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
 import { BaseProvider } from '@ethersproject/providers';
-import { toNumber } from '../helpers/toNumber';
-import { getContracts } from '../utils/contracts';
+import { toNumber } from './toNumber';
+import { getContracts } from './contracts';
 
 export const updateEpochData = async (provider: BaseProvider) => {
     const { donationMiner } = await getContracts(provider);
