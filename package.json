@@ -27,8 +27,8 @@
         "abi"
     ],
     "scripts": {
-        "build": "microbundle-crl --format modern,cjs",
-        "start": "microbundle-crl watch --no-compress --format modern,cjs",
+        "build": "rm *.js *.js.map *.d.ts.map *.d.ts && tsc",
+        "start": "tsc -w",
         "lint:write": "eslint --fix src/**/*.ts",
         "lint:dryrun": "eslint src/**/*.ts",
         "test:unit": "CI=1 react-scripts test --env=node",

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import WalletConnection from '../WalletConnection';
-import { getPACTTradingMetrics } from '@impact-market/utils';
+import { getPACTTradingMetrics } from '@impact-market/utils/pact';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { CeloMainnet } from '@celo-tools/use-contractkit';
 

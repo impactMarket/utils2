@@ -1,8 +1,10 @@
 import React from 'react';
-import { useEpoch } from '@impact-market/utils';
+import { useEpoch } from '@impact-market/utils/useEpoch';
+import { ImpactMarketContext } from '../../context';
 
 const Epoch = () => {
-    const { epoch } = useEpoch();
+    const { address, provider } = React.useContext(ImpactMarketContext);
+    const { epoch } = useEpoch({ address, provider });
 
     return (
         <>

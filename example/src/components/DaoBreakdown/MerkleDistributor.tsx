@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMerkleDistributor } from '@impact-market/utils';
+import { useMerkleDistributor } from '@impact-market/utils/useMerkleDistributor';
 
 const Balance = () => {
     const { hasClaim, amountToClaim, claim } = useMerkleDistributor(undefined as any);

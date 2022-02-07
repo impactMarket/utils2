@@ -1,12 +1,15 @@
-import { toNumber, frequencyToText, toToken, useDAO } from '@impact-market/utils';
+import { toNumber, frequencyToText, toToken, DAO } from '@impact-market/utils';
 import React, { useEffect, useState } from 'react';
+import { ImpactMarketContext } from '../../context';
 import { impactMarket } from '../../services/impactMarket';
 
 const Community = (props: any) => {
     const { id, name, description, contract, requestByAddress } = props;
-    const { addCommunity } = useDAO();
+    const { signer, provider } = React.useContext(ImpactMarketContext);
     const [isLoading, setIsLoading] = useState(false);
     const [isAdded, setIsAdded] = useState(false);
+
+    const dao = new DAO(provider, signer)
 
     const handleAddCommunity = async () => {
         setIsLoading(true);
@@ -21,11 +24,11 @@ const Community = (props: any) => {
             proposalDescription: `## Description:\n${description}\n\nUBI Contract Parameters:\nClaim Amount: ${toNumber(contract.claimAmount)}\nMax Claim: ${toNumber(contract.maxClaim)}\nBase Interval: ${frequencyToText(contract.baseInterval)}\nIncrement Interval: ${contract.incrementInterval * 5 / 60} minutes\n\n\nMore details: ${process.env.BASE_URL}/communities/${id}`
         };
 
-        const response = await addCommunity(data)
+        const response = await dao.addCommunity(data)
 
         console.log(response);
 
-        if (response?.status) {
+        if (typeof(response) ===  'number') {
             setIsAdded(true);
         }
 
