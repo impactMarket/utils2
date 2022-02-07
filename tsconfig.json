@@ -8,7 +8,7 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es5",
-    "module": "esnext",
+    "module": "commonjs",
     "esModuleInterop": true,
     "sourceMap": true,
     "inlineSourceMap": false,
