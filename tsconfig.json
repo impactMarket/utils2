@@ -28,12 +28,11 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
-    "noEmit": true
+    "isolatedModules": true
   },
   "include": [
-    "src/**/*.ts"
+    "src/*.ts",
+    "src/*.tsx",
   ],
   "exclude": [
     "src/**/__tests__/**/*",
