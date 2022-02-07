@@ -12,12 +12,6 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "inlineSourceMap": false,
-    // This option should cause sourcesContent to be included in the
-    // source map JSON, so we don't have to rely on the (nonexistent)
-    // relative paths in the sources array, but it appears tsc does not
-    // respect this option unless the source maps are inlined into the
-    // source files, which we definitely do not want. Instead, we use the
-    // config/rewriteSourceMaps.ts script to add sourcesContent.
     "inlineSources": true,
     "removeComments": true,
     "declaration": true,
@@ -25,11 +19,25 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "outDir": "./",
-    "lib": ["es2015", "esnext.asynciterable", "dom"],
+    "lib": [
+      "es2015",
+      "esnext.asynciterable",
+      "dom"
+    ],
     "jsx": "react",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "noEmit": true
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts"
+  ],
   "exclude": [
-    "src/**/__tests__/**/*", "dist", "example"
+    "src/**/__tests__/**/*",
+    "dist",
+    "example"
   ]
 }
