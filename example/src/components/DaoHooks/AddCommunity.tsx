@@ -1,15 +1,20 @@
-import { toNumber, frequencyToText, toToken, DAO } from '@impact-market/utils';
+import { toNumber } from '@impact-market/utils/toNumber';
+import { frequencyToText } from '@impact-market/utils/frequencyToText';
+import { toToken } from '@impact-market/utils/toToken';
+import { DAO } from '@impact-market/utils/dao';
 import React, { useEffect, useState } from 'react';
-import { ImpactMarketContext } from '../../context';
 import { impactMarket } from '../../services/impactMarket';
+import { useProvider, useProviderOrSigner } from '@celo-tools/use-contractkit';
+import { JsonRpcSigner } from '@ethersproject/providers';
 
 const Community = (props: any) => {
     const { id, name, description, contract, requestByAddress } = props;
-    const { signer, provider } = React.useContext(ImpactMarketContext);
+    const provider = useProvider();
+    const signer = useProviderOrSigner();
     const [isLoading, setIsLoading] = useState(false);
     const [isAdded, setIsAdded] = useState(false);
 
-    const dao = new DAO(provider, signer)
+    const dao = new DAO(provider, signer instanceof JsonRpcSigner ? signer : null);
 
     const handleAddCommunity = async () => {
         setIsLoading(true);

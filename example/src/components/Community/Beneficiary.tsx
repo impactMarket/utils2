@@ -1,15 +1,8 @@
 import React from 'react';
-import { useBeneficiary } from '@impact-market/utils';
-import { ImpactMarketContext } from '../../context';
+import { useBeneficiary } from '@impact-market/utils/useBeneficiary';
 
 const Beneficiary = () => {
-    const { address, signer, provider } = React.useContext(ImpactMarketContext);
-    const { beneficiary, claimCooldown, isReady } = useBeneficiary({
-        communityAddress: '0x6dcf4B577309aF974216b46817e98833Ad27c0Ab',
-        address,
-        signer,
-        provider,
-    });
+    const { beneficiary, claimCooldown, isReady } = useBeneficiary('0x6dcf4B577309aF974216b46817e98833Ad27c0Ab');
 
     if(!isReady) {
         return <div>Loading</div>;

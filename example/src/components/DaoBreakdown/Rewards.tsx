@@ -1,20 +1,13 @@
 import React, { useState } from 'react';
 import { useRewards } from '@impact-market/utils/useRewards';
-import { usePACTBalance } from '@impact-market/utils/useBalance';
-import { ImpactMarketContext } from '../../context';
 
 const ClaimableRewards = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const { address, signer, provider } = React.useContext(ImpactMarketContext);
-    const { claimRewards, rewards, updateRewards } = useRewards({ address, provider, signer });
-    const { updatePACTBalance } = usePACTBalance({ address, provider });
+    const { claimRewards, rewards } = useRewards();
 
     const claim = async () => {
         setIsLoading(true);
         const response = await claimRewards();
-
-        updateRewards();
-        updatePACTBalance();
 
         console.log(response);
 

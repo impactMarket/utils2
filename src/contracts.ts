@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { BaseProvider } from '@ethersproject/providers';
+import type { BaseProvider } from '@ethersproject/providers';
 import { ContractAddresses } from './contractAddress';
 import BaseERC20ABI from './abi/BaseERC20.json';
 import DonationMinerABI from './abi/DonationMiner.json';

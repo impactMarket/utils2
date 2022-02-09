@@ -1,17 +1,12 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { communityContract } from './community';
-import { Contract } from '@ethersproject/contracts';
+import type { Contract } from '@ethersproject/contracts';
 import { estimateBlockTime } from './estimateBlockTime';
 import { toNumber } from './toNumber';
-import { BaseProvider } from '@ethersproject/providers';
-import { Signer } from '@ethersproject/abstract-signer';
+import { ImpactProviderContext } from './ImpactProvider';
+import { updateCUSDBalance } from './useCUSDBalance';
 
-export const useBeneficiary = (props: {
-    communityAddress: string;
-    address: string;
-    signer: Signer | null;
-    provider: BaseProvider;
-}) => {
+export const useBeneficiary = (communityAddress: string) => {
     const [isReady, setIsReady] = useState(false);
     const [beneficiary, setBeneficiary] = useState<{
         claimedAmount: number;
@@ -20,7 +15,9 @@ export const useBeneficiary = (props: {
     });
     const [claimCooldown, setClaimCooldown] = useState(new Date(0));
     const [contract, setContract] = useState<Contract | null>(null);
-    const { address, signer, provider, communityAddress } = props;
+    const { provider, address, signer } = React.useContext(
+        ImpactProviderContext
+    );
     let refreshInterval: NodeJS.Timeout;
 
     const updateClaimData = async (_contract: Contract) => {
@@ -36,7 +33,6 @@ export const useBeneficiary = (props: {
 
     /**
      * Beneficiary claim.
-     * Should update cUSD balance by the end of the claim.
      * @returns `ethers.ContractReceipt`
      * @throws {Error} "LOCKED"
      * @throws {Error} "Community: NOT_VALID_BENEFICIARY"
@@ -45,13 +41,14 @@ export const useBeneficiary = (props: {
      * @throws {Error} "ERC20: transfer amount exceeds balance"
      */
     const claim = async () => {
-        if (!contract || !signer) {
+        if (!contract || !signer || !address) {
             return;
         }
         const tx = await (contract.connect(signer) as Contract).claim();
         const response = await tx.wait();
 
         updateClaimData(contract);
+        updateCUSDBalance(provider, address);
 
         return response;
     };

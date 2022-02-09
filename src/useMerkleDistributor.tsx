@@ -1,26 +1,23 @@
 import { BigNumber } from 'bignumber.js';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toNumber } from './toNumber';
 import { getContracts } from './contracts';
-import { Signer } from '@ethersproject/abstract-signer';
-import { BaseProvider } from '@ethersproject/providers';
+import { updatePACTBalance } from './usePACTBalance';
+import { ImpactProviderContext } from './ImpactProvider';
 
-export const useMerkleDistributor = (props: {
-    treeAccount: {
-        index: number;
-        amount: string;
-        proof: string[];
-    };
-    address: string;
-    signer: Signer | null;
-    provider: BaseProvider;
+export const useMerkleDistributor = (treeAccount: {
+    index: number;
+    amount: string;
+    proof: string[];
 }) => {
-    const { treeAccount, address, signer, provider } = props;
+    const { provider, address, signer } = React.useContext(
+        ImpactProviderContext
+    );
     const [hasClaim, setHasClaim] = useState(false);
     const [amountToClaim, setAmountToClaim] = useState(0);
 
     /**
-     * Claims airgrab (should update balance once finished)
+     * Claims airgrab rewards.
      * @returns
      */
     const claim = async () => {
@@ -39,6 +36,8 @@ export const useMerkleDistributor = (props: {
                     treeAccount.proof
                 );
             const response = await tx.wait();
+
+            updatePACTBalance(provider, address);
 
             return response;
         } catch (error) {

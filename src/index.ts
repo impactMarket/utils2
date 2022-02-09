@@ -2,9 +2,11 @@ export * from './wallets';
 export * from './pact';
 export * from './community';
 export * from './dao';
-export * from './donationMiner';
+export * from './useDonationMiner';
 
-export * from './useBalance';
+export * from './useCUSDBalance';
+export * from './usePACTBalance';
+export * from './ImpactProvider';
 export * from './useBeneficiary';
 export * from './useEpoch';
 export * from './useRewards';

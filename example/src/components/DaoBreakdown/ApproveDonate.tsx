@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { DonationMiner } from '@impact-market/utils/donationMiner';
-import { ImpactMarketContext } from '../../context';
+import { useDonationMiner } from '@impact-market/utils/useDonationMiner';
 
 const ApproveDonate = () => {
-    const { address, signer, provider } = React.useContext(ImpactMarketContext);
+    const donationMiner = useDonationMiner();
     const [approvedAmount, setApprovedAmount] = useState(false);
     const [donationIsLoading, setDonationIsLoading] = useState(false);
     const [donationAmount, setDonationAmount] = useState('');
 
-    const donationMiner = new DonationMiner(provider, signer, address);
 
     const approveDonation = async () => {
         setDonationIsLoading(true);

@@ -8,7 +8,7 @@ import { ContractKitProvider, Alfajores, useContractKit, useProviderOrSigner } f
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import PACTMetrics from './components/PACTMetrics';
 import Community from './components/Community';
-import { ImpactMarketContext } from './context';
+import { ImpactProvider } from '@impact-market/utils/ImpactProvider';
 
 const components = [
     { label: 'Get wallets balance', component: WalletsBalance },
@@ -65,16 +65,14 @@ function App() {
 
     return (
         <>
-            <ImpactMarketContext.Provider
-                value={{
-                    provider,
-                    signer: signer instanceof JsonRpcSigner ? signer : null,
-                    address: isSameNetwork ? address : null
-                }}
+            <ImpactProvider
+                provider={provider}
+                signer={signer instanceof JsonRpcSigner ? signer : null}
+                address={isSameNetwork ? address : null}
             >
                 <Intro handleChange={setSelectedOption} initialOption={initialOption} options={options} />
                 {!!Component && <Component />}
-            </ImpactMarketContext.Provider>
+            </ImpactProvider>
         </>
     )
 }

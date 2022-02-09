@@ -1,14 +1,22 @@
-import React from 'react';
-import { hasPACTVotingPower } from '@impact-market/utils/pact';
-import { ImpactMarketContext } from '../../context';
+import React, { useEffect, useState } from 'react';
+import { hasPACTVotingPower } from '@impact-market/utils/pact'
+import { useProvider, useContractKit } from '@celo-tools/use-contractkit';
 
 const VotingPower = () => {
-    const { address, provider } = React.useContext(ImpactMarketContext);
-    const enoughVotingPowerToPropose = hasPACTVotingPower(provider, address)
+    const provider = useProvider();
+    const { address } = useContractKit();
+    const [hasVotingPower, setHasVotingPower] = useState(false);
+
+    useEffect(() => {
+        if (address) {
+            hasPACTVotingPower(provider, address).then((has) => setHasVotingPower(has));
+        }
+    }, [address, provider]);
+
     return (
         <div>
             <h3>Voting Power</h3>
-            enough voting power to propose: {enoughVotingPowerToPropose?.toString()}
+            enough voting power to propose: {hasVotingPower.toString()}
         </div>
     );
 }
