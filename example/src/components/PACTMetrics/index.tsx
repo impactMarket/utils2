@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import WalletConnection from '../WalletConnection';
-import { getPACTTradingMetrics } from '@impact-market/utils';
+import { getPACTTradingMetrics, getPACTTVL, getUBILiquidity } from '@impact-market/utils';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { CeloMainnet } from '@celo-tools/use-contractkit';
 
@@ -11,12 +11,18 @@ const PACTMetrics = () => {
         totalLiquidityUSD: string;
         tokenHolders: number;
         transfers: number;
-    }>({ priceUSD: '', dailyVolumeUSD: '', totalLiquidityUSD: '', tokenHolders: 0, transfers: 0 });
+        tvl: number;
+        ubiLiquidity: number;
+    }>({ priceUSD: '', dailyVolumeUSD: '', totalLiquidityUSD: '', tokenHolders: 0, transfers: 0, tvl: 0, ubiLiquidity: 0 });
 
     useEffect(() => {
         const loadPactPriceVolumeLiquidity = async () => {
-            const r = await getPACTTradingMetrics(new JsonRpcProvider(CeloMainnet.rpcUrl));
-            setPactTradingMetrics(r);
+            const provider = new JsonRpcProvider(CeloMainnet.rpcUrl);
+            const r = await getPACTTradingMetrics(provider);
+            const tvl = await getPACTTVL(provider);
+            const ubiLiquidity = await getUBILiquidity(provider);
+            console.log({ ...r, tvl, ubiLiquidity })
+            setPactTradingMetrics({ ...r, tvl, ubiLiquidity });
         }
         loadPactPriceVolumeLiquidity();
     }, []);
@@ -38,6 +44,12 @@ const PACTMetrics = () => {
                 </li>
                 <li style={{ marginTop: 16 }}>
                     <div>transfers {pactTradingMetrics.transfers}</div>
+                </li>
+                <li style={{ marginTop: 16 }}>
+                    <div>tvl {pactTradingMetrics.tvl}</div>
+                </li>
+                <li style={{ marginTop: 16 }}>
+                    <div>ubiLiquidity {pactTradingMetrics.ubiLiquidity}</div>
                 </li>
             </ul>
         </WalletConnection>

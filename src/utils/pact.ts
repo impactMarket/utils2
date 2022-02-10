@@ -5,6 +5,7 @@ import { BaseProvider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 import axios from 'axios';
+import { toNumber } from '../helpers/toNumber';
 
 const client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/ubeswap/ubeswap',
@@ -90,4 +91,46 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
         tokenHolders: counters.data.token_holder_count,
         transfers: counters.data.transfer_count
     };
+}
+
+export async function getPACTTVL(provider: BaseProvider): Promise<number> {
+    const { chainId } = await provider.getNetwork();
+    // if not on mainnet
+    if (chainId !== 42220) {
+        return 0;
+    }
+    const contractAddresses = ContractAddresses.get(chainId)!;
+
+    const { PACTToken, PACTDelegator } = contractAddresses;
+    const result = await client.query({
+        query: gql`
+            {
+                tokenDayDatas(
+                    first:1
+                    orderBy: date
+                    orderDirection: desc
+                    where: {token: "${PACTToken.toLowerCase()}"}
+                ) {
+                    priceUSD
+                }
+            }
+            `
+    });
+
+    const pact = new Contract(PACTToken, ERC20ABI, provider);
+    const TVL =
+        toNumber((await pact.balanceOf(PACTDelegator)).toString()) *
+        parseFloat(result.data.tokenDayDatas[0].priceUSD);
+
+    return TVL;
+}
+
+export async function getUBILiquidity(provider: BaseProvider): Promise<number> {
+    const { chainId } = await provider.getNetwork();
+    const contractAddresses = ContractAddresses.get(chainId)!;
+
+    const { cUSD, Treasury } = contractAddresses;
+    const cusd = new Contract(cUSD, ERC20ABI, provider);
+
+    return toNumber((await cusd.balanceOf(Treasury)).toString());
 }
