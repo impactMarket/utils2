@@ -1,5 +1,5 @@
 import React from 'react';
-import { useBeneficiary } from '@impact-market/utils';
+import { useBeneficiary } from '@impact-market/utils/useBeneficiary';
 
 const Beneficiary = () => {
     const { beneficiary, claimCooldown, isReady } = useBeneficiary('0x6dcf4B577309aF974216b46817e98833Ad27c0Ab');
@@ -16,9 +16,6 @@ const Beneficiary = () => {
             </div>
             <div style={{ marginTop: 8 }}>
                 claimedAmount: {beneficiary.claimedAmount.toString()}
-            </div>
-            <div style={{ marginTop: 8 }}>
-                lastClaim: {beneficiary.lastClaim.toString()}
             </div>
         </>
     )

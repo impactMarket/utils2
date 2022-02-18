@@ -1,0 +1,45 @@
+import type { BaseProvider } from '@ethersproject/providers';
+import React, { useEffect } from 'react';
+import { getContracts } from './contracts';
+import { EpochContext, ImpactProviderContext } from './ImpactProvider';
+import {
+    getLastEpochsDonations,
+    updateEpochData,
+    updateUserContributionData
+} from './updater';
+
+export const updateEpoch = async (provider: BaseProvider, address: string) => {
+    if (!address) {
+        return;
+    }
+    const { donationMiner } = await getContracts(provider);
+    const [epochData, userContributionData, donations] = await Promise.all([
+        updateEpochData(provider),
+        updateUserContributionData(provider, address),
+        getLastEpochsDonations(donationMiner, address)
+    ]);
+    return {
+        ...epochData,
+        ...userContributionData,
+        donations
+    };
+};
+
+export const useEpoch = () => {
+    const { provider, address } = React.useContext(ImpactProviderContext);
+    const { epoch, setEpoch } = React.useContext(EpochContext);
+
+    useEffect(() => {
+        if (address) {
+            updateEpoch(provider, address).then((epochData) => {
+                setEpoch((epoch) => ({
+                    ...epoch,
+                    ...epochData,
+                    initialised: true
+                }));
+            });
+        }
+    }, []);
+
+    return { epoch };
+};

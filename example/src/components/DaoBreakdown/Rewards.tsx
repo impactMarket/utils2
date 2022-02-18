@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useRewards } from '@impact-market/utils';
+import { useRewards } from '@impact-market/utils/useRewards';
 
 const ClaimableRewards = () => {
     const [isLoading, setIsLoading] = useState(false);

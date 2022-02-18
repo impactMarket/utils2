@@ -1,12 +1,20 @@
-import { toNumber, frequencyToText, toToken, useDAO } from '@impact-market/utils';
+import { toNumber } from '@impact-market/utils/toNumber';
+import { frequencyToText } from '@impact-market/utils/frequencyToText';
+import { toToken } from '@impact-market/utils/toToken';
+import { DAO } from '@impact-market/utils/dao';
 import React, { useEffect, useState } from 'react';
 import { impactMarket } from '../../services/impactMarket';
+import { useProvider, useProviderOrSigner } from '@celo-tools/use-contractkit';
+import { JsonRpcSigner } from '@ethersproject/providers';
 
 const Community = (props: any) => {
     const { id, name, description, contract, requestByAddress } = props;
-    const { addCommunity } = useDAO();
+    const provider = useProvider();
+    const signer = useProviderOrSigner();
     const [isLoading, setIsLoading] = useState(false);
     const [isAdded, setIsAdded] = useState(false);
+
+    const dao = new DAO(provider, signer instanceof JsonRpcSigner ? signer : null);
 
     const handleAddCommunity = async () => {
         setIsLoading(true);
@@ -21,11 +29,11 @@ const Community = (props: any) => {
             proposalDescription: `## Description:\n${description}\n\nUBI Contract Parameters:\nClaim Amount: ${toNumber(contract.claimAmount)}\nMax Claim: ${toNumber(contract.maxClaim)}\nBase Interval: ${frequencyToText(contract.baseInterval)}\nIncrement Interval: ${contract.incrementInterval * 5 / 60} minutes\n\n\nMore details: ${process.env.BASE_URL}/communities/${id}`
         };
 
-        const response = await addCommunity(data)
+        const response = await dao.addCommunity(data)
 
         console.log(response);
 
-        if (response?.status) {
+        if (typeof(response) ===  'number') {
             setIsAdded(true);
         }
 

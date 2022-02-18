@@ -5,11 +5,10 @@ import WalletsBalance from './components/WalletsBalance';
 import DaoBreakdown from './components/DaoBreakdown';
 import DaoHooks from './components/DaoHooks';
 import { ContractKitProvider, Alfajores, useContractKit, useProviderOrSigner } from '@celo-tools/use-contractkit';
-import { ImpactMarketProvider } from '@impact-market/utils';
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import PACTMetrics from './components/PACTMetrics';
-import Subgraph from './components/Subgraph';
 import Community from './components/Community';
+import { ImpactProvider } from '@impact-market/utils/ImpactProvider';
 
 const components = [
     { label: 'Get wallets balance', component: WalletsBalance },
@@ -17,12 +16,11 @@ const components = [
     { label: 'DAO Hooks', component: DaoHooks },
     { label: 'Community', component: Community },
     { label: 'PACT Metrics', component: PACTMetrics },
-    { label: 'Subgraph', component: Subgraph },
 ]
 
 const options = components.map(({ label }) => label);
 
-const initialOption = options[1];
+const initialOption = options[4];
 
 const network = Alfajores;
 
@@ -67,14 +65,14 @@ function App() {
 
     return (
         <>
-            <ImpactMarketProvider
-                address={isSameNetwork ? address : null}
+            <ImpactProvider
                 provider={provider}
                 signer={signer instanceof JsonRpcSigner ? signer : null}
+                address={isSameNetwork ? address : null}
             >
                 <Intro handleChange={setSelectedOption} initialOption={initialOption} options={options} />
                 {!!Component && <Component />}
-            </ImpactMarketProvider>
+            </ImpactProvider>
         </>
     )
 }

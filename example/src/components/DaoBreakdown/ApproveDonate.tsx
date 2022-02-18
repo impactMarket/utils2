@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import { useDonationMiner } from '@impact-market/utils';
+import { useDonationMiner } from '@impact-market/utils/useDonationMiner';
 
 const ApproveDonate = () => {
-    const { approve, donateToTreasury } = useDonationMiner();
+    const donationMiner = useDonationMiner();
     const [approvedAmount, setApprovedAmount] = useState(false);
     const [donationIsLoading, setDonationIsLoading] = useState(false);
     const [donationAmount, setDonationAmount] = useState('');
 
+
     const approveDonation = async () => {
         setDonationIsLoading(true);
 
-        const response = await approve(donationAmount);
+        const response = await donationMiner.approve(donationAmount);
 
         setDonationIsLoading(false);
 
@@ -22,7 +23,7 @@ const ApproveDonate = () => {
     const executeDonation = async () => {
         setDonationIsLoading(true);
 
-        const response = await donateToTreasury(donationAmount);
+        const response = await donationMiner.donateToTreasury(donationAmount);
 
         setDonationIsLoading(false);
 

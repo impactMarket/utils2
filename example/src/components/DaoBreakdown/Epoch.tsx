@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEpoch } from '@impact-market/utils';
+import { useEpoch } from '@impact-market/utils/useEpoch';
 
 const Epoch = () => {
     const { epoch } = useEpoch();

@@ -1,13 +1,11 @@
 import React from 'react';
-import { useCUSDBalance, usePACTBalance } from '@impact-market/utils';
+import { useCUSDBalance } from '@impact-market/utils/useCUSDBalance';
+import { usePACTBalance } from '@impact-market/utils/usePACTBalance';
 
 const Balance = () => {
-    const { balance: balanceCUSD } = useCUSDBalance();
-    const { balance: balancePACT } = usePACTBalance();
+    const balanceCUSD = useCUSDBalance();
+    const balancePACT = usePACTBalance();
 
-    if (!balanceCUSD || !balancePACT) {
-        return null;
-    }
     return (
         <>
             <h3>Balance</h3>

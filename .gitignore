@@ -20,3 +20,11 @@ dist
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# ignore build content
+/*.d.ts
+/*.d.ts.map
+/*.js
+/*.js.map
+/*.json
+/abi

@@ -6,13 +6,13 @@ orbs:
 jobs:
   test:
     docker:
-      - image: circleci/node:14.18.2
+      - image: circleci/node:16.13.0
     steps:
       - checkout
       - run: yarn
       - run:
           name: "Run Tests"
-          command: yarn test
+          command: yarn test:unit
 
 workflows:
   version: 2
