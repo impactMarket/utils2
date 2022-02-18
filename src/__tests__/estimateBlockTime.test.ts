@@ -11,6 +11,7 @@ describe('#estimateBlockTime()', () => {
         const result = estimateBlockTime(87000, 87000 + blocksPerDay);
         const expectedDate = new Date();
         expectedDate.setDate(expectedDate.getDate() + 1);
+        expectedDate.setTime(expectedDate.getTime() + 2000); // 2s overflow
         expect(testableDate(result)).to.equal(testableDate(expectedDate));
     });
     it('future (half day)', () => {
