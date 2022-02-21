@@ -1,12 +1,12 @@
-import type { BaseProvider } from '@ethersproject/providers';
-import React, { useEffect } from 'react';
-import { getContracts } from './contracts';
 import { EpochContext, ImpactProviderContext } from './ImpactProvider';
+import { getContracts } from './contracts';
 import {
     getLastEpochsDonations,
     updateEpochData,
     updateUserContributionData
 } from './updater';
+import React, { useEffect } from 'react';
+import type { BaseProvider } from '@ethersproject/providers';
 
 export const updateEpoch = async (provider: BaseProvider, address: string) => {
     if (!address) {
@@ -18,6 +18,7 @@ export const updateEpoch = async (provider: BaseProvider, address: string) => {
         updateUserContributionData(provider, address),
         getLastEpochsDonations(donationMiner, address)
     ]);
+
     return {
         ...epochData,
         ...userContributionData,

@@ -1,18 +1,18 @@
-import React, { useEffect } from 'react';
-import { getContracts } from './contracts';
-import type { BaseProvider } from '@ethersproject/providers';
+import {
+    ImpactProviderContext,
+    PACTBalanceContext,
+    RewardsContext
+} from './ImpactProvider';
 import {
     getAllocatedRewards,
     getClaimableRewards,
     getCurrentEpochEstimatedRewards,
     getEstimatedClaimableRewards
 } from './updater';
+import { getContracts } from './contracts';
 import { updatePACTBalance } from './usePACTBalance';
-import {
-    ImpactProviderContext,
-    RewardsContext,
-    PACTBalanceContext
-} from './ImpactProvider';
+import React, { useEffect } from 'react';
+import type { BaseProvider } from '@ethersproject/providers';
 
 export const updateRewards = async (
     provider: BaseProvider,
@@ -30,10 +30,10 @@ export const updateRewards = async (
     ]);
 
     return {
-        estimated,
+        allocated,
         claimable,
         currentEpoch,
-        allocated
+        estimated,
     };
 };
 
@@ -62,6 +62,7 @@ export const useRewards = () => {
                 initialised: false
             }));
             const updatedRewards = await updateRewards(provider, address);
+
             setRewards((rewards) => ({
                 ...rewards,
                 ...updatedRewards,
@@ -71,6 +72,7 @@ export const useRewards = () => {
                 provider,
                 address
             );
+
             setBalance(updatedPACTBalance);
 
             return response;

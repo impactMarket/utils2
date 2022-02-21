@@ -23,6 +23,7 @@ export function estimateCommunityRemainFunds(community: {
     let communityLimitPerDay = new BigNumber(claimAmount).multipliedBy(
         beneficiaries
     );
+
     if (frequencyToText(baseInterval) === 'week') {
         communityLimitPerDay = communityLimitPerDay.div(7);
     }

@@ -1,9 +1,9 @@
 import { BigNumber } from 'bignumber.js';
-import React, { useEffect, useState } from 'react';
-import { toNumber } from './toNumber';
-import { getContracts } from './contracts';
-import { updatePACTBalance } from './usePACTBalance';
 import { ImpactProviderContext } from './ImpactProvider';
+import { getContracts } from './contracts';
+import { toNumber } from './toNumber';
+import { updatePACTBalance } from './usePACTBalance';
+import React, { useEffect, useState } from 'react';
 
 export const useMerkleDistributor = (treeAccount: {
     index: number;
@@ -18,11 +18,12 @@ export const useMerkleDistributor = (treeAccount: {
 
     /**
      * Claims airgrab rewards.
-     * @returns tx response object
+     * @returns {ethers.ContractReceipt} tx response object
      */
     const claim = async () => {
         try {
             const { merkleDistributor } = await getContracts(provider);
+
             if (!address || !signer) {
                 return;
             }
@@ -50,6 +51,7 @@ export const useMerkleDistributor = (treeAccount: {
     useEffect(() => {
         const verifyClaim = async () => {
             const { merkleDistributor } = await getContracts(provider);
+
             if (!address || !signer) {
                 return;
             }
@@ -58,14 +60,16 @@ export const useMerkleDistributor = (treeAccount: {
                 const _isClaimed = await merkleDistributor.isClaimed(
                     treeAccount.index
                 );
+
                 setAmountToClaim(
                     toNumber(new BigNumber(treeAccount.amount, 16).toString())
                 );
                 setHasClaim(!_isClaimed);
             }
         };
+
         verifyClaim();
     }, [address]);
 
-    return { hasClaim, amountToClaim, claim };
+    return { amountToClaim, claim, hasClaim };
 };

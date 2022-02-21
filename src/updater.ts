@@ -1,7 +1,7 @@
-import { Contract } from '@ethersproject/contracts';
 import { BaseProvider } from '@ethersproject/providers';
-import { toNumber } from './toNumber';
+import { Contract } from '@ethersproject/contracts';
 import { getContracts } from './contracts';
+import { toNumber } from './toNumber';
 
 export const updateEpochData = async (provider: BaseProvider) => {
     const { donationMiner } = await getContracts(provider);
@@ -16,7 +16,8 @@ export const updateEpochData = async (provider: BaseProvider) => {
     // calculate remaining time until the end block, in seconds.
     // If the end block was in the past, add another epoch.
     const isFuture = currentBlock > endBlock.toNumber();
-    const blocksPerDay = 12 * 60 * 24; // ~ amount of blocks in a day
+    // ~ amount of blocks in a day
+    const blocksPerDay = 12 * 60 * 24;
     const blockTime =
         (endBlock.toNumber() - currentBlock + (isFuture ? blocksPerDay : 0)) *
         5000;
@@ -60,7 +61,9 @@ export const updateUserContributionData = async (
 
 /**
  * Estimated rewards for the current period + the claim delay window.
- * @returns a number
+ * @param {Contract} donationMiner The donation miner contract.
+ * @param {string} address The address of the user.
+ * @returns {number} Estimated rewards.
  */
 export const getEstimatedClaimableRewards = async (
     donationMiner: Contract,
@@ -83,6 +86,7 @@ export const getEstimatedClaimableRewards = async (
     const currentEpochDonations = await donationMiner.estimateClaimableReward(
         address
     );
+
     return (
         toNumber(allDonations) -
         toNumber(claimableDonations) +
@@ -92,7 +96,9 @@ export const getEstimatedClaimableRewards = async (
 
 /**
  * Get allocated rewards.
- * @returns a number
+ * @param {Contract} donationMiner The donation miner contract.
+ * @param {string} address The address of the user.
+ * @returns {number} Allocated rewards.
  */
 export const getAllocatedRewards = async (
     donationMiner: Contract,
@@ -104,12 +110,15 @@ export const getAllocatedRewards = async (
             address,
             parseInt(rewardPeriodCount.toString(), 10) - 1
         );
+
     return toNumber(pastDonations);
 };
 
 /**
  * Estimated rewards for the current epoch.
- * @returns a number
+ * @param {Contract} donationMiner The donation miner contract.
+ * @param {string} address The address of the user.
+ * @returns {number} Current epoch estimated rewards.
  */
 export const getCurrentEpochEstimatedRewards = async (
     donationMiner: Contract,
@@ -118,12 +127,15 @@ export const getCurrentEpochEstimatedRewards = async (
     const currentEpochDonations = await donationMiner.estimateClaimableReward(
         address
     );
+
     return toNumber(currentEpochDonations);
 };
 
 /**
  * Claimable rewards at the moment.
- * @returns a number
+ * @param {Contract} donationMiner The donation miner contract.
+ * @param {string} address The address of the user.
+ * @returns {number} Claimable rewards.
  */
 export const getClaimableRewards = async (
     donationMiner: Contract,
@@ -137,12 +149,15 @@ export const getClaimableRewards = async (
             parseInt(claimDelay.toString(), 10) -
             1
     );
+
     return toNumber(value);
 };
 
 /**
  * Get total donated on X last epochs by a given address and everyone else.
- * @returns donated and userDonated as numbers
+ * @param {Contract} donationMiner The donation miner contract.
+ * @param {string} address The address of the user.
+ * @returns {number} Last epoch donations.
  */
 export const getLastEpochsDonations = async (
     donationMiner: Contract,
@@ -154,6 +169,7 @@ export const getLastEpochsDonations = async (
     const againstPeriods = (await donationMiner.againstPeriods()).toNumber();
     let valueDonated = 0;
     let valueUserDonated = 0;
+
     // note: doing it this way adds (epochs*2)+2 request to the network.
     // but this is temporary.
     for (
@@ -166,9 +182,11 @@ export const getLastEpochsDonations = async (
             i,
             address
         );
+
         valueDonated += toNumber(value.donationsAmount);
         valueUserDonated += toNumber(valueUser);
     }
+
     return {
         everyone: valueDonated,
         user: valueUserDonated

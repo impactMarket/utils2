@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { toNumber } from './toNumber';
-import { getContracts } from './contracts';
 import { ImpactProviderContext, PACTBalanceContext } from './ImpactProvider';
+import { getContracts } from './contracts';
+import { toNumber } from './toNumber';
+import React, { useEffect } from 'react';
 import type { BaseProvider } from '@ethersproject/providers';
 
 export const updatePACTBalance = async (
@@ -9,15 +9,18 @@ export const updatePACTBalance = async (
     address: string
 ) => {
     const { pact } = await getContracts(provider);
+
     if (!address || !pact?.provider) {
         return 0;
     }
 
     try {
         const pactBalance = await pact?.balanceOf(address);
+
         return toNumber(pactBalance);
     } catch (error) {
         console.log(`Error getting balance...\n${error}`);
+
         return 0;
     }
 };

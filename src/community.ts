@@ -1,7 +1,7 @@
-import type { Signer } from '@ethersproject/abstract-signer';
 import { Contract } from '@ethersproject/contracts';
-import type { Provider } from '@ethersproject/providers';
 import CommunityABI from './abi/CommunityABI.json';
+import type { Provider } from '@ethersproject/providers';
+import type { Signer } from '@ethersproject/abstract-signer';
 
 export const communityContract = (
     address: string,

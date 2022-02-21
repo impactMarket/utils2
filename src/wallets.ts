@@ -10,9 +10,9 @@ const ethContractAddresses: {
     name: typeof ethCurrencies[number];
     address: string;
 }[] = [
-    { name: 'dai', address: '0x6b175474e89094c44da98b954eedeac495271d0f' },
-    { name: 'usdc', address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
-    { name: 'usdt', address: '0xdac17f958d2ee523a2206206994597c13d831ec7' }
+    { address: '0x6b175474e89094c44da98b954eedeac495271d0f', name: 'dai' },
+    { address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', name: 'usdc' },
+    { address: '0xdac17f958d2ee523a2206206994597c13d831ec7', name: 'usdt' }
 ];
 
 const celoCurrencies = ['celo', 'cusd', 'ceur'] as const;
@@ -20,9 +20,9 @@ const celoContractAddresses: {
     name: typeof celoCurrencies[number];
     address: string;
 }[] = [
-    { name: 'celo', address: '0x471EcE3750Da237f93B8E339c536989b8978a438' },
-    { name: 'cusd', address: '0x765DE816845861e75A25fCA122bb6898B8B1282a' },
-    { name: 'ceur', address: '0xD8763CBa276a3738E6DE85b4b3bF5FDed6D6cA73' }
+    { address: '0x471EcE3750Da237f93B8E339c536989b8978a438', name: 'celo' },
+    { address: '0x765DE816845861e75A25fCA122bb6898B8B1282a', name: 'cusd' },
+    { address: '0xD8763CBa276a3738E6DE85b4b3bF5FDed6D6cA73', name: 'ceur' }
 ];
 
 const getCoinPrice = async (coin: string) =>
@@ -59,7 +59,7 @@ const getEtherScanBalance = async (
         return toNumber(balance.data.result);
     }
 
-    return parseInt(balance.data.result) / 1000000;
+    return parseInt(balance.data.result, 10) / 1000000;
 };
 
 const getCeloApiBalance = async (
@@ -73,6 +73,7 @@ const getCeloApiBalance = async (
     const balance = await axios.get<any, AxiosResponse<{ result: string }>>(
         `https://explorer.celo.org/api?module=account&action=tokenbalance&contractaddress=${contractaddress}&address=${wallet}`
     );
+
     return balance.data.result;
 };
 
@@ -114,6 +115,7 @@ const getEthereumWalletBalance = async (
                 etherscanApiKey,
                 currency
             );
+
             return currency === 'eth' ? ethPrice * val : val;
         })
     );

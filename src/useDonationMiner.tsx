@@ -1,16 +1,16 @@
-import { toToken } from './toToken';
-import { toNumber } from './toNumber';
-import { getContracts } from './contracts';
 import {
+    CUSDBalanceContext,
     EpochContext,
     ImpactProviderContext,
-    RewardsContext,
-    CUSDBalanceContext
+    RewardsContext
 } from './ImpactProvider';
-import React from 'react';
+import { getContracts } from './contracts';
+import { toNumber } from './toNumber';
+import { toToken } from './toToken';
 import { updateCUSDBalance } from './useCUSDBalance';
-import { updateRewards } from './useRewards';
 import { updateEpoch } from './useEpoch';
+import { updateRewards } from './useRewards';
+import React from 'react';
 
 export const useDonationMiner = () => {
     const { provider, address, signer } = React.useContext(
@@ -24,6 +24,7 @@ export const useDonationMiner = () => {
         try {
             const { cusd, donationMiner } = await getContracts(provider);
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
+
             if (
                 !address ||
                 !signer ||
@@ -80,6 +81,7 @@ export const useDonationMiner = () => {
                 provider,
                 address
             );
+
             setBalance(updatedCUSDBalance);
             updateRewards(provider, address).then((updatedRewards) =>
                 setRewards((rewards) => ({
@@ -129,6 +131,7 @@ export const useDonationMiner = () => {
                 provider,
                 address
             );
+
             setBalance(updatedCUSDBalance);
             updateRewards(provider, address).then((updatedRewards) =>
                 setRewards((rewards) => ({
@@ -153,7 +156,7 @@ export const useDonationMiner = () => {
 
     return {
         approve,
+        donateToCommunity,
         donateToTreasury,
-        donateToCommunity
     };
 };

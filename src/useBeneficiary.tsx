@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import { ImpactProviderContext } from './ImpactProvider';
 import { communityContract } from './community';
-import type { Contract } from '@ethersproject/contracts';
 import { estimateBlockTime } from './estimateBlockTime';
 import { toNumber } from './toNumber';
-import { ImpactProviderContext } from './ImpactProvider';
 import { updateCUSDBalance } from './useCUSDBalance';
+import React, { useEffect, useState } from 'react';
+import type { Contract } from '@ethersproject/contracts';
 
 const refreshIntervalInMs = 300000;
 
 /**
  * useBeneficiary hook
  * @dev Hook for beneficiary UI
+ * @param {string} communityAddress Address of the community contract
+ * @returns {object} hook
  */
 export const useBeneficiary = (communityAddress: string) => {
     const [isReady, setIsReady] = useState(false);
@@ -33,6 +35,7 @@ export const useBeneficiary = (communityAddress: string) => {
             return;
         }
         const { claimedAmount } = await _contract.beneficiaries(address);
+
         setBeneficiary({
             claimedAmount: toNumber(claimedAmount)
         });
@@ -69,8 +72,10 @@ export const useBeneficiary = (communityAddress: string) => {
         let _currentBlockNumber = await provider.getBlockNumber();
         const estimate = async () => {
             _currentBlockNumber = await provider.getBlockNumber();
+
             return estimateBlockTime(_currentBlockNumber, _cooldown.toNumber());
         };
+
         setClaimCooldown((await estimate()).getTime());
         setIsClaimable(false);
 
@@ -85,6 +90,7 @@ export const useBeneficiary = (communityAddress: string) => {
         if (claimCooldown !== 0 && timeoutInterval === undefined) {
             const end = claimCooldown;
             const now = new Date().getTime();
+
             if (end > now && end - now < refreshIntervalInMs) {
                 timeoutInterval = setTimeout(() => {
                     setIsClaimable(true);
@@ -97,6 +103,7 @@ export const useBeneficiary = (communityAddress: string) => {
                 }, end - now - 1000);
             }
         }
+
         return () => {
             clearTimeout(timeoutInterval);
         };
@@ -110,9 +117,11 @@ export const useBeneficiary = (communityAddress: string) => {
         ) => {
             const _cooldown = await _contract.claimCooldown(_address);
             let _currentBlockNumber = await provider.getBlockNumber();
+
             if (_cooldown.toNumber() > _currentBlockNumber) {
                 const estimate = async () => {
                     _currentBlockNumber = await provider.getBlockNumber();
+
                     return _cooldown.toNumber() > _currentBlockNumber
                         ? estimateBlockTime(
                               _currentBlockNumber,
@@ -120,6 +129,7 @@ export const useBeneficiary = (communityAddress: string) => {
                           )
                         : new Date(0);
                 };
+
                 if (refreshInterval) {
                     clearInterval(refreshInterval);
                 }
@@ -137,17 +147,20 @@ export const useBeneficiary = (communityAddress: string) => {
                 setIsClaimable(true);
             }
         };
+
         if (address && provider) {
             const contract_ = communityContract(communityAddress, provider);
+
             setContract(contract_);
             refreshClaimCooldown(address, contract_).then(() =>
                 updateClaimData(contract_)
             );
         }
+
         return () => {
             clearInterval(refreshInterval);
         };
     }, []);
 
-    return { claim, beneficiary, claimCooldown, isClaimable, isReady };
+    return { beneficiary, claim, claimCooldown, isClaimable, isReady };
 };

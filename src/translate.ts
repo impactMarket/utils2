@@ -1,5 +1,5 @@
-import axios, { AxiosResponse } from 'axios';
 import LanguagesJSON from './languages.json';
+import axios, { AxiosResponse } from 'axios';
 
 const languages: {
     [key: string]: {
@@ -31,6 +31,7 @@ export async function translate(
             }>
         >(query);
         const result = response.data?.data?.translations;
+
         return result &&
             result.length > 0 &&
             result[0].translatedText.length > 0

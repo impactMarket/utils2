@@ -1,5 +1,5 @@
-import { expect } from 'chai';
 import { UbiCommunity } from '../../types';
+import { expect } from 'chai';
 
 import { estimateCommunityRemainFunds } from '../estimateCommunityRemainFunds';
 

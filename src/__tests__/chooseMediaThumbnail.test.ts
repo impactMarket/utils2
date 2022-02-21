@@ -1,5 +1,5 @@
-import { expect } from 'chai';
 import { chooseMediaThumbnail } from '../chooseMediaThumbnail';
+import { expect } from 'chai';
 
 describe('#chooseMediaThumbnail()', () => {
     it('exact match (size)', () => {
@@ -31,6 +31,7 @@ describe('#chooseMediaThumbnail()', () => {
             { heigth: 50, width: 60 },
             1
         );
+
         expect(result).to.equal('50x60.jpg');
     });
 
@@ -71,6 +72,7 @@ describe('#chooseMediaThumbnail()', () => {
             { heigth: 50, width: 50 },
             2
         );
+
         expect(result).to.equal('50x50@2.jpg');
     });
 
@@ -119,6 +121,7 @@ describe('#chooseMediaThumbnail()', () => {
             { heigth: 50, width: 60 },
             1
         );
+
         expect(result).to.equal('50x60.jpg');
     });
 
@@ -167,6 +170,7 @@ describe('#chooseMediaThumbnail()', () => {
             { heigth: 50, width: 70 },
             1
         );
+
         expect(result).to.equal('5000x5000.jpg');
     });
 });
