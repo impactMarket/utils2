@@ -46,11 +46,11 @@ export const useRewards = () => {
 
     /**
      * Claims rewards.
-     * @returns
+     * @returns {ethers.TransactionReceipt} transaction response object
      */
-    const claimRewards = async () => {
+    const claim = async () => {
         if (!signer || !address) {
-            return;
+            throw new Error('No signer or address');
         }
         try {
             const { donationMiner } = await getContracts(provider);
@@ -75,11 +75,12 @@ export const useRewards = () => {
 
             return response;
         } catch (error) {
-            console.log('Error in claim function: \n', error);
+            // console.log('Error in claim function: \n', error);
             setRewards((rewards) => ({
                 ...rewards,
                 initialised: true
             }));
+            throw error;
         }
     };
 
@@ -95,5 +96,5 @@ export const useRewards = () => {
         }
     }, [address]);
 
-    return { claimRewards, rewards };
+    return { claim, rewards };
 };

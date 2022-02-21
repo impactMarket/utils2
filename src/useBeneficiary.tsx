@@ -6,6 +6,10 @@ import { toNumber } from './toNumber';
 import { ImpactProviderContext } from './ImpactProvider';
 import { updateCUSDBalance } from './useCUSDBalance';
 
+/**
+ * useBeneficiary hook
+ * @dev Hook for beneficiary UI
+ */
 export const useBeneficiary = (communityAddress: string) => {
     const [isReady, setIsReady] = useState(false);
     const [beneficiary, setBeneficiary] = useState<{
@@ -32,17 +36,25 @@ export const useBeneficiary = (communityAddress: string) => {
     };
 
     /**
-     * Beneficiary claim.
-     * @returns `ethers.ContractReceipt`
+     * Calls community claim method.
+     *
+     * @returns {ethers.TransactionReceipt} transaction response object
      * @throws {Error} "LOCKED"
      * @throws {Error} "Community: NOT_VALID_BENEFICIARY"
      * @throws {Error} "Community::claim: NOT_YET"
      * @throws {Error} "Community::claim: MAX_CLAIM"
      * @throws {Error} "ERC20: transfer amount exceeds balance"
+     * @throws {Error} "No contract or signer"
+     *
+     * @example
+     * ```typescript
+     * const { claim } = useBeneficiary('community-address');
+     * const tx = await claim();
+     * ```
      */
     const claim = async () => {
         if (!contract || !signer || !address) {
-            return;
+            throw new Error('No contract or signer');
         }
         const tx = await (contract.connect(signer) as Contract).claim();
         const response = await tx.wait();
