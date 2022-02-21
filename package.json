@@ -34,6 +34,7 @@
         "lint:dryrun": "eslint src/**/*.ts",
         "test:unit": "CI=1 react-scripts test --env=node",
         "test:watch": "react-scripts test --env=node",
+        "docs": "typedoc src",
         "version": "auto-changelog -p && git add CHANGELOG.md"
     },
     "devDependencies": {
@@ -75,6 +76,7 @@
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-scripts": "^3.4.1",
+        "typedoc": "^0.22.12",
         "typescript": "4.4.2"
     },
     "dependencies": {

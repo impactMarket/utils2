@@ -18,7 +18,7 @@ export const useMerkleDistributor = (treeAccount: {
 
     /**
      * Claims airgrab rewards.
-     * @returns
+     * @returns tx response object
      */
     const claim = async () => {
         try {

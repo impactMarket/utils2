@@ -28,3 +28,5 @@ yarn-error.log*
 /*.js.map
 /*.json
 /abi
+/output/docs
+/docs

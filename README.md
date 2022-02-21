@@ -8,33 +8,12 @@
 yarn add @impact-market/utils
 ```
 
-## Requirements:
-- use `DaoProvider` as child of `ContractKitProvider` in order to hooks to work.
+### Requirements:
+- use `ImpactProvider` in order for hooks to work.
 
-### Available Methods:
+## Usage:
 
-- `getWalletsBalance`
-- `communityContract` (instantiate a community using the address)
-- `getPACTTradingMetrics`
-- `circulatingSupply` ($PACT circulating supply)
-
-### Available Helpers
-
-- `estimateCommunityRemainFunds`
-- `frequencyToNumer`
-- `frequencyToText`
-- `toNumber`
-- `toToken`
-
-### Available Hooks:
-
-- `useBalance`
-- `useContracts`
-- `useDAO`
-- `useDonationMiner`
-- `useEpoch`
-- `useRewards`
-- `useVotingPower`
+See docs for further details.
 
 ## Development
 

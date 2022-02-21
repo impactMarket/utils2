@@ -3,7 +3,7 @@ import { useRewards } from '@impact-market/utils/useRewards';
 
 const ClaimableRewards = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const { claimRewards, rewards } = useRewards();
+    const { claim: claimRewards, rewards } = useRewards();
 
     const claim = async () => {
         setIsLoading(true);
