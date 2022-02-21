@@ -8,6 +8,7 @@ export * from './useCUSDBalance';
 export * from './usePACTBalance';
 export * from './ImpactProvider';
 export * from './useBeneficiary';
+export * from './useManager';
 export * from './useEpoch';
 export * from './useRewards';
 export * from './useMerkleDistributor';
