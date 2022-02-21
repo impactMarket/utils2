@@ -37,6 +37,7 @@ export const useBeneficiary = (communityAddress: string) => {
 
     /**
      * Calls community claim method.
+     *
      * @returns {ethers.TransactionReceipt} transaction response object
      * @throws {Error} "LOCKED"
      * @throws {Error} "Community: NOT_VALID_BENEFICIARY"
@@ -44,6 +45,12 @@ export const useBeneficiary = (communityAddress: string) => {
      * @throws {Error} "Community::claim: MAX_CLAIM"
      * @throws {Error} "ERC20: transfer amount exceeds balance"
      * @throws {Error} "No contract or signer"
+     *
+     * @example
+     * ```typescript
+     * const { claim } = useBeneficiary('community-address');
+     * const tx = await claim();
+     * ```
      */
     const claim = async () => {
         if (!contract || !signer || !address) {
