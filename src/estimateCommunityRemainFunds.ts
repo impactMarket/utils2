@@ -4,12 +4,12 @@ import { frequencyToText } from './frequencyToText';
 export function estimateCommunityRemainFunds(community: {
     contract: {
         baseInterval: number;
-        claimAmount: BigNumber;
+        claimAmount: string;
     };
     state: {
         beneficiaries: number;
-        raised: BigNumber;
-        claimed: BigNumber;
+        raised: string;
+        claimed: string;
     };
 }): number {
     if (community.contract === undefined || community.state === undefined) {

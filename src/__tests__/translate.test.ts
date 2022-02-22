@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+// eslint-disable-next-line import/named
 import { translate } from '../translate';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
@@ -18,8 +19,8 @@ describe('#translate()', () => {
             data: {
                 translations: [
                     {
-                        translatedText: 'Olá amigo',
-                        detectedSourceLanguage: language
+                        detectedSourceLanguage: language,
+                        translatedText: 'Olá amigo'
                     }
                 ]
             }
@@ -41,8 +42,8 @@ describe('#translate()', () => {
             data: {
                 translations: [
                     {
-                        translatedText: 'Hello',
-                        detectedSourceLanguage: language
+                        detectedSourceLanguage: language,
+                        translatedText: 'Hello'
                     }
                 ]
             }
@@ -62,7 +63,7 @@ describe('#translate()', () => {
         });
 
         expect(result.translatedText).to.equal('Hello');
-        // eslint-disable-next-line no-unused-expressions
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         expect(result.detectedSourceLanguage).to.be.undefined;
     });
 });
