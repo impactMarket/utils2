@@ -10,12 +10,20 @@ jobs:
     steps:
       - checkout
       - run: yarn
-      - run:
-          name: "Run Tests"
-          command: yarn test:unit
+      - run: yarn test:unit
+  lint:
+    docker:
+      - image: circleci/node:16.13.0
+    steps:
+      - checkout
+      - run: yarn
+      - run: yarn eslint
+      - run: yarn prettier
+      - run: yarn build
 
 workflows:
   version: 2
   test:
     jobs:
       - test
+      - lint
