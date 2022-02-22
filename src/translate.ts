@@ -32,14 +32,10 @@ export async function translate(
         >(query);
         const result = response.data?.data?.translations;
 
-        return result &&
-            result.length > 0 &&
-            result[0].translatedText.length > 0
+        return result && result.length > 0 && result[0].translatedText.length > 0
             ? {
-                  translatedText: result[0].translatedText,
-                  detectedSourceLanguage:
-                      languages[result[0].detectedSourceLanguage.toLowerCase()]
-                          .name
+                  detectedSourceLanguage: languages[result[0].detectedSourceLanguage.toLowerCase()].name,
+                  translatedText: result[0].translatedText
               }
             : { translatedText: text };
     } catch (_) {

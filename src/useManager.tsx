@@ -20,9 +20,7 @@ export const useManager = (communityAddress: string) => {
         if (!signer) {
             return;
         }
-        const tx = await communityContract(communityAddress)
-            .connect(signer)
-            .addBeneficiary(beneficiaryAddress);
+        const tx = await communityContract(communityAddress).connect(signer).addBeneficiary(beneficiaryAddress);
         const response = await tx.wait();
 
         return response;
@@ -39,9 +37,7 @@ export const useManager = (communityAddress: string) => {
         if (!signer) {
             return;
         }
-        const tx = await communityContract(communityAddress)
-            .connect(signer)
-            .removeBeneficiary(beneficiaryAddress);
+        const tx = await communityContract(communityAddress).connect(signer).removeBeneficiary(beneficiaryAddress);
         const response = await tx.wait();
 
         return response;

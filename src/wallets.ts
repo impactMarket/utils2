@@ -33,9 +33,7 @@ const getCoinPrice = async (coin: string) =>
                 // eslint-disable-next-line camelcase
                 market_data: { current_price: { [key: string]: number } };
             }>
-        >(
-            `/${coin}?tickers=false&community_data=false&developer_data=false&sparkline=false`
-        )
+        >(`/${coin}?tickers=false&community_data=false&developer_data=false&sparkline=false`)
     ).data.market_data.current_price.usd;
 
 const getEtherScanBalance = async (
@@ -43,13 +41,9 @@ const getEtherScanBalance = async (
     etherscanApiKey: string,
     balanceOf: typeof ethCurrencies[number]
 ) => {
-    const contractaddress = ethContractAddresses.find(
-        ({ name }) => name === balanceOf
-    )?.address;
+    const contractaddress = ethContractAddresses.find(({ name }) => name === balanceOf)?.address;
 
-    const queryCoin = contractaddress
-        ? `action=tokenbalance&contractaddress=${contractaddress}`
-        : 'action=balance';
+    const queryCoin = contractaddress ? `action=tokenbalance&contractaddress=${contractaddress}` : 'action=balance';
 
     const balance = await axios.get<any, AxiosResponse<{ result: string }>>(
         `https://api.etherscan.io/api?module=account&${queryCoin}&address=${wallet}&tag=latest&apikey=${etherscanApiKey}`
@@ -62,13 +56,8 @@ const getEtherScanBalance = async (
     return parseInt(balance.data.result, 10) / 1000000;
 };
 
-const getCeloApiBalance = async (
-    wallet: string,
-    balanceOf: typeof celoCurrencies[number]
-) => {
-    const contractaddress = celoContractAddresses.find(
-        ({ name }) => name === balanceOf
-    )?.address;
+const getCeloApiBalance = async (wallet: string, balanceOf: typeof celoCurrencies[number]) => {
+    const contractaddress = celoContractAddresses.find(({ name }) => name === balanceOf)?.address;
 
     const balance = await axios.get<any, AxiosResponse<{ result: string }>>(
         `https://explorer.celo.org/api?module=account&action=tokenbalance&contractaddress=${contractaddress}&address=${wallet}`
@@ -78,10 +67,7 @@ const getCeloApiBalance = async (
 };
 
 const getCeloWalletBalance = async (wallet: string) => {
-    const [celoPrice, celoEuroPrice] = await Promise.all([
-        getCoinPrice('celo'),
-        getCoinPrice('celo-euro')
-    ]);
+    const [celoPrice, celoEuroPrice] = await Promise.all([getCoinPrice('celo'), getCoinPrice('celo-euro')]);
 
     const balance = await Promise.all(
         celoCurrencies.map(async (currency: typeof celoCurrencies[number]) => {
@@ -102,19 +88,12 @@ const getCeloWalletBalance = async (wallet: string) => {
     return balance.reduce((previous, current) => previous + current, 0);
 };
 
-const getEthereumWalletBalance = async (
-    wallet: string,
-    etherscanApiKey: string
-) => {
+const getEthereumWalletBalance = async (wallet: string, etherscanApiKey: string) => {
     const ethPrice = await getCoinPrice('ethereum');
 
     const balance = await Promise.all(
         ethCurrencies.map(async (currency: typeof ethCurrencies[number]) => {
-            const val = await getEtherScanBalance(
-                wallet,
-                etherscanApiKey,
-                currency
-            );
+            const val = await getEtherScanBalance(wallet, etherscanApiKey, currency);
 
             return currency === 'eth' ? ethPrice * val : val;
         })

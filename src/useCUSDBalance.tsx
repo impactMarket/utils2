@@ -4,10 +4,7 @@ import { toNumber } from './toNumber';
 import React, { useEffect } from 'react';
 import type { BaseProvider } from '@ethersproject/providers';
 
-export const updateCUSDBalance = async (
-    provider: BaseProvider,
-    address: string
-) => {
+export const updateCUSDBalance = async (provider: BaseProvider, address: string) => {
     const { cusd } = await getContracts(provider);
 
     if (!address || !cusd?.provider) {
@@ -31,7 +28,7 @@ export const useCUSDBalance = () => {
 
     useEffect(() => {
         if (address) {
-            updateCUSDBalance(provider, address).then((b) => setBalance(b));
+            updateCUSDBalance(provider, address).then(b => setBalance(b));
         }
     }, [address]);
 

@@ -20,9 +20,7 @@ export function estimateCommunityRemainFunds(community: {
     const { baseInterval, claimAmount } = community.contract;
     const remaining = new BigNumber(raised).minus(new BigNumber(claimed));
 
-    let communityLimitPerDay = new BigNumber(claimAmount).multipliedBy(
-        beneficiaries
-    );
+    let communityLimitPerDay = new BigNumber(claimAmount).multipliedBy(beneficiaries);
 
     if (frequencyToText(baseInterval) === 'week') {
         communityLimitPerDay = communityLimitPerDay.div(7);

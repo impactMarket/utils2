@@ -1,10 +1,6 @@
 import { EpochContext, ImpactProviderContext } from './ImpactProvider';
 import { getContracts } from './contracts';
-import {
-    getLastEpochsDonations,
-    updateEpochData,
-    updateUserContributionData
-} from './updater';
+import { getLastEpochsDonations, updateEpochData, updateUserContributionData } from './updater';
 import React, { useEffect } from 'react';
 import type { BaseProvider } from '@ethersproject/providers';
 
@@ -32,8 +28,8 @@ export const useEpoch = () => {
 
     useEffect(() => {
         if (address) {
-            updateEpoch(provider, address).then((epochData) => {
-                setEpoch((epoch) => ({
+            updateEpoch(provider, address).then(epochData => {
+                setEpoch(epoch => ({
                     ...epoch,
                     ...epochData,
                     initialised: true

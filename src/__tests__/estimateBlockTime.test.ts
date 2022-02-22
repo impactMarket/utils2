@@ -2,9 +2,9 @@ import { expect } from 'chai';
 
 import { estimateBlockTime } from '../estimateBlockTime';
 
-const blocksPerDay = 12 * 60 * 24; // ~ amount of blocks in a day
-const testableDate = (date: Date) =>
-    date.toISOString().replace(/T/, ' ').replace(/\..+/, '');
+// ~ amount of blocks in a day
+const blocksPerDay = 12 * 60 * 24;
+const testableDate = (date: Date) => date.toISOString().replace(/T/, ' ').replace(/\..+/, '');
 
 describe('#estimateBlockTime()', () => {
     it('future (exact 1 day)', () => {
@@ -12,7 +12,8 @@ describe('#estimateBlockTime()', () => {
         const expectedDate = new Date();
 
         expectedDate.setDate(expectedDate.getDate() + 1);
-        expectedDate.setTime(expectedDate.getTime() + 2000); // 2s overflow
+        // 2s overflow
+        expectedDate.setTime(expectedDate.getTime() + 2000);
         expect(testableDate(result)).to.equal(testableDate(expectedDate));
     });
     it('future (half day)', () => {

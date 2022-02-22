@@ -24,9 +24,7 @@ export const useBeneficiary = (communityAddress: string) => {
     });
     const [claimCooldown, setClaimCooldown] = useState(0);
     const [contract, setContract] = useState<Contract | null>(null);
-    const { provider, address, signer } = React.useContext(
-        ImpactProviderContext
-    );
+    const { provider, address, signer } = React.useContext(ImpactProviderContext);
     let refreshInterval: NodeJS.Timeout;
     let timeoutInterval: NodeJS.Timeout;
 
@@ -111,10 +109,7 @@ export const useBeneficiary = (communityAddress: string) => {
 
     useEffect(() => {
         // Refresh beneficiary time for next claim
-        const refreshClaimCooldown = async (
-            _address: string,
-            _contract: Contract
-        ) => {
+        const refreshClaimCooldown = async (_address: string, _contract: Contract) => {
             const _cooldown = await _contract.claimCooldown(_address);
             let _currentBlockNumber = await provider.getBlockNumber();
 
@@ -123,10 +118,7 @@ export const useBeneficiary = (communityAddress: string) => {
                     _currentBlockNumber = await provider.getBlockNumber();
 
                     return _cooldown.toNumber() > _currentBlockNumber
-                        ? estimateBlockTime(
-                              _currentBlockNumber,
-                              _cooldown.toNumber()
-                          )
+                        ? estimateBlockTime(_currentBlockNumber, _cooldown.toNumber())
                         : new Date(0);
                 };
 
@@ -134,7 +126,7 @@ export const useBeneficiary = (communityAddress: string) => {
                     clearInterval(refreshInterval);
                 }
                 refreshInterval = setInterval(() => {
-                    estimate().then((d) => {
+                    estimate().then(d => {
                         if (d.getTime() === 0 && refreshInterval) {
                             clearInterval(refreshInterval);
                         } else {
@@ -152,9 +144,7 @@ export const useBeneficiary = (communityAddress: string) => {
             const contract_ = communityContract(communityAddress, provider);
 
             setContract(contract_);
-            refreshClaimCooldown(address, contract_).then(() =>
-                updateClaimData(contract_)
-            );
+            refreshClaimCooldown(address, contract_).then(() => updateClaimData(contract_));
         }
 
         return () => {

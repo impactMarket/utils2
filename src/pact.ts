@@ -10,21 +10,14 @@ import axios from 'axios';
 
 const client = new ApolloClient({
     cache: new InMemoryCache(),
-    uri: 'https://api.thegraph.com/subgraphs/name/ubeswap/ubeswap',
+    uri: 'https://api.thegraph.com/subgraphs/name/ubeswap/ubeswap'
 });
 
 export async function circulatingSupply(provider: BaseProvider) {
     const { chainId } = await provider.getNetwork();
     const contractAddresses = ContractAddresses.get(chainId)!;
 
-    const {
-        PACTDelegator,
-        PACTToken,
-        DonationMiner,
-        MerkleDistributor,
-        ImpactLabs,
-        IDO
-    } = contractAddresses;
+    const { PACTDelegator, PACTToken, DonationMiner, MerkleDistributor, ImpactLabs, IDO } = contractAddresses;
 
     const decimals = new BigNumber(10).pow(18);
     const pact = new Contract(PACTToken, ERC20ABI, provider);
@@ -87,9 +80,7 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
     let counters = { data: { token_holder_count: 0, transfer_count: 0 } };
 
     try {
-        counters = await axios.get(
-            `https://explorer.celo.org/token-counters?id=${PACTToken}`
-        );
+        counters = await axios.get(`https://explorer.celo.org/token-counters?id=${PACTToken}`);
     } catch (_) {}
 
     return {
@@ -99,10 +90,7 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
     };
 }
 
-export async function hasPACTVotingPower(
-    provider: BaseProvider,
-    address: string
-) {
+export async function hasPACTVotingPower(provider: BaseProvider, address: string) {
     const { pact: pactContract, delegate } = await getContracts(provider);
 
     if (
@@ -121,9 +109,7 @@ export async function hasPACTVotingPower(
             pactContract.getCurrentVotes(address)
         ]);
 
-        return new BigNumber(currentVotes.toString()).gte(
-            proposalThreshold.toString()
-        );
+        return new BigNumber(currentVotes.toString()).gte(proposalThreshold.toString());
     } catch (error) {
         console.log(`Error getting voting power...\n${error}`);
 
@@ -158,8 +144,7 @@ export async function getPACTTVL(provider: BaseProvider): Promise<number> {
 
     const pact = new Contract(PACTToken, ERC20ABI, provider);
     const TVL =
-        toNumber((await pact.balanceOf(PACTDelegator)).toString()) *
-        parseFloat(result.data.tokenDayDatas[0].priceUSD);
+        toNumber((await pact.balanceOf(PACTDelegator)).toString()) * parseFloat(result.data.tokenDayDatas[0].priceUSD);
 
     return TVL;
 }

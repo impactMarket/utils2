@@ -1,9 +1,4 @@
-import {
-    CUSDBalanceContext,
-    EpochContext,
-    ImpactProviderContext,
-    RewardsContext
-} from './ImpactProvider';
+import { CUSDBalanceContext, EpochContext, ImpactProviderContext, RewardsContext } from './ImpactProvider';
 import { getContracts } from './contracts';
 import { toNumber } from './toNumber';
 import { toToken } from './toToken';
@@ -13,9 +8,7 @@ import { updateRewards } from './useRewards';
 import React from 'react';
 
 export const useDonationMiner = () => {
-    const { provider, address, signer } = React.useContext(
-        ImpactProviderContext
-    );
+    const { provider, address, signer } = React.useContext(ImpactProviderContext);
     const { setEpoch } = React.useContext(EpochContext);
     const { setRewards } = React.useContext(RewardsContext);
     const { setBalance } = React.useContext(CUSDBalanceContext);
@@ -25,20 +18,11 @@ export const useDonationMiner = () => {
             const { cusd, donationMiner } = await getContracts(provider);
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
 
-            if (
-                !address ||
-                !signer ||
-                !donationMiner?.provider ||
-                !cusd?.provider ||
-                !amount
-            ) {
+            if (!address || !signer || !donationMiner?.provider || !cusd?.provider || !amount) {
                 return;
             }
 
-            const cUSDAllowance = await cusd.allowance(
-                address,
-                donationMiner.address
-            );
+            const cUSDAllowance = await cusd.allowance(address, donationMiner.address);
             const cusdAllowance = toNumber(cUSDAllowance);
             const allowance = cusdAllowance || 0;
 
@@ -46,9 +30,7 @@ export const useDonationMiner = () => {
                 return { status: true };
             }
 
-            const tx = await cusd
-                .connect(signer)
-                .approve(donationMiner.address, amount);
+            const tx = await cusd.connect(signer).approve(donationMiner.address, amount);
             const response = await tx.wait();
 
             return response;
@@ -69,29 +51,26 @@ export const useDonationMiner = () => {
             const tx = await donationMiner.connect(signer).donate(amount);
             const response = await tx.wait();
 
-            setEpoch((epoch) => ({
+            setEpoch(epoch => ({
                 ...epoch,
                 initialised: false
             }));
-            setRewards((rewards) => ({
+            setRewards(rewards => ({
                 ...rewards,
                 initialised: false
             }));
-            const updatedCUSDBalance = await updateCUSDBalance(
-                provider,
-                address
-            );
+            const updatedCUSDBalance = await updateCUSDBalance(provider, address);
 
             setBalance(updatedCUSDBalance);
-            updateRewards(provider, address).then((updatedRewards) =>
-                setRewards((rewards) => ({
+            updateRewards(provider, address).then(updatedRewards =>
+                setRewards(rewards => ({
                     ...rewards,
                     ...updatedRewards,
                     initialised: true
                 }))
             );
-            updateEpoch(provider, address).then((updatedEpoch) =>
-                setEpoch((epoch) => ({
+            updateEpoch(provider, address).then(updatedEpoch =>
+                setEpoch(epoch => ({
                     ...epoch,
                     ...updatedEpoch,
                     initialised: true
@@ -104,44 +83,36 @@ export const useDonationMiner = () => {
         }
     };
 
-    const donateToCommunity = async (
-        community: string,
-        value: string | number
-    ) => {
+    const donateToCommunity = async (community: string, value: string | number) => {
         try {
             if (!signer || !address) {
                 return;
             }
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
             const { donationMiner } = await getContracts(provider);
-            const tx = await donationMiner
-                .connect(signer)
-                .donateToCommunity(community, amount);
+            const tx = await donationMiner.connect(signer).donateToCommunity(community, amount);
             const response = await tx.wait();
 
-            setEpoch((epoch) => ({
+            setEpoch(epoch => ({
                 ...epoch,
                 initialised: false
             }));
-            setRewards((rewards) => ({
+            setRewards(rewards => ({
                 ...rewards,
                 initialised: false
             }));
-            const updatedCUSDBalance = await updateCUSDBalance(
-                provider,
-                address
-            );
+            const updatedCUSDBalance = await updateCUSDBalance(provider, address);
 
             setBalance(updatedCUSDBalance);
-            updateRewards(provider, address).then((updatedRewards) =>
-                setRewards((rewards) => ({
+            updateRewards(provider, address).then(updatedRewards =>
+                setRewards(rewards => ({
                     ...rewards,
                     ...updatedRewards,
                     initialised: true
                 }))
             );
-            updateEpoch(provider, address).then((updatedEpoch) =>
-                setEpoch((epoch) => ({
+            updateEpoch(provider, address).then(updatedEpoch =>
+                setEpoch(epoch => ({
                     ...epoch,
                     ...updatedEpoch,
                     initialised: true
@@ -157,6 +128,6 @@ export const useDonationMiner = () => {
     return {
         approve,
         donateToCommunity,
-        donateToTreasury,
+        donateToTreasury
     };
 };

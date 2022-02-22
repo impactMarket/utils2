@@ -5,14 +5,8 @@ import { toNumber } from './toNumber';
 import { updatePACTBalance } from './usePACTBalance';
 import React, { useEffect, useState } from 'react';
 
-export const useMerkleDistributor = (treeAccount: {
-    index: number;
-    amount: string;
-    proof: string[];
-}) => {
-    const { provider, address, signer } = React.useContext(
-        ImpactProviderContext
-    );
+export const useMerkleDistributor = (treeAccount: { index: number; amount: string; proof: string[] }) => {
+    const { provider, address, signer } = React.useContext(ImpactProviderContext);
     const [hasClaim, setHasClaim] = useState(false);
     const [amountToClaim, setAmountToClaim] = useState(0);
 
@@ -30,12 +24,7 @@ export const useMerkleDistributor = (treeAccount: {
 
             const tx = await merkleDistributor
                 .connect(signer)
-                .claim(
-                    treeAccount.index,
-                    address,
-                    treeAccount.amount,
-                    treeAccount.proof
-                );
+                .claim(treeAccount.index, address, treeAccount.amount, treeAccount.proof);
             const response = await tx.wait();
 
             updatePACTBalance(provider, address);
@@ -57,13 +46,9 @@ export const useMerkleDistributor = (treeAccount: {
             }
 
             if (treeAccount) {
-                const _isClaimed = await merkleDistributor.isClaimed(
-                    treeAccount.index
-                );
+                const _isClaimed = await merkleDistributor.isClaimed(treeAccount.index);
 
-                setAmountToClaim(
-                    toNumber(new BigNumber(treeAccount.amount, 16).toString())
-                );
+                setAmountToClaim(toNumber(new BigNumber(treeAccount.amount, 16).toString()));
                 setHasClaim(!_isClaimed);
             }
         };

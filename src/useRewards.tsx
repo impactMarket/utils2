@@ -1,8 +1,4 @@
-import {
-    ImpactProviderContext,
-    PACTBalanceContext,
-    RewardsContext
-} from './ImpactProvider';
+import { ImpactProviderContext, PACTBalanceContext, RewardsContext } from './ImpactProvider';
 import {
     getAllocatedRewards,
     getClaimableRewards,
@@ -14,10 +10,7 @@ import { updatePACTBalance } from './usePACTBalance';
 import React, { useEffect } from 'react';
 import type { BaseProvider } from '@ethersproject/providers';
 
-export const updateRewards = async (
-    provider: BaseProvider,
-    address: string
-) => {
+export const updateRewards = async (provider: BaseProvider, address: string) => {
     if (!address) {
         return;
     }
@@ -33,14 +26,12 @@ export const updateRewards = async (
         allocated,
         claimable,
         currentEpoch,
-        estimated,
+        estimated
     };
 };
 
 export const useRewards = () => {
-    const { provider, address, signer } = React.useContext(
-        ImpactProviderContext
-    );
+    const { provider, address, signer } = React.useContext(ImpactProviderContext);
     const { setBalance } = React.useContext(PACTBalanceContext);
     const { rewards, setRewards } = React.useContext(RewardsContext);
 
@@ -57,28 +48,25 @@ export const useRewards = () => {
             const tx = await donationMiner.connect(signer).claimRewards();
             const response = await tx.wait();
 
-            setRewards((rewards) => ({
+            setRewards(rewards => ({
                 ...rewards,
                 initialised: false
             }));
             const updatedRewards = await updateRewards(provider, address);
 
-            setRewards((rewards) => ({
+            setRewards(rewards => ({
                 ...rewards,
                 ...updatedRewards,
                 initialised: true
             }));
-            const updatedPACTBalance = await updatePACTBalance(
-                provider,
-                address
-            );
+            const updatedPACTBalance = await updatePACTBalance(provider, address);
 
             setBalance(updatedPACTBalance);
 
             return response;
         } catch (error) {
             // console.log('Error in claim function: \n', error);
-            setRewards((rewards) => ({
+            setRewards(rewards => ({
                 ...rewards,
                 initialised: true
             }));
@@ -88,8 +76,8 @@ export const useRewards = () => {
 
     useEffect(() => {
         if (address) {
-            updateRewards(provider, address).then((updatedRewards) =>
-                setRewards((rewards) => ({
+            updateRewards(provider, address).then(updatedRewards =>
+                setRewards(rewards => ({
                     ...rewards,
                     ...updatedRewards,
                     initialised: true

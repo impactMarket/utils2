@@ -18,15 +18,8 @@ export const getContracts = async (provider: BaseProvider) => {
     }
     const contractAddresses = ContractAddresses.get(chainId)!;
 
-    const {
-        CommunityAdmin,
-        cUSD,
-        PACTDelegate,
-        PACTDelegator,
-        PACTToken,
-        DonationMiner,
-        MerkleDistributor
-    } = contractAddresses;
+    const { CommunityAdmin, cUSD, PACTDelegate, PACTDelegator, PACTToken, DonationMiner, MerkleDistributor } =
+        contractAddresses;
 
     const addresses = {
         communityAdmin: CommunityAdmin || '',
@@ -35,30 +28,18 @@ export const getContracts = async (provider: BaseProvider) => {
         delegator: PACTDelegator || '',
         donationMiner: DonationMiner || '',
         merkleDistributor: MerkleDistributor || '',
-        pactToken: PACTToken || '',
+        pactToken: PACTToken || ''
     };
 
-    const merkleDistributor = new Contract(
-        addresses.merkleDistributor,
-        MerkleDistributorABI,
-        provider
-    );
+    const merkleDistributor = new Contract(addresses.merkleDistributor, MerkleDistributorABI, provider);
 
-    const donationMiner = new Contract(
-        addresses.donationMiner,
-        DonationMinerABI,
-        provider
-    );
+    const donationMiner = new Contract(addresses.donationMiner, DonationMinerABI, provider);
 
     const cusd = new Contract(addresses.cusd, BaseERC20ABI, provider);
 
     const pact = new Contract(addresses.pactToken, PACTTokenABI, provider);
 
-    const delegate = new Contract(
-        addresses.delegate,
-        PACTDelegateABI,
-        provider
-    ).attach(addresses.delegator);
+    const delegate = new Contract(addresses.delegate, PACTDelegateABI, provider).attach(addresses.delegator);
 
     return {
         addresses,
@@ -66,6 +47,6 @@ export const getContracts = async (provider: BaseProvider) => {
         delegate,
         donationMiner,
         merkleDistributor,
-        pact,
+        pact
     };
 };

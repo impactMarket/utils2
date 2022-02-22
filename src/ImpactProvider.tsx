@@ -18,13 +18,13 @@ export type EpochType = {
 const initialEpoch = {
     donations: {
         everyone: 0,
-        user: 0,
+        user: 0
     },
     endPeriod: undefined,
     initialised: false,
     rewards: 0,
     totalRaised: 0,
-    userContribution: 0,
+    userContribution: 0
 };
 
 export type BalanceType = {
@@ -56,7 +56,7 @@ const intialProviderData: {
     // mandatory, value here doesn't matter
     address: null,
     provider: null as any,
-    signer: null,
+    signer: null
 };
 
 const intialCUSDBalanceStateData: {
@@ -92,12 +92,8 @@ const intialRewardsStateData: {
 };
 
 export const ImpactProviderContext = React.createContext(intialProviderData);
-export const CUSDBalanceContext = React.createContext(
-    intialCUSDBalanceStateData
-);
-export const PACTBalanceContext = React.createContext(
-    intialPACTBalanceStateData
-);
+export const CUSDBalanceContext = React.createContext(intialCUSDBalanceStateData);
+export const PACTBalanceContext = React.createContext(intialPACTBalanceStateData);
 export const EpochContext = React.createContext(intialEpochStateData);
 export const RewardsContext = React.createContext(intialRewardsStateData);
 
@@ -180,7 +176,7 @@ export const ImpactProvider = (props: ProviderProps) => {
             value={{
                 address,
                 provider,
-                signer,
+                signer
             }}
         >
             <RewardsProvider>

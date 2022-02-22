@@ -48,22 +48,11 @@ export class DAO {
             } = community;
             const targets = [addresses.communityAdmin];
             const values = [0];
-            const signatures = [
-                'addCommunity(address[],uint256,uint256,uint256,uint256,uint256,uint256,uint256)'
-            ];
+            const signatures = ['addCommunity(address[],uint256,uint256,uint256,uint256,uint256,uint256,uint256)'];
 
             const calldatas = [
                 defaultAbiCoder.encode(
-                    [
-                        'address[]',
-                        'uint256',
-                        'uint256',
-                        'uint256',
-                        'uint256',
-                        'uint256',
-                        'uint256',
-                        'uint256'
-                    ],
+                    ['address[]', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256'],
                     [
                         managers,
                         claimAmount,
@@ -84,7 +73,7 @@ export class DAO {
                 calldatas,
                 JSON.stringify({
                     description: proposalDescription,
-                    title: proposalTitle,
+                    title: proposalTitle
                 })
             );
 
