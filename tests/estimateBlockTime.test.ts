@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { estimateBlockTime } from '../estimateBlockTime';
+import { estimateBlockTime } from '../src/estimateBlockTime';
 
 // ~ amount of blocks in a day
 const blocksPerDay = 12 * 60 * 24;

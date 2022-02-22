@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/named
-import { chooseMediaThumbnail } from '../chooseMediaThumbnail';
+import { chooseMediaThumbnail } from '../src/chooseMediaThumbnail';
 import { expect } from 'chai';
 
 describe('#chooseMediaThumbnail()', () => {

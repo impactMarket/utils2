@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { estimateCommunityRemainFunds } from '../estimateCommunityRemainFunds';
+import { estimateCommunityRemainFunds } from '../src/estimateCommunityRemainFunds';
 
 const baseCommunity = {
     city: '',
@@ -216,7 +216,7 @@ describe('#estimateCommunityRemainFunds()', () => {
                     ...baseState,
                     beneficiaries: 5,
                     claimed: '35000000000000000000',
-                    raised: '4600000000000000000'
+                    raised: '43000000000000000000'
                 }
             };
 

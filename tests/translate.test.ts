@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 // eslint-disable-next-line import/named
-import { translate } from '../translate';
+import { translate } from '../src/translate';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
 
@@ -8,7 +8,7 @@ describe('#translate()', () => {
     let mock: MockAdapter;
     const googleApiKey = 'xyz';
 
-    beforeAll(() => {
+    before(() => {
         mock = new MockAdapter(axios);
     });
 
