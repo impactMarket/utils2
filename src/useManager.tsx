@@ -1,14 +1,14 @@
-import React from 'react';
 import { ImpactProviderContext } from './ImpactProvider';
 import { communityContract } from './community';
+import React from 'react';
 
 export const useManager = (communityAddress: string) => {
     const { signer } = React.useContext(ImpactProviderContext);
 
     /**
      * Add beneficiary to community
-     * @param beneficiaryAddress Beneficiary address to be added
-     * @returns `ethers.ContractReceipt`
+     * @param {string} beneficiaryAddress Beneficiary address to be added
+     * @returns {ethers.ContractReceipt} transaction response object
      * @throws {Error} "Community: NOT_MANAGER"
      * @example
      * ```typescript
@@ -20,9 +20,7 @@ export const useManager = (communityAddress: string) => {
         if (!signer) {
             return;
         }
-        const tx = await communityContract(communityAddress)
-            .connect(signer)
-            .addBeneficiary(beneficiaryAddress);
+        const tx = await communityContract(communityAddress).connect(signer).addBeneficiary(beneficiaryAddress);
         const response = await tx.wait();
 
         return response;
@@ -30,8 +28,8 @@ export const useManager = (communityAddress: string) => {
 
     /**
      * Remove beneficiary from community
-     * @param beneficiaryAddress Beneficiary address to be removed
-     * @returns `ethers.ContractReceipt`
+     * @param {string} beneficiaryAddress Beneficiary address to be removed
+     * @returns {ethers.ContractReceipt} transaction response object
      * @throws {Error} "Community: NOT_MANAGER"
      * @throws {Error} "Community::removeBeneficiary: NOT_YET"
      */
@@ -39,9 +37,7 @@ export const useManager = (communityAddress: string) => {
         if (!signer) {
             return;
         }
-        const tx = await communityContract(communityAddress)
-            .connect(signer)
-            .removeBeneficiary(beneficiaryAddress);
+        const tx = await communityContract(communityAddress).connect(signer).removeBeneficiary(beneficiaryAddress);
         const response = await tx.wait();
 
         return response;

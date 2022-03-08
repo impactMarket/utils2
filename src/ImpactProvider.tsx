@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-use-before-define
 import React, { useState } from 'react';
-import type { Signer } from '@ethersproject/abstract-signer';
 import type { BaseProvider } from '@ethersproject/providers';
+import type { Signer } from '@ethersproject/abstract-signer';
 
 export type EpochType = {
     endPeriod?: string;
@@ -16,15 +16,15 @@ export type EpochType = {
 };
 
 const initialEpoch = {
+    donations: {
+        everyone: 0,
+        user: 0
+    },
     endPeriod: undefined,
+    initialised: false,
     rewards: 0,
     totalRaised: 0,
-    userContribution: 0,
-    donations: {
-        user: 0,
-        everyone: 0
-    },
-    initialised: false
+    userContribution: 0
 };
 
 export type BalanceType = {
@@ -42,8 +42,8 @@ export type RewardsType = {
 
 const initialRewards: RewardsType = {
     allocated: 0,
-    currentEpoch: 0,
     claimable: 0,
+    currentEpoch: 0,
     estimated: 0,
     initialised: false
 };
@@ -53,9 +53,10 @@ const intialProviderData: {
     signer: Signer | null;
     address: string | null;
 } = {
-    provider: null as any, // mandatory, value here doesn't matter
-    signer: null,
-    address: null
+    // mandatory, value here doesn't matter
+    address: null,
+    provider: null as any,
+    signer: null
 };
 
 const intialCUSDBalanceStateData: {
@@ -91,12 +92,8 @@ const intialRewardsStateData: {
 };
 
 export const ImpactProviderContext = React.createContext(intialProviderData);
-export const CUSDBalanceContext = React.createContext(
-    intialCUSDBalanceStateData
-);
-export const PACTBalanceContext = React.createContext(
-    intialPACTBalanceStateData
-);
+export const CUSDBalanceContext = React.createContext(intialCUSDBalanceStateData);
+export const PACTBalanceContext = React.createContext(intialPACTBalanceStateData);
 export const EpochContext = React.createContext(intialEpochStateData);
 export const RewardsContext = React.createContext(intialRewardsStateData);
 
@@ -177,9 +174,9 @@ export const ImpactProvider = (props: ProviderProps) => {
     return (
         <ImpactProviderContext.Provider
             value={{
+                address,
                 provider,
-                signer,
-                address
+                signer
             }}
         >
             <RewardsProvider>

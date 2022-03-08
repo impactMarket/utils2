@@ -4,12 +4,12 @@ import { frequencyToText } from './frequencyToText';
 export function estimateCommunityRemainFunds(community: {
     contract: {
         baseInterval: number;
-        claimAmount: BigNumber;
+        claimAmount: string;
     };
     state: {
         beneficiaries: number;
-        raised: BigNumber;
-        claimed: BigNumber;
+        raised: string;
+        claimed: string;
     };
 }): number {
     if (community.contract === undefined || community.state === undefined) {
@@ -20,9 +20,8 @@ export function estimateCommunityRemainFunds(community: {
     const { baseInterval, claimAmount } = community.contract;
     const remaining = new BigNumber(raised).minus(new BigNumber(claimed));
 
-    let communityLimitPerDay = new BigNumber(claimAmount).multipliedBy(
-        beneficiaries
-    );
+    let communityLimitPerDay = new BigNumber(claimAmount).multipliedBy(beneficiaries);
+
     if (frequencyToText(baseInterval) === 'week') {
         communityLimitPerDay = communityLimitPerDay.div(7);
     }

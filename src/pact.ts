@@ -1,30 +1,23 @@
-import ERC20ABI from './abi/BaseERC20.json';
-import { BigNumber } from 'bignumber.js';
-import { ContractAddresses } from './contractAddress';
-import { BaseProvider } from '@ethersproject/providers';
-import { Contract } from '@ethersproject/contracts';
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
-import axios from 'axios';
+import { BaseProvider } from '@ethersproject/providers';
+import { BigNumber } from 'bignumber.js';
+import { Contract } from '@ethersproject/contracts';
+import { ContractAddresses } from './contractAddress';
 import { getContracts } from './contracts';
 import { toNumber } from './toNumber';
+import ERC20ABI from './abi/BaseERC20.json';
+import axios from 'axios';
 
 const client = new ApolloClient({
-    uri: 'https://api.thegraph.com/subgraphs/name/ubeswap/ubeswap',
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(),
+    uri: 'https://api.thegraph.com/subgraphs/name/ubeswap/ubeswap'
 });
 
 export async function circulatingSupply(provider: BaseProvider) {
     const { chainId } = await provider.getNetwork();
     const contractAddresses = ContractAddresses.get(chainId)!;
 
-    const {
-        PACTDelegator,
-        PACTToken,
-        DonationMiner,
-        MerkleDistributor,
-        ImpactLabs,
-        IDO
-    } = contractAddresses;
+    const { PACTDelegator, PACTToken, DonationMiner, MerkleDistributor, ImpactLabs, IDO } = contractAddresses;
 
     const decimals = new BigNumber(10).pow(18);
     const pact = new Contract(PACTToken, ERC20ABI, provider);
@@ -33,13 +26,15 @@ export async function circulatingSupply(provider: BaseProvider) {
     const donationMinerPACTBalance = await pact.balanceOf(DonationMiner);
     const impactLabsPACTBalance = await pact.balanceOf(ImpactLabs);
     const idoPACTBalance = await pact.balanceOf(IDO);
-    const totalSupply = new BigNumber(10000000000).multipliedBy(decimals); // 10B
+    // 10B
+    const totalSupply = new BigNumber(10000000000).multipliedBy(decimals);
     const circulatingSupply = new BigNumber(totalSupply)
         .minus(airgrabPACTBalance.toString())
         .minus(daoPACTBalance.toString())
         .minus(donationMinerPACTBalance.toString())
         .minus(impactLabsPACTBalance.toString())
         .minus(idoPACTBalance.toString());
+
     return circulatingSupply.dividedBy(decimals).toNumber();
 }
 
@@ -51,13 +46,14 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
     transfers: number;
 }> {
     const { chainId } = await provider.getNetwork();
+
     // if not on mainnet
     if (chainId !== 42220) {
         return {
-            priceUSD: '0',
             dailyVolumeUSD: '0',
-            totalLiquidityUSD: '0',
+            priceUSD: '0',
             tokenHolders: 0,
+            totalLiquidityUSD: '0',
             transfers: 0
         };
     }
@@ -82,11 +78,11 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
             `
     });
     let counters = { data: { token_holder_count: 0, transfer_count: 0 } };
+
     try {
-        counters = await axios.get(
-            `https://explorer.celo.org/token-counters?id=${PACTToken}`
-        );
+        counters = await axios.get(`https://explorer.celo.org/token-counters?id=${PACTToken}`);
     } catch (_) {}
+
     return {
         ...result.data.tokenDayDatas[0],
         tokenHolders: counters.data.token_holder_count,
@@ -94,11 +90,9 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
     };
 }
 
-export async function hasPACTVotingPower(
-    provider: BaseProvider,
-    address: string
-) {
+export async function hasPACTVotingPower(provider: BaseProvider, address: string) {
     const { pact: pactContract, delegate } = await getContracts(provider);
+
     if (
         address === null ||
         !delegate?.address ||
@@ -115,17 +109,17 @@ export async function hasPACTVotingPower(
             pactContract.getCurrentVotes(address)
         ]);
 
-        return new BigNumber(currentVotes.toString()).gte(
-            proposalThreshold.toString()
-        );
+        return new BigNumber(currentVotes.toString()).gte(proposalThreshold.toString());
     } catch (error) {
         console.log(`Error getting voting power...\n${error}`);
+
         return false;
     }
 }
 
 export async function getPACTTVL(provider: BaseProvider): Promise<number> {
     const { chainId } = await provider.getNetwork();
+
     // if not on mainnet
     if (chainId !== 42220) {
         return 0;
@@ -150,8 +144,7 @@ export async function getPACTTVL(provider: BaseProvider): Promise<number> {
 
     const pact = new Contract(PACTToken, ERC20ABI, provider);
     const TVL =
-        toNumber((await pact.balanceOf(PACTDelegator)).toString()) *
-        parseFloat(result.data.tokenDayDatas[0].priceUSD);
+        toNumber((await pact.balanceOf(PACTDelegator)).toString()) * parseFloat(result.data.tokenDayDatas[0].priceUSD);
 
     return TVL;
 }

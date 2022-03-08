@@ -1,8 +1,8 @@
-import { Signer } from '@ethersproject/abstract-signer';
 import { BaseProvider } from '@ethersproject/providers';
-import BigNumber from 'bignumber.js';
+import { Signer } from '@ethersproject/abstract-signer';
 import { defaultAbiCoder } from '@ethersproject/abi';
 import { getContracts } from './contracts';
+import BigNumber from 'bignumber.js';
 
 type CommunityArgs = {
     baseInterval: string | BigNumber;
@@ -28,6 +28,7 @@ export class DAO {
 
     addCommunity = async (community: CommunityArgs) => {
         const { delegate, addresses } = await getContracts(this.provider);
+
         if (!delegate || !addresses?.communityAdmin || !this.signer) {
             return;
         }
@@ -47,22 +48,11 @@ export class DAO {
             } = community;
             const targets = [addresses.communityAdmin];
             const values = [0];
-            const signatures = [
-                'addCommunity(address[],uint256,uint256,uint256,uint256,uint256,uint256,uint256)'
-            ];
+            const signatures = ['addCommunity(address[],uint256,uint256,uint256,uint256,uint256,uint256,uint256)'];
 
             const calldatas = [
                 defaultAbiCoder.encode(
-                    [
-                        'address[]',
-                        'uint256',
-                        'uint256',
-                        'uint256',
-                        'uint256',
-                        'uint256',
-                        'uint256',
-                        'uint256'
-                    ],
+                    ['address[]', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256'],
                     [
                         managers,
                         claimAmount,
@@ -82,8 +72,8 @@ export class DAO {
                 signatures,
                 calldatas,
                 JSON.stringify({
-                    title: proposalTitle,
-                    description: proposalDescription
+                    description: proposalDescription,
+                    title: proposalTitle
                 })
             );
 
@@ -92,6 +82,7 @@ export class DAO {
             return parseInt(response.events![0].args![0].toString(), 10);
         } catch (error) {
             console.log('Error in addCommunity function: \n', error);
+
             return undefined;
         }
     };

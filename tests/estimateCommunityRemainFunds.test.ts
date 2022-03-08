@@ -1,28 +1,27 @@
 import { expect } from 'chai';
-import { UbiCommunity } from '../../types';
 
-import { estimateCommunityRemainFunds } from '../estimateCommunityRemainFunds';
+import { estimateCommunityRemainFunds } from '../src/estimateCommunityRemainFunds';
 
-const baseCommunity: UbiCommunity = {
-    name: 'test',
-    id: 0,
-    publicId: '',
-    description: '',
-    createdAt: new Date(),
-    updatedAt: new Date(),
+const baseCommunity = {
     city: '',
-    country: '',
-    currency: '',
-    language: '',
     contractAddress: '',
+    country: '',
     coverMediaId: 0,
+    createdAt: new Date(),
+    currency: '',
+    description: '',
+    descriptionEn: '',
     email: '',
     gps: { latitude: 0, longitude: 0 },
+    id: 0,
+    language: '',
+    name: 'test',
+    publicId: '',
     requestByAddress: '',
     started: new Date(),
     status: 'valid',
-    visibility: 'public',
-    descriptionEn: ''
+    updatedAt: new Date(),
+    visibility: 'public'
 };
 
 const baseContract = {
@@ -36,9 +35,9 @@ const baseState = {
     claims: 0,
     communityId: 0,
     createdAt: new Date(),
-    updatedAt: new Date(),
     managers: 1,
-    removedBeneficiaries: 0
+    removedBeneficiaries: 0,
+    updatedAt: new Date()
 };
 
 describe('#estimateCommunityRemainFunds()', () => {
@@ -48,16 +47,20 @@ describe('#estimateCommunityRemainFunds()', () => {
                 ...baseCommunity,
                 contract: {
                     ...baseContract,
-                    baseInterval: 86400, // 24h
-                    incrementInterval: 300, // 5m
-                    claimAmount: '1000000000000000000', // $1
-                    maxClaim: '500000000000000000000' // $500
+                    // 24h
+                    baseInterval: 17280,
+                    // $1
+                    claimAmount: '1000000000000000000',
+                    // 5m
+                    incrementInterval: 60,
+                    // $500
+                    maxClaim: '500000000000000000000'
                 },
                 state: {
                     ...baseState,
                     beneficiaries: 5,
-                    claimed: '5000000000000000000', // $5
-                    raised: '5000000000000000000' // $5
+                    claimed: '5000000000000000000',
+                    raised: '5000000000000000000'
                 }
             };
 
@@ -70,16 +73,16 @@ describe('#estimateCommunityRemainFunds()', () => {
                 ...baseCommunity,
                 contract: {
                     ...baseContract,
-                    baseInterval: 86400, // 24h
-                    incrementInterval: 300, // 5m
-                    claimAmount: '1000000000000000000', // $1
-                    maxClaim: '500000000000000000000' // $500
+                    baseInterval: 17280,
+                    claimAmount: '1000000000000000000',
+                    incrementInterval: 60,
+                    maxClaim: '500000000000000000000'
                 },
                 state: {
                     ...baseState,
                     beneficiaries: 5,
-                    claimed: '5000000000000000000', // $5
-                    raised: '10000000000000000000' // $10
+                    claimed: '5000000000000000000',
+                    raised: '10000000000000000000'
                 }
             };
 
@@ -92,16 +95,16 @@ describe('#estimateCommunityRemainFunds()', () => {
                 ...baseCommunity,
                 contract: {
                     ...baseContract,
-                    baseInterval: 86400, // 24h
-                    incrementInterval: 300, // 5m
-                    claimAmount: '1000000000000000000', // $1
-                    maxClaim: '500000000000000000000' // $500
+                    baseInterval: 17280,
+                    claimAmount: '1000000000000000000',
+                    incrementInterval: 60,
+                    maxClaim: '500000000000000000000'
                 },
                 state: {
                     ...baseState,
                     beneficiaries: 5,
-                    claimed: '5000000000000000000', // $5
-                    raised: '20000000000000000000' // $10
+                    claimed: '5000000000000000000',
+                    raised: '20000000000000000000'
                 }
             };
 
@@ -114,16 +117,16 @@ describe('#estimateCommunityRemainFunds()', () => {
                 ...baseCommunity,
                 contract: {
                     ...baseContract,
-                    baseInterval: 86400, // 24h
-                    incrementInterval: 300, // 5m
-                    claimAmount: '1000000000000000000', // $1
-                    maxClaim: '500000000000000000000' // $500
+                    baseInterval: 17280,
+                    claimAmount: '1000000000000000000',
+                    incrementInterval: 60,
+                    maxClaim: '500000000000000000000'
                 },
                 state: {
                     ...baseState,
                     beneficiaries: 5,
-                    claimed: '5000000000000000000', // $5
-                    raised: '22000000000000000000' // $10
+                    claimed: '5000000000000000000',
+                    raised: '22000000000000000000'
                 }
             };
 
@@ -136,16 +139,16 @@ describe('#estimateCommunityRemainFunds()', () => {
                 ...baseCommunity,
                 contract: {
                     ...baseContract,
-                    baseInterval: 86400, // 24h
-                    incrementInterval: 300, // 5m
-                    claimAmount: '1000000000000000000', // $1
-                    maxClaim: '500000000000000000000' // $500
+                    baseInterval: 17280,
+                    claimAmount: '1000000000000000000',
+                    incrementInterval: 60,
+                    maxClaim: '500000000000000000000'
                 },
                 state: {
                     ...baseState,
                     beneficiaries: 5,
-                    claimed: '5000000000000000000', // $5
-                    raised: '24000000000000000000' // $10
+                    claimed: '5000000000000000000',
+                    raised: '24000000000000000000'
                 }
             };
 
@@ -158,16 +161,16 @@ describe('#estimateCommunityRemainFunds()', () => {
                 ...baseCommunity,
                 contract: {
                     ...baseContract,
-                    baseInterval: 86400, // 24h
-                    incrementInterval: 300, // 5m
-                    claimAmount: '1000000000000000000', // $1
-                    maxClaim: '500000000000000000000' // $500
+                    baseInterval: 17280,
+                    claimAmount: '1000000000000000000',
+                    incrementInterval: 60,
+                    maxClaim: '500000000000000000000'
                 },
                 state: {
                     ...baseState,
                     beneficiaries: 5,
-                    claimed: '5000000000000000000', // $5
-                    raised: '55000000000000000000' // $10
+                    claimed: '5000000000000000000',
+                    raised: '55000000000000000000'
                 }
             };
 
@@ -182,16 +185,16 @@ describe('#estimateCommunityRemainFunds()', () => {
                 ...baseCommunity,
                 contract: {
                     ...baseContract,
-                    baseInterval: 604800, // 1w
-                    incrementInterval: 1800, // 30m
-                    claimAmount: '7000000000000000000', // $7
-                    maxClaim: '500000000000000000000' // $500
+                    baseInterval: 120960,
+                    claimAmount: '7000000000000000000',
+                    incrementInterval: 360,
+                    maxClaim: '500000000000000000000'
                 },
                 state: {
                     ...baseState,
                     beneficiaries: 5,
-                    claimed: '35000000000000000000', // $35
-                    raised: '41000000000000000000' // $41
+                    claimed: '35000000000000000000',
+                    raised: '41000000000000000000'
                 }
             };
 
@@ -204,16 +207,16 @@ describe('#estimateCommunityRemainFunds()', () => {
                 ...baseCommunity,
                 contract: {
                     ...baseContract,
-                    baseInterval: 604800, // 1w
-                    incrementInterval: 1800, // 30m
-                    claimAmount: '7000000000000000000', // $7
-                    maxClaim: '500000000000000000000' // $500
+                    baseInterval: 120960,
+                    claimAmount: '7000000000000000000',
+                    incrementInterval: 360,
+                    maxClaim: '500000000000000000000'
                 },
                 state: {
                     ...baseState,
                     beneficiaries: 5,
-                    claimed: '35000000000000000000', // $35
-                    raised: '43000000000000000000' // $43
+                    claimed: '35000000000000000000',
+                    raised: '43000000000000000000'
                 }
             };
 
