@@ -48,8 +48,22 @@ export const useDonationMiner = () => {
             }
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
             const { donationMiner } = await getContracts(provider);
-            const tx = await donationMiner.connect(signer).donate(amount);
-            const response = await tx.wait();
+
+            const tx = await donationMiner.populateTransaction.donate(amount);
+            const gasLimit = await signer.estimateGas(tx);
+            const gasPrice = await signer.getGasPrice();
+            
+            // Gas estimation doesn't currently work properly
+            // The gas limit must be padded to increase tx success rate
+            // TODO: Investigate more efficient ways to handle this case
+            const adjustedGasLimit = gasLimit.mul(2);
+
+            const txResponse = await signer.sendTransaction({
+                ...tx,
+                gasLimit: adjustedGasLimit,
+                gasPrice,
+            })
+            const response = await txResponse.wait();
 
             setEpoch(epoch => ({
                 ...epoch,
@@ -90,8 +104,21 @@ export const useDonationMiner = () => {
             }
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
             const { donationMiner } = await getContracts(provider);
-            const tx = await donationMiner.connect(signer).donateToCommunity(community, amount);
-            const response = await tx.wait();
+            const tx = await donationMiner.populateTransaction.donateToCommunity(community, amount);
+            const gasLimit = await signer.estimateGas(tx);
+            const gasPrice = await signer.getGasPrice();
+            
+            // Gas estimation doesn't currently work properly
+            // The gas limit must be padded to increase tx success rate
+            // TODO: Investigate more efficient ways to handle this case
+            const adjustedGasLimit = gasLimit.mul(2);
+
+            const txResponse = await signer.sendTransaction({
+                ...tx,
+                gasLimit: adjustedGasLimit,
+                gasPrice,
+            })
+            const response = await txResponse.wait();
 
             setEpoch(epoch => ({
                 ...epoch,

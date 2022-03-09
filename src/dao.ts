@@ -1,8 +1,8 @@
-import { BaseProvider } from '@ethersproject/providers';
 import { Signer } from '@ethersproject/abstract-signer';
 import { defaultAbiCoder } from '@ethersproject/abi';
 import { getContracts } from './contracts';
 import BigNumber from 'bignumber.js';
+import type { CeloProvider } from './ethers-wrapper/CeloProvider';
 
 type CommunityArgs = {
     baseInterval: string | BigNumber;
@@ -18,10 +18,10 @@ type CommunityArgs = {
 };
 
 export class DAO {
-    private provider: BaseProvider;
+    private provider: CeloProvider;
     private signer: Signer | null;
 
-    constructor(_provider: BaseProvider, _signer: Signer | null) {
+    constructor(_provider: CeloProvider, _signer: Signer | null) {
         this.provider = _provider;
         this.signer = _signer;
     }

@@ -2,9 +2,9 @@ import { EpochContext, ImpactProviderContext } from './ImpactProvider';
 import { getContracts } from './contracts';
 import { getLastEpochsDonations, updateEpochData, updateUserContributionData } from './updater';
 import React, { useEffect } from 'react';
-import type { BaseProvider } from '@ethersproject/providers';
+import type { CeloProvider } from './ethers-wrapper/CeloProvider';
 
-export const updateEpoch = async (provider: BaseProvider, address: string) => {
+export const updateEpoch = async (provider: CeloProvider, address: string) => {
     if (!address) {
         return;
     }
