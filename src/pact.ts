@@ -62,22 +62,32 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
 
     const { PACTToken } = contractAddresses;
 
-    const result = await client.query({
-        query: gql`
-            {
-                tokenDayDatas(
-                    first:1
-                    orderBy: date
-                    orderDirection: desc
-                    where: {token: "${PACTToken.toLowerCase()}"}
-                ) {
-                    priceUSD
-                    dailyVolumeUSD
-                    totalLiquidityUSD
+    let statsFromUbeswapSubgraph = {
+        dailyVolumeUSD: '--',
+        priceUSD: '--',
+        totalLiquidityUSD: '--',
+    };
+
+    try {
+        const result = await client.query({
+            query: gql`
+                {
+                    tokenDayDatas(
+                        first:1
+                        orderBy: date
+                        orderDirection: desc
+                        where: {token: "${PACTToken.toLowerCase()}"}
+                    ) {
+                        priceUSD
+                        dailyVolumeUSD
+                        totalLiquidityUSD
+                    }
                 }
-            }
-            `
-    });
+                `
+        });
+
+        statsFromUbeswapSubgraph = result.data.tokenDayDatas[0];
+    } catch (_) {}
     let counters = { data: { token_holder_count: 0, transfer_count: 0 } };
 
     try {
@@ -85,7 +95,7 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
     } catch (_) {}
 
     return {
-        ...result.data.tokenDayDatas[0],
+        ...statsFromUbeswapSubgraph,
         tokenHolders: counters.data.token_holder_count,
         transfers: counters.data.transfer_count
     };
@@ -118,36 +128,41 @@ export async function hasPACTVotingPower(provider: CeloProvider, address: string
     }
 }
 
-export async function getPACTTVL(provider: BaseProvider): Promise<number> {
+export async function getPACTTVL(provider: BaseProvider): Promise<string> {
     const { chainId } = await provider.getNetwork();
 
     // if not on mainnet
     if (chainId !== 42220) {
-        return 0;
+        return '--';
     }
     const contractAddresses = ContractAddresses.get(chainId)!;
 
     const { PACTToken, PACTDelegator } = contractAddresses;
-    const result = await client.query({
-        query: gql`
-            {
-                tokenDayDatas(
-                    first:1
-                    orderBy: date
-                    orderDirection: desc
-                    where: {token: "${PACTToken.toLowerCase()}"}
-                ) {
-                    priceUSD
+
+    try {
+        const result = await client.query({
+            query: gql`
+                {
+                    tokenDayDatas(
+                        first:1
+                        orderBy: date
+                        orderDirection: desc
+                        where: {token: "${PACTToken.toLowerCase()}"}
+                    ) {
+                        priceUSD
+                    }
                 }
-            }
-            `
-    });
-
-    const pact = new Contract(PACTToken, ERC20ABI, provider);
-    const TVL =
-        toNumber((await pact.balanceOf(PACTDelegator)).toString()) * parseFloat(result.data.tokenDayDatas[0].priceUSD);
-
-    return TVL;
+                `
+        });
+    
+        const pact = new Contract(PACTToken, ERC20ABI, provider);
+        const TVL =
+            toNumber((await pact.balanceOf(PACTDelegator)).toString()) * parseFloat(result.data.tokenDayDatas[0].priceUSD);
+    
+        return TVL.toString();
+    } catch (_) {
+        return '--';
+    }
 }
 
 export async function getUBILiquidity(provider: BaseProvider): Promise<number> {
