@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-use-before-define
+import { CeloProvider } from './ethers-wrapper/CeloProvider';
 import React, { useState } from 'react';
-import type { BaseProvider } from '@ethersproject/providers';
 import type { Signer } from '@ethersproject/abstract-signer';
 
 export type EpochType = {
@@ -49,7 +49,7 @@ const initialRewards: RewardsType = {
 };
 
 const intialProviderData: {
-    provider: BaseProvider;
+    provider: CeloProvider;
     signer: Signer | null;
     address: string | null;
 } = {
@@ -100,7 +100,7 @@ export const RewardsContext = React.createContext(intialRewardsStateData);
 type ProviderProps = {
     children?: any;
     address: string | null;
-    provider: BaseProvider;
+    jsonRpc: string;
     signer: Signer | null;
 };
 
@@ -169,7 +169,8 @@ const RewardsProvider = React.memo((props: { children?: any }) => {
 });
 
 export const ImpactProvider = (props: ProviderProps) => {
-    const { children, address, provider, signer } = props;
+    const { children, address, jsonRpc, signer } = props;
+    const provider = new CeloProvider(jsonRpc);
 
     return (
         <ImpactProviderContext.Provider

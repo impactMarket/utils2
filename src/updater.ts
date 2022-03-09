@@ -1,9 +1,9 @@
-import { BaseProvider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { getContracts } from './contracts';
 import { toNumber } from './toNumber';
+import type { CeloProvider } from './ethers-wrapper/CeloProvider';
 
-export const updateEpochData = async (provider: BaseProvider) => {
+export const updateEpochData = async (provider: CeloProvider) => {
     const { donationMiner } = await getContracts(provider);
 
     const currentBlock = await provider.getBlockNumber();
@@ -32,7 +32,7 @@ export const updateEpochData = async (provider: BaseProvider) => {
     };
 };
 
-export const updateUserContributionData = async (provider: BaseProvider, address: string) => {
+export const updateUserContributionData = async (provider: CeloProvider, address: string) => {
     const { donationMiner } = await getContracts(provider);
 
     const currentBlock = await provider.getBlockNumber();

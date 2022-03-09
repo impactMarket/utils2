@@ -30,3 +30,4 @@ yarn-error.log*
 /abi
 /output/docs
 /docs
+/ethers-wrapper

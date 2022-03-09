@@ -20,7 +20,7 @@ const components = [
 
 const options = components.map(({ label }) => label);
 
-const initialOption = options[3];
+const initialOption = options[1];
 
 const network = Alfajores;
 
@@ -66,7 +66,7 @@ function App() {
     return (
         <>
             <ImpactProvider
-                provider={provider}
+                jsonRpc={network.rpcUrl}
                 signer={signer instanceof JsonRpcSigner ? signer : null}
                 address={isSameNetwork ? address : null}
             >

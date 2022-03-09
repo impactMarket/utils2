@@ -2,9 +2,9 @@ import { ImpactProviderContext, PACTBalanceContext } from './ImpactProvider';
 import { getContracts } from './contracts';
 import { toNumber } from './toNumber';
 import React, { useEffect } from 'react';
-import type { BaseProvider } from '@ethersproject/providers';
+import type { CeloProvider } from './ethers-wrapper/CeloProvider';
 
-export const updatePACTBalance = async (provider: BaseProvider, address: string) => {
+export const updatePACTBalance = async (provider: CeloProvider, address: string) => {
     const { pact } = await getContracts(provider);
 
     if (!address || !pact?.provider) {
