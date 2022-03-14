@@ -1,6 +1,6 @@
 {
     "name": "@impact-market/utils",
-    "version": "2.0.0-beta.2",
+    "version": "2.0.0-beta.5",
     "description": "impactMarket utils",
     "repository": {
         "type": "git",
@@ -18,13 +18,14 @@
     "unpkg": "dist/index.umd.js",
     "types": "dist/index.d.ts",
     "engines": {
-        "node": ">=16"
+        "node": ">=14"
     },
     "files": [
         "**.js*",
         "**.js*",
         "*.d.ts",
-        "abi"
+        "abi",
+        "ethers-wrapper"
     ],
     "scripts": {
         "build": "rm *.js *.js.map *.d.ts.map *.d.ts && tsc",
