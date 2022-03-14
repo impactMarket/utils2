@@ -20,14 +20,14 @@ const components = [
 
 const options = components.map(({ label }) => label);
 
-const initialOption = options[4];
+const initialOption = options[1];
 
 const network = Alfajores;
 
 const provider = new JsonRpcProvider(network.rpcUrl);
 function App() {
     const signer = useProviderOrSigner();
-    const { address, initialised, network: walletNetwork } = useContractKit();
+    const { address, initialised, network: walletNetwork, kit } = useContractKit();
     const [selectedOption, setSelectedOption] = useState<string>(initialOption);
     const [providerNetworkChainId, setProviderNetworkChainId] = useState<number | undefined>();
 
@@ -61,13 +61,13 @@ function App() {
         return <div>The app and your wallet are in different networks!</div>
     }
 
-    console.log(walletNetwork)
+    console.log(signer)
 
     return (
         <>
             <ImpactProvider
                 jsonRpc={network.rpcUrl}
-                signer={signer instanceof JsonRpcSigner ? signer : null}
+                web3={kit.web3}
                 address={isSameNetwork ? address : null}
             >
                 <Intro handleChange={setSelectedOption} initialOption={initialOption} options={options} />

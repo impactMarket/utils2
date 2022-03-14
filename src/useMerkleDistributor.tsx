@@ -4,9 +4,10 @@ import { getContracts } from './contracts';
 import { toNumber } from './toNumber';
 import { updatePACTBalance } from './usePACTBalance';
 import React, { useEffect, useState } from 'react';
+import { executeTransaction } from './executeTransaction';
 
 export const useMerkleDistributor = (treeAccount: { index: number; amount: string; proof: string[] }) => {
-    const { provider, address, signer } = React.useContext(ImpactProviderContext);
+    const { provider, address, connection } = React.useContext(ImpactProviderContext);
     const [hasClaim, setHasClaim] = useState(false);
     const [amountToClaim, setAmountToClaim] = useState(0);
 
@@ -16,16 +17,16 @@ export const useMerkleDistributor = (treeAccount: { index: number; amount: strin
      */
     const claim = async () => {
         try {
-            const { merkleDistributor } = await getContracts(provider);
+            const { cusd, merkleDistributor } = await getContracts(provider);
 
-            if (!address || !signer) {
+            if (!address || !connection) {
                 return;
             }
 
             const tx = await merkleDistributor
-                .connect(signer)
+                .populateTransaction
                 .claim(treeAccount.index, address, treeAccount.amount, treeAccount.proof);
-            const response = await tx.wait();
+            const response = await executeTransaction(connection, address, cusd.address, tx);
 
             updatePACTBalance(provider, address);
 
@@ -41,7 +42,7 @@ export const useMerkleDistributor = (treeAccount: { index: number; amount: strin
         const verifyClaim = async () => {
             const { merkleDistributor } = await getContracts(provider);
 
-            if (!address || !signer) {
+            if (!address || !connection) {
                 return;
             }
 

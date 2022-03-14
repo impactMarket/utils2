@@ -1,14 +1,15 @@
 import { CUSDBalanceContext, EpochContext, ImpactProviderContext, RewardsContext } from './ImpactProvider';
 import { getContracts } from './contracts';
-import { toNumber } from './toNumber';
 import { toToken } from './toToken';
 import { updateCUSDBalance } from './useCUSDBalance';
 import { updateEpoch } from './useEpoch';
 import { updateRewards } from './useRewards';
 import React from 'react';
+import { executeTransaction } from './executeTransaction';
+import { toNumber } from './toNumber';
 
 export const useDonationMiner = () => {
-    const { provider, address, signer } = React.useContext(ImpactProviderContext);
+    const { provider, connection, address } = React.useContext(ImpactProviderContext);
     const { setEpoch } = React.useContext(EpochContext);
     const { setRewards } = React.useContext(RewardsContext);
     const { setBalance } = React.useContext(CUSDBalanceContext);
@@ -18,7 +19,7 @@ export const useDonationMiner = () => {
             const { cusd, donationMiner } = await getContracts(provider);
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
 
-            if (!address || !signer || !donationMiner?.provider || !cusd?.provider || !amount) {
+            if (!address || !donationMiner?.provider || !cusd?.provider || !amount) {
                 return;
             }
 
@@ -30,10 +31,8 @@ export const useDonationMiner = () => {
                 return { status: true };
             }
 
-            const tx = await cusd.connect(signer).approve(donationMiner.address, amount);
-            const response = await tx.wait();
-
-            return response;
+            const tx = await cusd.populateTransaction.approve(donationMiner.address, amount);
+            return await executeTransaction(connection, address, cusd.address, tx);
         } catch (error) {
             console.log('Error approving amount: \n', error);
 
@@ -43,27 +42,14 @@ export const useDonationMiner = () => {
 
     const donateToTreasury = async (value: string | number) => {
         try {
-            if (!signer || !address) {
+            if (!connection || !address) {
                 return;
             }
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-            const { donationMiner } = await getContracts(provider);
+            const { cusd, donationMiner } = await getContracts(provider);
 
             const tx = await donationMiner.populateTransaction.donate(amount);
-            const gasLimit = await signer.estimateGas(tx);
-            const gasPrice = await signer.getGasPrice();
-            
-            // Gas estimation doesn't currently work properly
-            // The gas limit must be padded to increase tx success rate
-            // TODO: Investigate more efficient ways to handle this case
-            const adjustedGasLimit = gasLimit.mul(2);
-
-            const txResponse = await signer.sendTransaction({
-                ...tx,
-                gasLimit: adjustedGasLimit,
-                gasPrice,
-            })
-            const response = await txResponse.wait();
+            const response = await executeTransaction(connection, address, cusd.address, tx);
 
             setEpoch(epoch => ({
                 ...epoch,
@@ -99,26 +85,13 @@ export const useDonationMiner = () => {
 
     const donateToCommunity = async (community: string, value: string | number) => {
         try {
-            if (!signer || !address) {
+            if (!connection || !address) {
                 return;
             }
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-            const { donationMiner } = await getContracts(provider);
+            const { cusd, donationMiner } = await getContracts(provider);
             const tx = await donationMiner.populateTransaction.donateToCommunity(community, amount);
-            const gasLimit = await signer.estimateGas(tx);
-            const gasPrice = await signer.getGasPrice();
-            
-            // Gas estimation doesn't currently work properly
-            // The gas limit must be padded to increase tx success rate
-            // TODO: Investigate more efficient ways to handle this case
-            const adjustedGasLimit = gasLimit.mul(2);
-
-            const txResponse = await signer.sendTransaction({
-                ...tx,
-                gasLimit: adjustedGasLimit,
-                gasPrice,
-            })
-            const response = await txResponse.wait();
+            const response = await executeTransaction(connection, address, cusd.address, tx);
 
             setEpoch(epoch => ({
                 ...epoch,

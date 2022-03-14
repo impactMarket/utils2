@@ -3,7 +3,7 @@ import { JsonRpcProvider } from "@ethersproject/providers";
 import { BigNumber, providers, utils } from "ethers";
 import { parseCeloTransaction } from "./transactions";
 
-export class CeloProvider extends JsonRpcProvider {
+export class BaseProvider extends JsonRpcProvider {
   constructor(
     url?: utils.ConnectionInfo | string,
     network?: providers.Networkish

@@ -6,6 +6,7 @@ import { toNumber } from './toNumber';
 import { updateCUSDBalance } from './useCUSDBalance';
 import React, { useEffect, useState } from 'react';
 import type { Contract } from '@ethersproject/contracts';
+import { executeTransaction } from './executeTransaction';
 
 const refreshIntervalInMs = 300000;
 
@@ -32,7 +33,7 @@ export const useBeneficiary = (communityAddress: string) => {
     });
     const [claimCooldown, setClaimCooldown] = useState(0);
     const [contract, setContract] = useState<Contract | null>(null);
-    const { provider, address, signer } = React.useContext(ImpactProviderContext);
+    const { connection, provider, address } = React.useContext(ImpactProviderContext);
     let refreshInterval: NodeJS.Timeout;
     let timeoutInterval: NodeJS.Timeout;
 
@@ -79,7 +80,7 @@ export const useBeneficiary = (communityAddress: string) => {
      * @throws {Error} "Community::claim: NOT_YET"
      * @throws {Error} "Community::claim: MAX_CLAIM"
      * @throws {Error} "ERC20: transfer amount exceeds balance"
-     * @throws {Error} "No contract or signer"
+     * @throws {Error} "No connection"
      *
      * @example
      * ```typescript
@@ -88,24 +89,12 @@ export const useBeneficiary = (communityAddress: string) => {
      * ```
      */
     const claim = async () => {
-        if (!contract || !signer || !address) {
-            throw new Error('No contract or signer');
+        if (!contract || !connection || !address) {
+            throw new Error('No connection');
         }
+        const { cusd } = await getContracts(provider);
         const tx = await contract.populateTransaction.claim();
-        const gasLimit = await signer.estimateGas(tx);
-        const gasPrice = await signer.getGasPrice();
-
-        // Gas estimation doesn't currently work properly
-        // The gas limit must be padded to increase tx success rate
-        // TODO: Investigate more efficient ways to handle this case
-        const adjustedGasLimit = gasLimit.mul(2);
-
-        const txResponse = await signer.sendTransaction({
-            ...tx,
-            gasLimit: adjustedGasLimit,
-            gasPrice,
-        })
-        const response = await txResponse.wait();
+        const response = await executeTransaction(connection, address, cusd.address, tx);
 
         updateClaimData(contract);
         updateCUSDBalance(provider, address);

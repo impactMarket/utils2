@@ -7,7 +7,6 @@ import { toNumber } from './toNumber';
 import ERC20ABI from './abi/BaseERC20.json';
 import axios from 'axios';
 import type { BaseProvider } from '@ethersproject/providers';
-import type { CeloProvider } from './ethers-wrapper/CeloProvider';
 
 const client = new ApolloClient({
     cache: new InMemoryCache(),
@@ -101,7 +100,7 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
     };
 }
 
-export async function hasPACTVotingPower(provider: CeloProvider, address: string) {
+export async function hasPACTVotingPower(provider: BaseProvider, address: string) {
     const { pact: pactContract, delegate } = await getContracts(provider);
 
     if (
