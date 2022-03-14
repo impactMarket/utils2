@@ -1,4 +1,5 @@
 import { ImpactProviderContext, PACTBalanceContext, RewardsContext } from './ImpactProvider';
+import { executeTransaction } from './executeTransaction';
 import {
     getAllocatedRewards,
     getClaimableRewards,
@@ -9,7 +10,6 @@ import { getContracts } from './contracts';
 import { updatePACTBalance } from './usePACTBalance';
 import React, { useEffect } from 'react';
 import type { BaseProvider } from '@ethersproject/providers';
-import { executeTransaction } from './executeTransaction';
 
 export const updateRewards = async (provider: BaseProvider, address: string) => {
     if (!address) {

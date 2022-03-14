@@ -64,7 +64,7 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
     let statsFromUbeswapSubgraph = {
         dailyVolumeUSD: '--',
         priceUSD: '--',
-        totalLiquidityUSD: '--',
+        totalLiquidityUSD: '--'
     };
 
     try {
@@ -153,11 +153,12 @@ export async function getPACTTVL(provider: BaseProvider): Promise<string> {
                 }
                 `
         });
-    
+
         const pact = new Contract(PACTToken, ERC20ABI, provider);
         const TVL =
-            toNumber((await pact.balanceOf(PACTDelegator)).toString()) * parseFloat(result.data.tokenDayDatas[0].priceUSD);
-    
+            toNumber((await pact.balanceOf(PACTDelegator)).toString()) *
+            parseFloat(result.data.tokenDayDatas[0].priceUSD);
+
         return TVL.toString();
     } catch (_) {
         return '--';

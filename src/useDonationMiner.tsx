@@ -1,12 +1,12 @@
 import { CUSDBalanceContext, EpochContext, ImpactProviderContext, RewardsContext } from './ImpactProvider';
+import { executeTransaction } from './executeTransaction';
 import { getContracts } from './contracts';
+import { toNumber } from './toNumber';
 import { toToken } from './toToken';
 import { updateCUSDBalance } from './useCUSDBalance';
 import { updateEpoch } from './useEpoch';
 import { updateRewards } from './useRewards';
 import React from 'react';
-import { executeTransaction } from './executeTransaction';
-import { toNumber } from './toNumber';
 
 export const useDonationMiner = () => {
     const { provider, connection, address } = React.useContext(ImpactProviderContext);
@@ -32,6 +32,7 @@ export const useDonationMiner = () => {
             }
 
             const tx = await cusd.populateTransaction.approve(donationMiner.address, amount);
+
             return await executeTransaction(connection, address, cusd.address, tx);
         } catch (error) {
             console.log('Error approving amount: \n', error);

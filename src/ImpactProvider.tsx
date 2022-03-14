@@ -1,8 +1,8 @@
 // eslint-disable-next-line no-use-before-define
+import { BaseProvider, JsonRpcProvider } from '@ethersproject/providers';
+import { Connection } from '@celo/connect';
 import React, { useState } from 'react';
 import Web3 from 'web3';
-import { Connection } from '@celo/connect';
-import { BaseProvider, JsonRpcProvider } from '@ethersproject/providers';
 
 export type EpochType = {
     endPeriod?: string;
@@ -57,7 +57,7 @@ const intialProviderData: {
     // mandatory, value here doesn't matter
     address: null,
     connection: null as any,
-    provider: null as any,
+    provider: null as any
 };
 
 const intialCUSDBalanceStateData: {
@@ -177,7 +177,7 @@ export const ImpactProvider = (props: ProviderProps) => {
             value={{
                 address,
                 connection: new Connection(web3),
-                provider: new JsonRpcProvider(jsonRpc),
+                provider: new JsonRpcProvider(jsonRpc)
             }}
         >
             <RewardsProvider>

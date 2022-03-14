@@ -1,15 +1,15 @@
-import { Connection } from "@celo/connect";
+import { Connection } from '@celo/connect';
 
 export async function executeTransaction(
     connection: Connection,
     address: string,
     cusdAddress: string,
-    tx: { data?:string, to?:string },
+    tx: { data?: string; to?: string }
 ) {
     const gasLimit = await connection.estimateGas({
         data: tx.data,
-        to: tx.to,
-        from: address
+        from: address,
+        to: tx.to
     });
     const gasPrice = await connection.gasPrice();
 
@@ -20,11 +20,12 @@ export async function executeTransaction(
 
     const txResponse = await connection.sendTransaction({
         data: tx.data,
-        to: tx.to,
-        from: address,
         feeCurrency: cusdAddress,
+        from: address,
         gas: adjustedGasLimit,
-        gasPrice
+        gasPrice,
+        to: tx.to
     });
+
     return await txResponse.waitReceipt();
 }

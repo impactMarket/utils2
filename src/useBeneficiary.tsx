@@ -1,12 +1,12 @@
 import { ImpactProviderContext } from './ImpactProvider';
 import { communityContract } from './community';
 import { estimateBlockTime } from './estimateBlockTime';
+import { executeTransaction } from './executeTransaction';
 import { getContracts } from './contracts';
 import { toNumber } from './toNumber';
 import { updateCUSDBalance } from './useCUSDBalance';
 import React, { useEffect, useState } from 'react';
 import type { Contract } from '@ethersproject/contracts';
-import { executeTransaction } from './executeTransaction';
 
 const refreshIntervalInMs = 300000;
 
@@ -22,14 +22,14 @@ export const useBeneficiary = (communityAddress: string) => {
     const [beneficiary, setBeneficiary] = useState<{
         claimedAmount: number;
     }>({
-        claimedAmount: 0,
+        claimedAmount: 0
     });
     const [community, setCommunity] = useState<{
         hasFunds: boolean;
         maxClaim: number;
     }>({
         hasFunds: false,
-        maxClaim: 0,
+        maxClaim: 0
     });
     const [claimCooldown, setClaimCooldown] = useState(0);
     const [contract, setContract] = useState<Contract | null>(null);
@@ -49,23 +49,23 @@ export const useBeneficiary = (communityAddress: string) => {
             const maxClaim = await _contract.maxClaim();
             const claimAmount = await _contract.claimAmount();
 
-            setBeneficiary((b) => ({
+            setBeneficiary(b => ({
                 ...b,
-                claimedAmount: toNumber(claimedAmount),
+                claimedAmount: toNumber(claimedAmount)
             }));
-            setCommunity((c) => ({
+            setCommunity(c => ({
                 ...c,
                 hasFunds: toNumber(communityBalance) > toNumber(claimAmount),
-                maxClaim: toNumber(maxClaim),
+                maxClaim: toNumber(maxClaim)
             }));
         } else {
-            setBeneficiary((b) => ({
+            setBeneficiary(b => ({
                 ...b,
-                claimedAmount: toNumber(claimedAmount),
+                claimedAmount: toNumber(claimedAmount)
             }));
-            setCommunity((c) => ({
+            setCommunity(c => ({
                 ...c,
-                communityBalance: toNumber(communityBalance),
+                communityBalance: toNumber(communityBalance)
             }));
         }
         setIsReady(true);

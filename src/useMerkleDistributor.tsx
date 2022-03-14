@@ -1,10 +1,10 @@
 import { BigNumber } from 'bignumber.js';
 import { ImpactProviderContext } from './ImpactProvider';
+import { executeTransaction } from './executeTransaction';
 import { getContracts } from './contracts';
 import { toNumber } from './toNumber';
 import { updatePACTBalance } from './usePACTBalance';
 import React, { useEffect, useState } from 'react';
-import { executeTransaction } from './executeTransaction';
 
 export const useMerkleDistributor = (treeAccount: { index: number; amount: string; proof: string[] }) => {
     const { provider, address, connection } = React.useContext(ImpactProviderContext);
@@ -23,9 +23,12 @@ export const useMerkleDistributor = (treeAccount: { index: number; amount: strin
                 return;
             }
 
-            const tx = await merkleDistributor
-                .populateTransaction
-                .claim(treeAccount.index, address, treeAccount.amount, treeAccount.proof);
+            const tx = await merkleDistributor.populateTransaction.claim(
+                treeAccount.index,
+                address,
+                treeAccount.amount,
+                treeAccount.proof
+            );
             const response = await executeTransaction(connection, address, cusd.address, tx);
 
             updatePACTBalance(provider, address);
