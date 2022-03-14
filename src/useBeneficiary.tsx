@@ -1,6 +1,7 @@
 import { ImpactProviderContext } from './ImpactProvider';
 import { communityContract } from './community';
 import { estimateBlockTime } from './estimateBlockTime';
+import { getContracts } from './contracts';
 import { toNumber } from './toNumber';
 import { updateCUSDBalance } from './useCUSDBalance';
 import React, { useEffect, useState } from 'react';
@@ -20,7 +21,14 @@ export const useBeneficiary = (communityAddress: string) => {
     const [beneficiary, setBeneficiary] = useState<{
         claimedAmount: number;
     }>({
-        claimedAmount: 0
+        claimedAmount: 0,
+    });
+    const [community, setCommunity] = useState<{
+        hasFunds: boolean;
+        maxClaim: number;
+    }>({
+        hasFunds: false,
+        maxClaim: 0,
     });
     const [claimCooldown, setClaimCooldown] = useState(0);
     const [contract, setContract] = useState<Contract | null>(null);
@@ -33,10 +41,32 @@ export const useBeneficiary = (communityAddress: string) => {
             return;
         }
         const { claimedAmount } = await _contract.beneficiaries(address);
+        const { cusd } = await getContracts(provider);
+        const communityBalance = await cusd.balanceOf(_contract.address);
 
-        setBeneficiary({
-            claimedAmount: toNumber(claimedAmount)
-        });
+        if (community.maxClaim === 0) {
+            const maxClaim = await _contract.maxClaim();
+            const claimAmount = await _contract.claimAmount();
+
+            setBeneficiary((b) => ({
+                ...b,
+                claimedAmount: toNumber(claimedAmount),
+            }));
+            setCommunity((c) => ({
+                ...c,
+                hasFunds: toNumber(communityBalance) > toNumber(claimAmount),
+                maxClaim: toNumber(maxClaim),
+            }));
+        } else {
+            setBeneficiary((b) => ({
+                ...b,
+                claimedAmount: toNumber(claimedAmount),
+            }));
+            setCommunity((c) => ({
+                ...c,
+                communityBalance: toNumber(communityBalance),
+            }));
+        }
         setIsReady(true);
     };
 
@@ -64,7 +94,7 @@ export const useBeneficiary = (communityAddress: string) => {
         const tx = await contract.populateTransaction.claim();
         const gasLimit = await signer.estimateGas(tx);
         const gasPrice = await signer.getGasPrice();
-        
+
         // Gas estimation doesn't currently work properly
         // The gas limit must be padded to increase tx success rate
         // TODO: Investigate more efficient ways to handle this case
@@ -165,5 +195,5 @@ export const useBeneficiary = (communityAddress: string) => {
         };
     }, []);
 
-    return { beneficiary, claim, claimCooldown, isClaimable, isReady };
+    return { beneficiary, claim, claimCooldown, community, isClaimable, isReady };
 };

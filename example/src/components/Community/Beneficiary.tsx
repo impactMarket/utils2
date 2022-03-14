@@ -7,7 +7,8 @@ const Beneficiary = () => {
         claimCooldown,
         isClaimable,
         isReady,
-        claim
+        claim,
+        community
     } = useBeneficiary('0x6dcf4B577309aF974216b46817e98833Ad27c0Ab');
 
     if(!isReady) {
@@ -22,6 +23,12 @@ const Beneficiary = () => {
             </div>
             <div style={{ marginTop: 8 }}>
                 claimedAmount: {beneficiary.claimedAmount.toString()}
+            </div>
+            <div style={{ marginTop: 8 }}>
+                communityHasFunds: {community.hasFunds.toString()}
+            </div>
+            <div style={{ marginTop: 8 }}>
+                maxClaim: {community.maxClaim.toString()}
             </div>
             <div style={{ marginTop: 8 }}>
                 isClaimable: {isClaimable.toString()}
