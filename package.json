@@ -44,10 +44,10 @@
         "@apollo/client": "^3.5.6",
         "@babel/core": "^7.16.10",
         "@celo-tools/use-contractkit": "npm:@poofcash/use-contractkit@1.0.10",
-        "@ethersproject/abi": "file:///home/obernardovieira/Documentos/GitHub/ethers.js/packages/abi",
-        "@ethersproject/abstract-signer": "file:///home/obernardovieira/Documentos/GitHub/ethers.js/packages/abstract-signer",
-        "@ethersproject/contracts": "file:///home/obernardovieira/Documentos/GitHub/ethers.js/packages/contracts",
-        "@ethersproject/providers": "file:///home/obernardovieira/Documentos/GitHub/ethers.js/packages/providers",
+        "@ethersproject/abi": "5.6.0",
+        "@ethersproject/abstract-signer": "5.6.0",
+        "@ethersproject/contracts": "5.6.0",
+        "@ethersproject/providers": "5.6.0",
         "@types/chai": "^4.3.0",
         "@types/mocha": "^9.1.0",
         "@types/node": "^17.0.14",
@@ -74,10 +74,10 @@
     "peerDependencies": {
         "@apollo/client": "^3.5.6",
         "@celo-tools/use-contractkit": "npm:@poofcash/use-contractkit@1.0.10",
-        "@ethersproject/abi": "file:///home/obernardovieira/Documentos/GitHub/ethers.js/packages/abi",
-        "@ethersproject/abstract-signer": "file:///home/obernardovieira/Documentos/GitHub/ethers.js/packages/abstract-signer",
-        "@ethersproject/contracts": "file:///home/obernardovieira/Documentos/GitHub/ethers.js/packages/contracts",
-        "@ethersproject/providers": "file:///home/obernardovieira/Documentos/GitHub/ethers.js/packages/providers",
+        "@ethersproject/abi": "5.6.0",
+        "@ethersproject/abstract-signer": "5.6.0",
+        "@ethersproject/contracts": "5.6.0",
+        "@ethersproject/providers": "5.6.0",
         "axios": "^0.24.0",
         "bignumber.js": "^9.0.1",
         "graphql": "^16.2.0",
@@ -90,6 +90,6 @@
     },
     "dependencies": {
         "@celo/connect": "^2.0.0-alpha1",
-        "ethers": "file:///home/obernardovieira/Documentos/GitHub/ethers.js/packages/ethers"
+        "ethers": "5.6.0"
     }
 }
