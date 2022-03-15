@@ -2,9 +2,9 @@ import { CUSDBalanceContext, ImpactProviderContext } from './ImpactProvider';
 import { getContracts } from './contracts';
 import { toNumber } from './toNumber';
 import React, { useEffect } from 'react';
-import type { CeloProvider } from './ethers-wrapper/CeloProvider';
+import type { BaseProvider } from '@ethersproject/providers';
 
-export const updateCUSDBalance = async (provider: CeloProvider, address: string) => {
+export const updateCUSDBalance = async (provider: BaseProvider, address: string) => {
     const { cusd } = await getContracts(provider);
 
     if (!address || !cusd?.provider) {

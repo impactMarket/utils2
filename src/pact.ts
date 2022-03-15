@@ -7,7 +7,6 @@ import { toNumber } from './toNumber';
 import ERC20ABI from './abi/BaseERC20.json';
 import axios from 'axios';
 import type { BaseProvider } from '@ethersproject/providers';
-import type { CeloProvider } from './ethers-wrapper/CeloProvider';
 
 const client = new ApolloClient({
     cache: new InMemoryCache(),
@@ -65,7 +64,7 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
     let statsFromUbeswapSubgraph = {
         dailyVolumeUSD: '--',
         priceUSD: '--',
-        totalLiquidityUSD: '--',
+        totalLiquidityUSD: '--'
     };
 
     try {
@@ -101,7 +100,7 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
     };
 }
 
-export async function hasPACTVotingPower(provider: CeloProvider, address: string) {
+export async function hasPACTVotingPower(provider: BaseProvider, address: string) {
     const { pact: pactContract, delegate } = await getContracts(provider);
 
     if (
@@ -154,11 +153,12 @@ export async function getPACTTVL(provider: BaseProvider): Promise<string> {
                 }
                 `
         });
-    
+
         const pact = new Contract(PACTToken, ERC20ABI, provider);
         const TVL =
-            toNumber((await pact.balanceOf(PACTDelegator)).toString()) * parseFloat(result.data.tokenDayDatas[0].priceUSD);
-    
+            toNumber((await pact.balanceOf(PACTDelegator)).toString()) *
+            parseFloat(result.data.tokenDayDatas[0].priceUSD);
+
         return TVL.toString();
     } catch (_) {
         return '--';

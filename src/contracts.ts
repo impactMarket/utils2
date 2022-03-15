@@ -5,9 +5,9 @@ import DonationMinerABI from './abi/DonationMiner.json';
 import MerkleDistributorABI from './abi/MerkleDistributor.json';
 import PACTDelegateABI from './abi/PACTDelegate.json';
 import PACTTokenABI from './abi/PACTToken.json';
-import type { CeloProvider } from './ethers-wrapper/CeloProvider';
+import type { BaseProvider } from '@ethersproject/providers';
 
-export const getContracts = async (provider: CeloProvider) => {
+export const getContracts = async (provider: BaseProvider) => {
     // do not request the network, if information exists
     let chainId = provider.network?.chainId;
 

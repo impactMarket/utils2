@@ -1,9 +1,11 @@
 import { ImpactProviderContext } from './ImpactProvider';
 import { communityContract } from './community';
+import { executeTransaction } from './executeTransaction';
+import { getContracts } from './contracts';
 import React from 'react';
 
 export const useManager = (communityAddress: string) => {
-    const { signer } = React.useContext(ImpactProviderContext);
+    const { connection, address, provider } = React.useContext(ImpactProviderContext);
 
     /**
      * Add beneficiary to community
@@ -17,11 +19,12 @@ export const useManager = (communityAddress: string) => {
      * ```
      */
     const addBeneficiary = async (beneficiaryAddress: string) => {
-        if (!signer) {
+        if (!connection || !address) {
             return;
         }
-        const tx = await communityContract(communityAddress).connect(signer).addBeneficiary(beneficiaryAddress);
-        const response = await tx.wait();
+        const { cusd } = await getContracts(provider);
+        const tx = await communityContract(communityAddress).populateTransaction.addBeneficiary(beneficiaryAddress);
+        const response = await executeTransaction(connection, address, cusd.address, tx);
 
         return response;
     };
@@ -34,11 +37,12 @@ export const useManager = (communityAddress: string) => {
      * @throws {Error} "Community::removeBeneficiary: NOT_YET"
      */
     const removeBeneficiary = async (beneficiaryAddress: string) => {
-        if (!signer) {
+        if (!connection || !address) {
             return;
         }
-        const tx = await communityContract(communityAddress).connect(signer).removeBeneficiary(beneficiaryAddress);
-        const response = await tx.wait();
+        const { cusd } = await getContracts(provider);
+        const tx = await communityContract(communityAddress).populateTransaction.removeBeneficiary(beneficiaryAddress);
+        const response = await executeTransaction(connection, address, cusd.address, tx);
 
         return response;
     };

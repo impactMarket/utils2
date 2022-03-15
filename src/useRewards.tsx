@@ -1,4 +1,5 @@
 import { ImpactProviderContext, PACTBalanceContext, RewardsContext } from './ImpactProvider';
+import { executeTransaction } from './executeTransaction';
 import {
     getAllocatedRewards,
     getClaimableRewards,
@@ -8,9 +9,9 @@ import {
 import { getContracts } from './contracts';
 import { updatePACTBalance } from './usePACTBalance';
 import React, { useEffect } from 'react';
-import type { CeloProvider } from './ethers-wrapper/CeloProvider';
+import type { BaseProvider } from '@ethersproject/providers';
 
-export const updateRewards = async (provider: CeloProvider, address: string) => {
+export const updateRewards = async (provider: BaseProvider, address: string) => {
     if (!address) {
         return;
     }
@@ -31,7 +32,7 @@ export const updateRewards = async (provider: CeloProvider, address: string) => 
 };
 
 export const useRewards = () => {
-    const { provider, address, signer } = React.useContext(ImpactProviderContext);
+    const { connection, provider, address } = React.useContext(ImpactProviderContext);
     const { setBalance } = React.useContext(PACTBalanceContext);
     const { rewards, setRewards } = React.useContext(RewardsContext);
 
@@ -40,26 +41,13 @@ export const useRewards = () => {
      * @returns {ethers.TransactionReceipt} transaction response object
      */
     const claim = async () => {
-        if (!signer || !address) {
-            throw new Error('No signer or address');
+        if (!connection || !address) {
+            throw new Error('No connection');
         }
         try {
-            const { donationMiner } = await getContracts(provider);
+            const { cusd, donationMiner } = await getContracts(provider);
             const tx = await donationMiner.populateTransaction.claimRewards();
-            const gasLimit = await signer.estimateGas(tx);
-            const gasPrice = await signer.getGasPrice();
-            
-            // Gas estimation doesn't currently work properly
-            // The gas limit must be padded to increase tx success rate
-            // TODO: Investigate more efficient ways to handle this case
-            const adjustedGasLimit = gasLimit.mul(2);
-
-            const txResponse = await signer.sendTransaction({
-                ...tx,
-                gasLimit: adjustedGasLimit,
-                gasPrice,
-            })
-            const response = await txResponse.wait();
+            const response = await executeTransaction(connection, address, cusd.address, tx);
 
             setRewards(rewards => ({
                 ...rewards,

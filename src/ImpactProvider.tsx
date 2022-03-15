@@ -1,7 +1,8 @@
 // eslint-disable-next-line no-use-before-define
-import { CeloProvider } from './ethers-wrapper/CeloProvider';
+import { BaseProvider, JsonRpcProvider } from '@ethersproject/providers';
+import { Connection } from '@celo/connect';
 import React, { useState } from 'react';
-import type { Signer } from '@ethersproject/abstract-signer';
+import Web3 from 'web3';
 
 export type EpochType = {
     endPeriod?: string;
@@ -49,14 +50,14 @@ const initialRewards: RewardsType = {
 };
 
 const intialProviderData: {
-    provider: CeloProvider;
-    signer: Signer | null;
+    connection: Connection;
+    provider: BaseProvider;
     address: string | null;
 } = {
     // mandatory, value here doesn't matter
     address: null,
-    provider: null as any,
-    signer: null
+    connection: null as any,
+    provider: null as any
 };
 
 const intialCUSDBalanceStateData: {
@@ -100,8 +101,8 @@ export const RewardsContext = React.createContext(intialRewardsStateData);
 type ProviderProps = {
     children?: any;
     address: string | null;
+    web3: Web3;
     jsonRpc: string;
-    signer: Signer | null;
 };
 
 const CUSDBalanceProvider = React.memo((props: { children?: any }) => {
@@ -169,15 +170,14 @@ const RewardsProvider = React.memo((props: { children?: any }) => {
 });
 
 export const ImpactProvider = (props: ProviderProps) => {
-    const { children, address, jsonRpc, signer } = props;
-    const provider = new CeloProvider(jsonRpc);
+    const { children, address, jsonRpc, web3 } = props;
 
     return (
         <ImpactProviderContext.Provider
             value={{
                 address,
-                provider,
-                signer
+                connection: new Connection(web3),
+                provider: new JsonRpcProvider(jsonRpc)
             }}
         >
             <RewardsProvider>

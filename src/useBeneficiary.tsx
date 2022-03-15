@@ -1,6 +1,7 @@
 import { ImpactProviderContext } from './ImpactProvider';
 import { communityContract } from './community';
 import { estimateBlockTime } from './estimateBlockTime';
+import { executeTransaction } from './executeTransaction';
 import { getContracts } from './contracts';
 import { toNumber } from './toNumber';
 import { updateCUSDBalance } from './useCUSDBalance';
@@ -21,18 +22,18 @@ export const useBeneficiary = (communityAddress: string) => {
     const [beneficiary, setBeneficiary] = useState<{
         claimedAmount: number;
     }>({
-        claimedAmount: 0,
+        claimedAmount: 0
     });
     const [community, setCommunity] = useState<{
         hasFunds: boolean;
         maxClaim: number;
     }>({
         hasFunds: false,
-        maxClaim: 0,
+        maxClaim: 0
     });
     const [claimCooldown, setClaimCooldown] = useState(0);
     const [contract, setContract] = useState<Contract | null>(null);
-    const { provider, address, signer } = React.useContext(ImpactProviderContext);
+    const { connection, provider, address } = React.useContext(ImpactProviderContext);
     let refreshInterval: NodeJS.Timeout;
     let timeoutInterval: NodeJS.Timeout;
 
@@ -48,23 +49,23 @@ export const useBeneficiary = (communityAddress: string) => {
             const maxClaim = await _contract.maxClaim();
             const claimAmount = await _contract.claimAmount();
 
-            setBeneficiary((b) => ({
+            setBeneficiary(b => ({
                 ...b,
-                claimedAmount: toNumber(claimedAmount),
+                claimedAmount: toNumber(claimedAmount)
             }));
-            setCommunity((c) => ({
+            setCommunity(c => ({
                 ...c,
                 hasFunds: toNumber(communityBalance) > toNumber(claimAmount),
-                maxClaim: toNumber(maxClaim),
+                maxClaim: toNumber(maxClaim)
             }));
         } else {
-            setBeneficiary((b) => ({
+            setBeneficiary(b => ({
                 ...b,
-                claimedAmount: toNumber(claimedAmount),
+                claimedAmount: toNumber(claimedAmount)
             }));
-            setCommunity((c) => ({
+            setCommunity(c => ({
                 ...c,
-                communityBalance: toNumber(communityBalance),
+                communityBalance: toNumber(communityBalance)
             }));
         }
         setIsReady(true);
@@ -79,7 +80,7 @@ export const useBeneficiary = (communityAddress: string) => {
      * @throws {Error} "Community::claim: NOT_YET"
      * @throws {Error} "Community::claim: MAX_CLAIM"
      * @throws {Error} "ERC20: transfer amount exceeds balance"
-     * @throws {Error} "No contract or signer"
+     * @throws {Error} "No connection"
      *
      * @example
      * ```typescript
@@ -88,24 +89,12 @@ export const useBeneficiary = (communityAddress: string) => {
      * ```
      */
     const claim = async () => {
-        if (!contract || !signer || !address) {
-            throw new Error('No contract or signer');
+        if (!contract || !connection || !address) {
+            throw new Error('No connection');
         }
+        const { cusd } = await getContracts(provider);
         const tx = await contract.populateTransaction.claim();
-        const gasLimit = await signer.estimateGas(tx);
-        const gasPrice = await signer.getGasPrice();
-
-        // Gas estimation doesn't currently work properly
-        // The gas limit must be padded to increase tx success rate
-        // TODO: Investigate more efficient ways to handle this case
-        const adjustedGasLimit = gasLimit.mul(2);
-
-        const txResponse = await signer.sendTransaction({
-            ...tx,
-            gasLimit: adjustedGasLimit,
-            gasPrice,
-        })
-        const response = await txResponse.wait();
+        const response = await executeTransaction(connection, address, cusd.address, tx);
 
         updateClaimData(contract);
         updateCUSDBalance(provider, address);
