@@ -175,7 +175,8 @@ export const useBeneficiary = (communityAddress: string) => {
             }
         };
 
-        if (address && provider) {
+        // make sure it's valid!
+        if (address && connection && provider && communityAddress) {
             const contract_ = communityContract(communityAddress, provider);
 
             setContract(contract_);
