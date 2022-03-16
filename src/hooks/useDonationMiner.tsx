@@ -20,24 +20,18 @@ export const useDonationMiner = (): DonationMinerType => {
         updateEpoch
     } = React.useContext(ImpactMarketContext);
 
-    const approve = async (value: string | number) => {
+    const approve = async (value: string | number, to?: string) => {
         try {
             const { cusd, donationMiner } = await getContracts(provider);
+            if (!to) {
+                to = donationMiner.address;
+            }
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-            if (
-                !address ||
-                !signer ||
-                !donationMiner?.provider ||
-                !cusd?.provider ||
-                !amount
-            ) {
+            if (!address || !signer || !cusd?.provider || !amount) {
                 return;
             }
 
-            const cUSDAllowance = await cusd.allowance(
-                address,
-                donationMiner.address
-            );
+            const cUSDAllowance = await cusd.allowance(address, to);
             const cusdAllowance = toNumber(cUSDAllowance);
             const allowance = cusdAllowance || 0;
 
@@ -45,9 +39,7 @@ export const useDonationMiner = (): DonationMinerType => {
                 return { status: true };
             }
 
-            const tx = await cusd
-                .connect(signer)
-                .approve(donationMiner.address, amount);
+            const tx = await cusd.connect(signer).approve(to, amount);
             const response = await tx.wait();
 
             await updateCUSDBalance();
@@ -79,8 +71,8 @@ export const useDonationMiner = (): DonationMinerType => {
             const txResponse = await signer.sendTransaction({
                 ...tx,
                 gasLimit: adjustedGasLimit,
-                gasPrice,
-            })
+                gasPrice
+            });
             const response = await txResponse.wait();
 
             await updateCUSDBalance();
@@ -104,9 +96,11 @@ export const useDonationMiner = (): DonationMinerType => {
             }
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
             const { donationMiner } = await getContracts(provider);
-            const tx = await donationMiner
-                .populateTransaction
-                .donateToCommunity(community, amount);
+            const tx =
+                await donationMiner.populateTransaction.donateToCommunity(
+                    community,
+                    amount
+                );
             const gasLimit = await signer.estimateGas(tx);
             const gasPrice = await signer.getGasPrice();
 
@@ -118,8 +112,8 @@ export const useDonationMiner = (): DonationMinerType => {
             const txResponse = await signer.sendTransaction({
                 ...tx,
                 gasLimit: adjustedGasLimit,
-                gasPrice,
-            })
+                gasPrice
+            });
             const response = await txResponse.wait();
 
             await updateCUSDBalance();
@@ -129,6 +123,7 @@ export const useDonationMiner = (): DonationMinerType => {
             return response;
         } catch (error) {
             console.log('Error in donateToCommunity function: \n', error);
+            // eslint-disable-next-line no-useless-return
             return;
         }
     };
