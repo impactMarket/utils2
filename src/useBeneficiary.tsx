@@ -25,11 +25,13 @@ export const useBeneficiary = (communityAddress: string) => {
         claimedAmount: 0
     });
     const [community, setCommunity] = useState<{
+        claimAmount: number;
         hasFunds: boolean;
         maxClaim: number;
     }>({
+        claimAmount: 0,
         hasFunds: false,
-        maxClaim: 0
+        maxClaim: 0,
     });
     const [claimCooldown, setClaimCooldown] = useState(0);
     const [contract, setContract] = useState<Contract | null>(null);
@@ -55,6 +57,7 @@ export const useBeneficiary = (communityAddress: string) => {
             }));
             setCommunity(c => ({
                 ...c,
+                claimAmount: toNumber(claimAmount),
                 hasFunds: toNumber(communityBalance) > toNumber(claimAmount),
                 maxClaim: toNumber(maxClaim)
             }));
