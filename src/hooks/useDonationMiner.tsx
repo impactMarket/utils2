@@ -70,7 +70,7 @@ export const useDonationMiner = (): DonationMinerType => {
             const tx = await donationMiner.populateTransaction.donate(amount);
             const gasLimit = await signer.estimateGas(tx);
             const gasPrice = await signer.getGasPrice();
-            
+
             // Gas estimation doesn't currently work properly
             // The gas limit must be padded to increase tx success rate
             // TODO: Investigate more efficient ways to handle this case
@@ -105,9 +105,22 @@ export const useDonationMiner = (): DonationMinerType => {
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
             const { donationMiner } = await getContracts(provider);
             const tx = await donationMiner
-                .connect(signer)
+                .populateTransaction
                 .donateToCommunity(community, amount);
-            const response = await tx.wait();
+            const gasLimit = await signer.estimateGas(tx);
+            const gasPrice = await signer.getGasPrice();
+
+            // Gas estimation doesn't currently work properly
+            // The gas limit must be padded to increase tx success rate
+            // TODO: Investigate more efficient ways to handle this case
+            const adjustedGasLimit = gasLimit.mul(2);
+
+            const txResponse = await signer.sendTransaction({
+                ...tx,
+                gasLimit: adjustedGasLimit,
+                gasPrice,
+            })
+            const response = await txResponse.wait();
 
             await updateCUSDBalance();
             updateRewards();
@@ -116,6 +129,7 @@ export const useDonationMiner = (): DonationMinerType => {
             return response;
         } catch (error) {
             console.log('Error in donateToCommunity function: \n', error);
+            return;
         }
     };
 
