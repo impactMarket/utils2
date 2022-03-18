@@ -11,25 +11,25 @@ const DaoBreakdown = () => {
         <>
             <WalletConnection title="DAO Breakdown">
                 <ul>
-                    {/* <li style={{ marginTop: 16 }}>
+                    <li style={{ marginTop: 16 }}>
                         <Balance />
-                    </li> */}
+                    </li>
                     <li style={{ marginTop: 16 }}>
                         <ApproveDonate />
                     </li>
-                    {/* <li style={{ marginTop: 16 }}>
+                    <li style={{ marginTop: 16 }}>
                         <Rewards />
-                    </li> */}
+                    </li>
                     {/* <li style={{ marginTop: 16 }}>
                         <MerkleDistributor />
                     </li> */}
                 </ul>
             </WalletConnection>
-            {/* <ul>
+            <ul>
                 <li style={{ marginTop: 16 }}>
                     <Epoch />
                 </li>
-            </ul> */}
+            </ul>
         </>
     );
 }
