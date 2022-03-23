@@ -3008,8 +3008,10 @@ ethereumjs-util@^7.0.8:
     ethereum-cryptography "^0.1.3"
     rlp "^2.2.4"
 
-"ethers@file:../../ethers.js/packages/ethers":
+ethers@5.6.0:
   version "5.6.0"
+  resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.6.0.tgz#924eb965dc03963fad0a09ce687efdf49aca3b45"
+  integrity sha512-00FP71jt6bW3ndO5DhgH9mLIZhoCGnAKFLu8qig5KmV03ubEChKf2ilB3g6fX512tTYo+tSMDJ5WpCJWdBHkBQ==
   dependencies:
     "@ethersproject/abi" "5.6.0"
     "@ethersproject/abstract-provider" "5.6.0"

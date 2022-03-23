@@ -11,7 +11,11 @@ export async function executeTransaction(
         from: address,
         to: tx.to
     });
-    const gasPrice = await connection.gasPrice();
+    let gasPrice = '500000000';
+
+    try {
+        gasPrice = await connection.gasPrice();
+    } catch(_) {}
 
     // Gas estimation doesn't currently work properly
     // The gas limit must be padded to increase tx success rate

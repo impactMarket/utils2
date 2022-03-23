@@ -5,7 +5,7 @@ import WalletsBalance from './components/WalletsBalance';
 import DaoBreakdown from './components/DaoBreakdown';
 import DaoHooks from './components/DaoHooks';
 import { ContractKitProvider, Alfajores, useContractKit, useProviderOrSigner } from '@celo-tools/use-contractkit';
-import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import PACTMetrics from './components/PACTMetrics';
 import Community from './components/Community';
 import { ImpactProvider } from '@impact-market/utils/ImpactProvider';
@@ -20,7 +20,7 @@ const components = [
 
 const options = components.map(({ label }) => label);
 
-const initialOption = options[1];
+const initialOption = options[3];
 
 const network = Alfajores;
 

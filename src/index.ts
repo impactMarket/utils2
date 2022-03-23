@@ -1,9 +1,9 @@
 export * from './wallets';
 export * from './pact';
 export * from './community';
-export * from './dao';
 export * from './useDonationMiner';
 
+export * from './useDAO';
 export * from './useCUSDBalance';
 export * from './usePACTBalance';
 export * from './ImpactProvider';
