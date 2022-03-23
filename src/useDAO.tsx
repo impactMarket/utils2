@@ -1,8 +1,10 @@
-import { Signer } from '@ethersproject/abstract-signer';
-import { defaultAbiCoder } from '@ethersproject/abi';
+import { ImpactProviderContext } from './ImpactProvider';
+import { Interface, defaultAbiCoder } from '@ethersproject/abi';
+import { executeTransaction } from './executeTransaction';
 import { getContracts } from './contracts';
 import BigNumber from 'bignumber.js';
-import type { BaseProvider } from '@ethersproject/providers';
+import PACTDelegateABI from './abi/PACTDelegate.json';
+import React from 'react';
 
 type CommunityArgs = {
     baseInterval: string | BigNumber;
@@ -17,19 +19,13 @@ type CommunityArgs = {
     proposalDescription: string;
 };
 
-export class DAO {
-    private provider: BaseProvider;
-    private signer: Signer | null;
+export const useDAO = () => {
+    const { connection, provider, address } = React.useContext(ImpactProviderContext);
 
-    constructor(_provider: BaseProvider, _signer: Signer | null) {
-        this.provider = _provider;
-        this.signer = _signer;
-    }
+    const addCommunity = async (community: CommunityArgs) => {
+        const { cusd, delegate, addresses } = await getContracts(provider);
 
-    addCommunity = async (community: CommunityArgs) => {
-        const { delegate, addresses } = await getContracts(this.provider);
-
-        if (!delegate || !addresses?.communityAdmin || !this.signer) {
+        if (!delegate || !addresses?.communityAdmin || !connection || !address) {
             return;
         }
 
@@ -66,7 +62,7 @@ export class DAO {
                 )
             ];
 
-            const tx = await delegate.connect(this.signer).propose(
+            const tx = await delegate.populateTransaction.propose(
                 targets,
                 values,
                 signatures,
@@ -76,14 +72,16 @@ export class DAO {
                     title: proposalTitle
                 })
             );
-
-            const response = await tx.wait();
-
-            return parseInt(response.events![0].args![0].toString(), 10);
+            const response = await executeTransaction(connection, address, cusd.address, tx);
+            const ifaceDAO = new Interface(PACTDelegateABI);
+            
+            return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
         } catch (error) {
             console.log('Error in addCommunity function: \n', error);
 
             return undefined;
         }
     };
+
+    return { addCommunity };
 }
