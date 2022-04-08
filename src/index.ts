@@ -15,7 +15,7 @@ export * from './useMerkleDistributor';
 
 export * from './toNumber';
 export * from './toToken';
-export * from './estimateCommunityRemainFunds';
+export * from './estimateRemainingFundsInDays';
 export * from './estimateBlockTime';
 export * from './frequencyToNumber';
 export * from './frequencyToText';

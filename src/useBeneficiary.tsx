@@ -1,6 +1,7 @@
 import { ImpactProviderContext } from './ImpactProvider';
 import { communityContract } from './community';
 import { estimateBlockTime } from './estimateBlockTime';
+import { estimateRemainingFundsInDays } from './estimateRemainingFundsInDays';
 import { executeTransaction } from './executeTransaction';
 import { getContracts } from './contracts';
 import { toNumber } from './toNumber';
@@ -35,7 +36,8 @@ export const useBeneficiary = (communityAddress: string) => {
     });
     const [claimCooldown, setClaimCooldown] = useState(0);
     const [contract, setContract] = useState<Contract | null>(null);
-    const { connection, provider, address } = React.useContext(ImpactProviderContext);
+    const [fundsRemainingDays, setFundsRemainingDays] = useState<number>(0);
+    const { connection, provider, address, subgraph } = React.useContext(ImpactProviderContext);
     let refreshInterval: NodeJS.Timeout;
     let timeoutInterval: NodeJS.Timeout;
 
@@ -43,23 +45,24 @@ export const useBeneficiary = (communityAddress: string) => {
         if (!_contract || !address) {
             return;
         }
-        const { claimedAmount } = await _contract.beneficiaries(address);
         const { cusd } = await getContracts(provider);
-        const communityBalance = await cusd.balanceOf(_contract.address);
+        const [{ claimedAmount }, communityBalance, communityGraph] = await Promise.all([
+            _contract.beneficiaries(address),
+            cusd.balanceOf(_contract.address),
+            subgraph.getCommunityData(_contract.address, '{ baseInterval, claimAmount, maxClaim, beneficiaries }'),
+        ]);
 
         if (community.maxClaim === 0) {
-            const maxClaim = await _contract.maxClaim();
-            const claimAmount = await _contract.claimAmount();
-
             setBeneficiary(b => ({
                 ...b,
                 claimedAmount: toNumber(claimedAmount)
             }));
             setCommunity(c => ({
                 ...c,
-                claimAmount: toNumber(claimAmount),
-                hasFunds: toNumber(communityBalance) > toNumber(claimAmount),
-                maxClaim: toNumber(maxClaim)
+                claimAmount: parseInt(communityGraph.claimAmount!, 10),
+                communityBalance: toNumber(communityBalance),
+                hasFunds: toNumber(communityBalance) > parseInt(communityGraph.claimAmount!, 10),
+                maxClaim: parseInt(communityGraph.maxClaim!, 10),
             }));
         } else {
             setBeneficiary(b => ({
@@ -71,6 +74,14 @@ export const useBeneficiary = (communityAddress: string) => {
                 communityBalance: toNumber(communityBalance)
             }));
         }
+        setFundsRemainingDays(
+            estimateRemainingFundsInDays({
+                baseInterval: communityGraph.baseInterval!,
+                beneficiaries: communityGraph.beneficiaries!,
+                claimAmount: parseInt(communityGraph.claimAmount!, 10),
+                fundsOnContract: toNumber(communityBalance),
+            })
+        )
         setIsReady(true);
     };
 
@@ -188,5 +199,5 @@ export const useBeneficiary = (communityAddress: string) => {
         };
     }, []);
 
-    return { beneficiary, claim, claimCooldown, community, isClaimable, isReady };
+    return { beneficiary, claim, claimCooldown, community, fundsRemainingDays, isClaimable, isReady };
 };

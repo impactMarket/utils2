@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-use-before-define
 import { BaseProvider, JsonRpcProvider } from '@ethersproject/providers';
 import { Connection } from '@celo/connect';
+import ImpactMarketSubgraph from './subgraphs';
 import React, { useState } from 'react';
 import Web3 from 'web3';
 
@@ -53,11 +54,13 @@ const intialProviderData: {
     connection: Connection;
     provider: BaseProvider;
     address: string | null;
+    subgraph: ImpactMarketSubgraph;
 } = {
     // mandatory, value here doesn't matter
     address: null,
     connection: null as any,
-    provider: null as any
+    provider: null as any,
+    subgraph: null as any
 };
 
 const intialCUSDBalanceStateData: {
@@ -177,7 +180,8 @@ export const ImpactProvider = (props: ProviderProps) => {
             value={{
                 address,
                 connection: new Connection(web3),
-                provider: new JsonRpcProvider(jsonRpc)
+                provider: new JsonRpcProvider(jsonRpc),
+                subgraph: new ImpactMarketSubgraph(jsonRpc.indexOf('alfajores') !== -1)
             }}
         >
             <RewardsProvider>
