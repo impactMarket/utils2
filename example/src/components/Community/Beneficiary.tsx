@@ -8,7 +8,8 @@ const Beneficiary = () => {
         isClaimable,
         isReady,
         claim,
-        community
+        community,
+        fundsRemainingDays
     } = useBeneficiary('0x6dcf4B577309aF974216b46817e98833Ad27c0Ab');
 
     if(!isReady) {
@@ -32,6 +33,9 @@ const Beneficiary = () => {
             </div>
             <div style={{ marginTop: 8 }}>
                 isClaimable: {isClaimable.toString()}
+            </div>
+            <div style={{ marginTop: 8 }}>
+                fundsRemainingDays: {fundsRemainingDays.toString()}
             </div>
             <button onClick={() => claim()}>claim</button>
         </>
