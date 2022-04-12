@@ -1,6 +1,7 @@
 export const ContractAddresses = new Map<
     number,
     {
+        Ambassadors: string;
         cUSD: string;
         DonationMiner: string;
         CommunityAdmin: string;
@@ -19,6 +20,7 @@ export const ContractAddresses = new Map<
     [
         44787,
         {
+            Ambassadors: '0x0000000000000000000000000000000000000000',
             CommunityAdmin: '0x1c33D75bcE52132c7a0e220c1C338B9db7cf3f3A',
             DonationMiner: '0x09Cdc8f50994F63103bc165B139631A6ad18EF49',
             IDO: '0x0000000000000000000000000000000000000000',
@@ -37,6 +39,7 @@ export const ContractAddresses = new Map<
     [
         42220,
         {
+            Ambassadors: '0x0000000000000000000000000000000000000000',
             CommunityAdmin: '0xd61c407c3A00dFD8C355973f7a14c55ebaFDf6F9',
             DonationMiner: '0x1C51657af2ceBA3D5492bA0c5A17E562F7ba6593',
             IDO: '0xBbA4ED9462ABDb4010Bb12881895fb1E77284B6b',
