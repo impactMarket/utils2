@@ -6,15 +6,18 @@ import React, { useEffect } from 'react';
 export const useStaking = () => {
     const { connection, address, provider } = React.useContext(ImpactProviderContext);
     const [stakeholderAmount, setStakeholderAmount] = React.useState(0);
+    const [stakedAmount, setStakedAmount] = React.useState(0);
+    const [apr,] = React.useState(0);
+    const [earned,] = React.useState(0);
 
     /**
-     * Stake a given amount of tokens
+     * Stake a given amount of tokens from wallet balance
      * @param {string} holder Holder address
      * @param {string} amount Amount to be staked
      * @returns {ethers.ContractReceipt} transaction response object
      * @example
      * ```typescript
-     * const { addBeneficiary } = useStaking();
+     * const { stake } = useStaking();
      * const tx = await stake('holder-address', 'amount');
      * ```
      */
@@ -24,6 +27,21 @@ export const useStaking = () => {
         }
         const { staking, cusd } = await getContracts(provider);
         const tx = await staking.populateTransaction.stake(holder, amount);
+        const response = await executeTransaction(connection, address, cusd.address, tx);
+
+        return response;
+    };
+
+    /**
+     * Stake tokens from rewards without claiming
+     * @returns {ethers.ContractReceipt} transaction response object
+     */
+    const stakeRewards = async () => {
+        if (!connection || !address) {
+            return;
+        }
+        const { donationMiner, cusd } = await getContracts(provider);
+        const tx = await donationMiner.populateTransaction.stakeRewards();
         const response = await executeTransaction(connection, address, cusd.address, tx);
 
         return response;
@@ -66,14 +84,16 @@ export const useStaking = () => {
             if (!connection || !address) {
                 return;
             }
-            const { staking } = await getContracts(provider);
+            const { staking, spact } = await getContracts(provider);
             const stakeholderAmount = await staking.getStakeholderAmount(address);
+            const stakedAmount = await spact.balanceOf(address);
             
             setStakeholderAmount(stakeholderAmount);
+            setStakedAmount(stakedAmount);
         };
 
         getStakeholderAmount();
     }, []);
 
-    return { claim, stake, stakeholderAmount, unstake };
+    return { apr, claim, earned, stake, stakeRewards, stakedAmount, stakeholderAmount, unstake };
 };
