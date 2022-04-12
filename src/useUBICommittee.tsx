@@ -3,7 +3,7 @@ import { ImpactProviderContext } from './ImpactProvider';
 import { Interface, defaultAbiCoder } from '@ethersproject/abi';
 import { executeTransaction } from './executeTransaction';
 import { getContracts } from './contracts';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import UBICommitteeABI from './abi/UBICommittee.json';
 
 type CommunityArgs = {
@@ -44,17 +44,6 @@ type CommunityUpdateBeneficiaryParamsArgs = {
 
 export const useUBICommittee = () => {
     const { connection, address, provider, ubiManagementSubgraph } = React.useContext(ImpactProviderContext);
-    const [proposals, setProposals] = useState<{
-        id: number;
-        proposer: string;
-        signatures: string[];
-        endBlock: number;
-        description: string;
-        status: number;
-        votesAgainst: number;
-        votesFor: number;
-        votesAbstain: number;
-    }>([] as any);
 
     /**
      * @dev Generates proposal to create new community
@@ -305,21 +294,21 @@ export const useUBICommittee = () => {
         return response;
     }
 
-    useEffect(() => {
-        if (connection) {
-            const load = async () => {
-                setProposals(await ubiManagementSubgraph.getProposals(10, 0));
-            }
-
-            load();
-        }
-    }, []);
+    /**
+     * @dev Get proposals details
+     * @param {number} first first x proposals
+     * @param {number} skip skip x proposals
+     * @returns {object} proposals array
+     */
+    const getProposals = async (first: number, skip: number) => {
+        return await ubiManagementSubgraph.getProposals(first, skip);
+    }
 
     return {
         addCommunity,
         cancel,
         execute,
-        proposals,
+        getProposals,
         removeCommunity,
         updateBeneficiaryParams,
         updateCommunityParams,
