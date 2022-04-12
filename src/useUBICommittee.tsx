@@ -3,7 +3,7 @@ import { ImpactProviderContext } from './ImpactProvider';
 import { Interface, defaultAbiCoder } from '@ethersproject/abi';
 import { executeTransaction } from './executeTransaction';
 import { getContracts } from './contracts';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import UBICommitteeABI from './abi/UBICommittee.json';
 
 type CommunityArgs = {
@@ -43,7 +43,18 @@ type CommunityUpdateBeneficiaryParamsArgs = {
 };
 
 export const useUBICommittee = () => {
-    const { connection, address, provider } = React.useContext(ImpactProviderContext);
+    const { connection, address, provider, ubiManagementSubgraph } = React.useContext(ImpactProviderContext);
+    const [proposals, setProposals] = useState<{
+        id: number;
+        proposer: string;
+        signatures: string[];
+        endBlock: number;
+        description: string;
+        status: number;
+        votesAgainst: number;
+        votesFor: number;
+        votesAbstain: number;
+    }>([] as any);
 
     /**
      * @dev Generates proposal to create new community
@@ -245,5 +256,73 @@ export const useUBICommittee = () => {
         return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
     };
 
-    return { addCommunity, removeCommunity, updateBeneficiaryParams, updateCommunityParams };
+    /**
+     * @dev Execute a proposal
+     * @param {number} proposalId proposal id
+     * @returns {ethers.ContractReceipt} transaction receipt
+     */
+    const execute = async (proposalId: number) => {
+        if (!connection || !address) {
+            return;
+        }
+        const { cusd, ubiCommittee } = await getContracts(provider);
+        const tx = await ubiCommittee.populateTransaction.execute(proposalId);
+        const response = await executeTransaction(connection, address, cusd.address, tx);
+
+        return response;
+    }
+
+    /**
+     * @dev Cancel a proposal
+     * @param {number} proposalId proposal id
+     * @returns {ethers.ContractReceipt} transaction receipt
+     */
+    const cancel = async (proposalId: number) => {
+        if (!connection || !address) {
+            return;
+        }
+        const { cusd, ubiCommittee } = await getContracts(provider);
+        const tx = await ubiCommittee.populateTransaction.cancel(proposalId);
+        const response = await executeTransaction(connection, address, cusd.address, tx);
+
+        return response;
+    }
+
+    /**
+     * @dev Vote on a proposal
+     * @param {number} proposalId proposal id
+     * @param {number} support proposal support: 0 - against, 1 - for, 2 - abstain
+     * @returns {ethers.ContractReceipt} transaction receipt
+     */
+    const vote = async (proposalId: number, support: number) => {
+        if (!connection || !address) {
+            return;
+        }
+        const { cusd, ubiCommittee } = await getContracts(provider);
+        const tx = await ubiCommittee.populateTransaction.castVote(proposalId, support);
+        const response = await executeTransaction(connection, address, cusd.address, tx);
+
+        return response;
+    }
+
+    useEffect(() => {
+        if (connection) {
+            const load = async () => {
+                setProposals(await ubiManagementSubgraph.getProposals(10, 0));
+            }
+
+            load();
+        }
+    }, []);
+
+    return {
+        addCommunity,
+        cancel,
+        execute,
+        proposals,
+        removeCommunity,
+        updateBeneficiaryParams,
+        updateCommunityParams,
+        vote,
+    };
 };
