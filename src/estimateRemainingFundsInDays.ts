@@ -8,11 +8,15 @@ export function estimateRemainingFundsInDays(community: {
 }): number {
     const { beneficiaries, fundsOnContract, baseInterval, claimAmount } = community;
 
+    if (fundsOnContract < claimAmount) {
+        return 0;
+    }
+
     let communityLimitPerDay = claimAmount * beneficiaries;
 
     if (frequencyToText(baseInterval) === 'week') {
         communityLimitPerDay /= 6;
     }
 
-    return Math.floor(fundsOnContract / communityLimitPerDay);
+    return Math.max(1, Math.floor(fundsOnContract / communityLimitPerDay));
 }
