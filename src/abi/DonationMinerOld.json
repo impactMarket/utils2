@@ -50,12 +50,7 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "claimAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "lastDonorStakeAmount",
+        "name": "",
         "type": "uint256"
       }
     ],
@@ -79,12 +74,7 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "claimAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "lastDonorStakeAmount",
+        "name": "",
         "type": "uint256"
       }
     ],
@@ -153,19 +143,9 @@
   {
     "inputs": [
       {
-        "internalType": "contract IERC20",
-        "name": "_token",
-        "type": "address"
-      },
-      {
         "internalType": "uint256",
         "name": "_amount",
         "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_delegateAddress",
-        "type": "address"
       }
     ],
     "name": "donate",
@@ -181,19 +161,9 @@
         "type": "address"
       },
       {
-        "internalType": "contract IERC20",
-        "name": "_token",
-        "type": "address"
-      },
-      {
         "internalType": "uint256",
         "name": "_amount",
         "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_delegateAddress",
-        "type": "address"
       }
     ],
     "name": "donateToCommunity",
@@ -256,7 +226,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "initialAmount",
+        "name": "tokenPrice",
         "type": "uint256"
       }
     ],
@@ -349,30 +319,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_donor",
-        "type": "address"
-      }
-    ],
-    "name": "lastPeriodsDonations",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "owner",
     "outputs": [
@@ -443,30 +389,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_period",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_donor",
-        "type": "address"
-      }
-    ],
-    "name": "rewardPeriodDonorStakeAmounts",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "rewardPeriodSize",
     "outputs": [
@@ -517,85 +439,6 @@
       {
         "internalType": "uint256",
         "name": "againstPeriods",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "stakesAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "stakingDonationRatio",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_holderAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_holderAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_totalAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "setStakingAmounts",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "stakeRewards",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_lastPeriodNumber",
-        "type": "uint256"
-      }
-    ],
-    "name": "stakeRewardsPartial",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "staking",
-    "outputs": [
-      {
-        "internalType": "contract IStaking",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "stakingDonationRatio",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
         "type": "uint256"
       }
     ],
@@ -696,32 +539,6 @@
       }
     ],
     "name": "updateRewardPeriodParams",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "contract IStaking",
-        "name": "_newStaking",
-        "type": "address"
-      }
-    ],
-    "name": "updateStaking",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_newStakingDonationRatio",
-        "type": "uint256"
-      }
-    ],
-    "name": "updateStakingDonationRatio",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
