@@ -59,10 +59,9 @@ export const useBeneficiary = (communityAddress: string) => {
             }));
             setCommunity(c => ({
                 ...c,
-                claimAmount: parseInt(communityGraph.claimAmount!, 10),
-                communityBalance: toNumber(communityBalance),
-                hasFunds: toNumber(communityBalance) > parseInt(communityGraph.claimAmount!, 10),
-                maxClaim: parseInt(communityGraph.maxClaim!, 10),
+                claimAmount: parseFloat(communityGraph.claimAmount!),
+                hasFunds: toNumber(communityBalance) > parseFloat(communityGraph.claimAmount!),
+                maxClaim: parseFloat(communityGraph.maxClaim!),
             }));
         } else {
             setBeneficiary(b => ({
@@ -71,14 +70,14 @@ export const useBeneficiary = (communityAddress: string) => {
             }));
             setCommunity(c => ({
                 ...c,
-                communityBalance: toNumber(communityBalance)
+                hasFunds: toNumber(communityBalance) > parseFloat(communityGraph.claimAmount!),
             }));
         }
         setFundsRemainingDays(
             estimateRemainingFundsInDays({
                 baseInterval: communityGraph.baseInterval!,
                 beneficiaries: communityGraph.beneficiaries!,
-                claimAmount: parseInt(communityGraph.claimAmount!, 10),
+                claimAmount: parseFloat(communityGraph.claimAmount!),
                 fundsOnContract: toNumber(communityBalance),
             })
         )

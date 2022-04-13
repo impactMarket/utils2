@@ -32,6 +32,9 @@ const Beneficiary = () => {
                 maxClaim: {community.maxClaim.toString()}
             </div>
             <div style={{ marginTop: 8 }}>
+                claimAmount: {community.claimAmount.toString()}
+            </div>
+            <div style={{ marginTop: 8 }}>
                 isClaimable: {isClaimable.toString()}
             </div>
             <div style={{ marginTop: 8 }}>

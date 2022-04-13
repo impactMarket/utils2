@@ -14,5 +14,5 @@ export function estimateRemainingFundsInDays(community: {
         communityLimitPerDay /= 6;
     }
 
-    return Math.floor(fundsOnContract / communityLimitPerDay);
+    return Math.max(1, Math.floor(fundsOnContract / communityLimitPerDay));
 }
