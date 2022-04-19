@@ -28,10 +28,12 @@ export const useBeneficiary = (communityAddress: string) => {
     const [community, setCommunity] = useState<{
         claimAmount: number;
         hasFunds: boolean;
+        locked: boolean;
         maxClaim: number;
     }>({
         claimAmount: 0,
         hasFunds: false,
+        locked: false,
         maxClaim: 0,
     });
     const [claimCooldown, setClaimCooldown] = useState(0);
@@ -46,31 +48,35 @@ export const useBeneficiary = (communityAddress: string) => {
             return;
         }
         const { cusd } = await getContracts(provider);
-        const [{ claimedAmount }, communityBalance, communityGraph] = await Promise.all([
-            _contract.beneficiaries(address),
+        const [communityBalance, beneficiaryGraph, communityGraph] = await Promise.all([
             cusd.balanceOf(_contract.address),
-            subgraph.getCommunityData(_contract.address, '{ baseInterval, claimAmount, maxClaim, beneficiaries }'),
+            subgraph.getBeneficiaryData(address, '{ claimed, state }'),
+            subgraph.getCommunityData(_contract.address, '{ baseInterval, claimAmount, maxClaim, beneficiaries, state }'),
         ]);
 
         if (community.maxClaim === 0) {
             setBeneficiary(b => ({
                 ...b,
-                claimedAmount: toNumber(claimedAmount)
+                claimedAmount: parseInt(beneficiaryGraph.claimed!, 10),
+                locked: beneficiaryGraph.state === 2,
             }));
             setCommunity(c => ({
                 ...c,
                 claimAmount: parseFloat(communityGraph.claimAmount!),
                 hasFunds: toNumber(communityBalance) > parseFloat(communityGraph.claimAmount!),
+                locked: communityGraph.state === 2,
                 maxClaim: parseFloat(communityGraph.maxClaim!),
             }));
         } else {
             setBeneficiary(b => ({
                 ...b,
-                claimedAmount: toNumber(claimedAmount)
+                claimedAmount: parseInt(beneficiaryGraph.claimed!, 10),
+                locked: beneficiaryGraph.state === 2,
             }));
             setCommunity(c => ({
                 ...c,
                 hasFunds: toNumber(communityBalance) > parseFloat(communityGraph.claimAmount!),
+                locked: communityGraph.state === 2,
             }));
         }
         setFundsRemainingDays(
