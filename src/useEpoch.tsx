@@ -8,11 +8,11 @@ export const updateEpoch = async (provider: BaseProvider, address: string) => {
     if (!address) {
         return;
     }
-    const { donationMiner } = await getContracts(provider);
+    const { donationMiner, donationMinerOld } = await getContracts(provider);
     const [epochData, userContributionData, donations] = await Promise.all([
         updateEpochData(provider),
         updateUserContributionData(provider, address),
-        getLastEpochsDonations(donationMiner, address)
+        getLastEpochsDonations(donationMiner, donationMinerOld, address)
     ]);
 
     return {
