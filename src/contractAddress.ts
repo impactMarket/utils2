@@ -16,15 +16,15 @@ export const ContractAddresses = new Map<
     [
         44787,
         {
-            CommunityAdmin: '0x88B101c163bbFE1dc4764225248a6DAd282d7A39',
-            DonationMiner: '0xac66FDe03Efc73879424d2bD61F846e964ce6639',
+            CommunityAdmin: '0x1c33D75bcE52132c7a0e220c1C338B9db7cf3f3A',
+            DonationMiner: '0x09Cdc8f50994F63103bc165B139631A6ad18EF49',
             IDO: '0x0000000000000000000000000000000000000000',
-            ImpactLabs: '0x0000000000000000000000000000000000000000',
+            ImpactLabs: '0x60c631E7FB4224ad3C0E4BdA0610Dd10CE77756b',
             MerkleDistributor: '0xcbB604155ba079499AC638211d4aa0E10711f718',
-            PACTDelegate: '0x28579662E826Bfe199A535440C4B77E4C59d04e1',
-            PACTDelegator: '0xBf35872f98E716bfc06B03aB173037576DebE1F5',
-            PACTToken: '0x6FA09BC0CF975fABFAAAF8231886F66c1c22B53e',
-            Treasury: '0x0000000000000000000000000000000000000000',
+            PACTDelegate: '0xf266997E9feDd2dF6B8B8CaA710c148643b38C3b',
+            PACTDelegator: '0x5c27e2600a3eDEF53DE0Ec32F01efCF145419eDF',
+            PACTToken: '0x73A2De6A8370108D43c3C80430C84c30df323eD2',
+            Treasury: '0xB0deEE097B5227C5E6bbE787665e4e62b4fE85f3',
             cUSD: '0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1'
         }
     ],
