@@ -8,6 +8,7 @@ import { ContractKitProvider, Alfajores, useContractKit, useProviderOrSigner } f
 import { JsonRpcProvider } from '@ethersproject/providers';
 import PACTMetrics from './components/PACTMetrics';
 import Community from './components/Community';
+import Staking from './components/Staking';
 import { ImpactProvider } from '@impact-market/utils/ImpactProvider';
 
 const components = [
@@ -16,11 +17,12 @@ const components = [
     { label: 'DAO Hooks', component: DaoHooks },
     { label: 'Community', component: Community },
     { label: 'PACT Metrics', component: PACTMetrics },
+    { label: 'Staking', component: Staking },
 ]
 
 const options = components.map(({ label }) => label);
 
-const initialOption = options[1];
+const initialOption = options[5];
 
 const network = Alfajores;
 
