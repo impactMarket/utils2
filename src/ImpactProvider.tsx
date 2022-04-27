@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-use-before-define
 import { BaseProvider, JsonRpcProvider } from '@ethersproject/providers';
 import { Connection } from '@celo/connect';
-import ImpactMarketSubgraph from './subgraphs';
+import { ImpactMarketSubgraph, ImpactMarketUBIManagementSubgraph } from './subgraphs';
 import React, { useState } from 'react';
 import Web3 from 'web3';
 
@@ -62,12 +62,14 @@ const intialProviderData: {
     provider: BaseProvider;
     address: string | null;
     subgraph: ImpactMarketSubgraph;
+    ubiManagementSubgraph: ImpactMarketUBIManagementSubgraph;
 } = {
     // mandatory, value here doesn't matter
     address: null,
     connection: null as any,
     provider: null as any,
-    subgraph: null as any
+    subgraph: null as any,
+    ubiManagementSubgraph: null as any
 };
 
 const initialStaking: StakingType = {
@@ -220,7 +222,8 @@ export const ImpactProvider = (props: ProviderProps) => {
                 address,
                 connection: new Connection(web3),
                 provider: new JsonRpcProvider(jsonRpc),
-                subgraph: new ImpactMarketSubgraph(jsonRpc.indexOf('alfajores') !== -1)
+                subgraph: new ImpactMarketSubgraph(jsonRpc.indexOf('alfajores') !== -1),
+                ubiManagementSubgraph: new ImpactMarketUBIManagementSubgraph(jsonRpc.indexOf('alfajores') !== -1)
             }}
         >
             <StakingProvider>

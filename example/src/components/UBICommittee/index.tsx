@@ -1,13 +1,15 @@
 import React from 'react';
 import WalletConnection from '../WalletConnection';
-import VotingPower from './VotingPower';
+import AddCommunity from './AddCommunity';
+import ListProposals from './ListProposals';
 
 const DaoHooks = () => {
     return (
-        <WalletConnection title="DAO Hooks">
+        <WalletConnection title="UBICommittee">
             <ul>
                 <li style={{ marginTop: 16 }}>
-                    <VotingPower />
+                    <AddCommunity />
+                    <ListProposals />
                 </li>
             </ul>
         </WalletConnection>

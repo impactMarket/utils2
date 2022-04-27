@@ -1,5 +1,5 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject, gql } from '@apollo/client';
-import { subgraphCeloAlfajores, subgraphCeloMainnet } from './config';
+import { subgraphCeloAlfajores, subgraphCeloMainnet, ubiManagementSubgraphCeloAlfajores, ubiManagementSubgraphCeloMainnet } from './config';
 
 class ImpactMarketSubgraph {
     private client: ApolloClient<NormalizedCacheObject>;
@@ -44,5 +44,46 @@ class ImpactMarketSubgraph {
         return result.data.communityEntity;
     }
 }
+class ImpactMarketUBIManagementSubgraph {
+    private client: ApolloClient<NormalizedCacheObject>;
+    constructor(isTestnet = false) {
+        this.client = new ApolloClient({
+            cache: new InMemoryCache(),
+            uri: isTestnet ? ubiManagementSubgraphCeloAlfajores : ubiManagementSubgraphCeloMainnet
+        });
+    }
 
-export default ImpactMarketSubgraph;
+    async getProposals(first: number, skip: number): Promise<{
+        id: number;
+        proposer: string;
+        signatures: string[];
+        endBlock: number;
+        description: string;
+        status: number;
+        votesAgainst: number;
+        votesFor: number;
+        votesAbstain: number;
+    }[]> {
+        const result = await this.client.query({
+            query: gql`
+                {
+                    proposalEntities(first: ${first} skip: ${skip} orderBy: id orderDirection: desc) {
+                        id
+                        proposer
+                        signatures
+                        endBlock
+                        description
+                        status
+                        votesAgainst
+                        votesFor
+                        votesAbstain
+                    }
+                }
+                `
+        });
+    
+        return result.data.proposalEntities;
+    }
+}
+
+export { ImpactMarketSubgraph, ImpactMarketUBIManagementSubgraph };

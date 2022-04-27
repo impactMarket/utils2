@@ -7,6 +7,7 @@ import MerkleDistributorABI from './abi/MerkleDistributor.json';
 import PACTDelegateABI from './abi/PACTDelegate.json';
 import PACTTokenABI from './abi/PACTToken.json';
 import StakingABI from './abi/Staking.json';
+import UBICommitteeABI from './abi/UBICommittee.json';
 import type { BaseProvider } from '@ethersproject/providers';
 
 export const getContracts = async (provider: BaseProvider) => {
@@ -20,7 +21,7 @@ export const getContracts = async (provider: BaseProvider) => {
     }
     const contractAddresses = ContractAddresses.get(chainId)!;
 
-    const { CommunityAdmin, cUSD, PACTDelegate, PACTDelegator, PACTToken, SPACTToken, DonationMiner, MerkleDistributor, Staking } =
+    const { CommunityAdmin, cUSD, PACTDelegate, PACTDelegator, PACTToken, SPACTToken, DonationMiner, MerkleDistributor, Staking, UBICommittee } =
         contractAddresses;
 
     const addresses = {
@@ -33,6 +34,7 @@ export const getContracts = async (provider: BaseProvider) => {
         pactToken: PACTToken || '',
         spactToken: SPACTToken || '',
         staking: Staking || '',
+        ubiCommittee: UBICommittee || ''
     };
 
     const merkleDistributor = new Contract(addresses.merkleDistributor, MerkleDistributorABI, provider);
@@ -49,6 +51,8 @@ export const getContracts = async (provider: BaseProvider) => {
     const staking = new Contract(addresses.staking, StakingABI, provider);
 
     const delegate = new Contract(addresses.delegate, PACTDelegateABI, provider).attach(addresses.delegator);
+    
+    const ubiCommittee = new Contract(addresses.ubiCommittee, UBICommitteeABI, provider);
 
     return {
         addresses,
@@ -59,6 +63,7 @@ export const getContracts = async (provider: BaseProvider) => {
         merkleDistributor,
         pact,
         spact,
-        staking
+        staking,
+        ubiCommittee
     };
 };
