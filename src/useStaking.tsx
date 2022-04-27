@@ -5,11 +5,26 @@ import { toNumber } from './toNumber';
 import { toToken } from './toToken';
 import { updatePACTBalance } from './usePACTBalance';
 import React, { useEffect } from 'react';
+import type { Contract } from '@ethersproject/contracts';
 
 export const useStaking = () => {
     const { connection, address, provider } = React.useContext(ImpactProviderContext);
     const { setBalance } = React.useContext(PACTBalanceContext);
     const { staking, setStaking } = React.useContext(StakingContext);
+
+    /**
+     * Private method to update staking data.
+     * @param {object} staking staking contract object
+     * @param {string} address user address
+     * @returns {Promise<void>} void
+     */
+    const _updateStaking = async (staking: Contract, address: string) => {
+        const stakedAmount = await staking.stakeholderAmount(address);
+        const updatedPACTBalance = await updatePACTBalance(provider, address);
+
+        setBalance(updatedPACTBalance);
+        setStaking((s) => ({ ...s, stakedAmount: toNumber(stakedAmount) }));
+    }
 
     /**
      * Stake a given amount of tokens from wallet balance
@@ -31,13 +46,7 @@ export const useStaking = () => {
         const tx = await staking.populateTransaction.stake(address, amount);
         const response = await executeTransaction(connection, address, cusd.address, tx);
         
-        const stakedAmount = await staking.stakeholderAmount(address);
-        
-        console.log(stakedAmount, toNumber(stakedAmount));
-        const updatedPACTBalance = await updatePACTBalance(provider, address);
-
-        setBalance(updatedPACTBalance);
-        setStaking((s) => ({ ...s, stakedAmount: toNumber(stakedAmount) }));
+        await _updateStaking(staking, address);
 
         return response;
     };
@@ -75,9 +84,11 @@ export const useStaking = () => {
         if (!connection || !address) {
             return;
         }
-        const { donationMiner, cusd } = await getContracts(provider);
+        const { donationMiner, cusd, staking } = await getContracts(provider);
         const tx = await donationMiner.populateTransaction.stakeRewards();
         const response = await executeTransaction(connection, address, cusd.address, tx);
+        
+        await _updateStaking(staking, address);
 
         return response;
     };
@@ -94,6 +105,8 @@ export const useStaking = () => {
         const { staking, cusd } = await getContracts(provider);
         const tx = await staking.populateTransaction.unstake(amount);
         const response = await executeTransaction(connection, address, cusd.address, tx);
+        
+        await _updateStaking(staking, address);
 
         return response;
     };
@@ -109,6 +122,8 @@ export const useStaking = () => {
         const { staking, cusd } = await getContracts(provider);
         const tx = await staking.populateTransaction.claim();
         const response = await executeTransaction(connection, address, cusd.address, tx);
+        
+        await _updateStaking(staking, address);
 
         return response;
     };
