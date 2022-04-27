@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useRewards } from '@impact-market/utils/useRewards';
+import { useStaking } from '@impact-market/utils/useStaking';
 
 const ClaimableRewards = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingStake, setIsLoadingStake] = useState(false);
     const { claim: claimRewards, rewards } = useRewards();
+    const { stakeRewards } = useStaking();
 
     const claim = async () => {
         setIsLoading(true);
@@ -12,6 +15,15 @@ const ClaimableRewards = () => {
         console.log(response);
 
         setIsLoading(false)
+    }
+
+    const stake = async () => {
+        setIsLoadingStake(true);
+        const response = await stakeRewards();
+
+        console.log(response);
+
+        setIsLoadingStake(false)
     }
 
     return (
@@ -30,6 +42,8 @@ const ClaimableRewards = () => {
             <h5>Allocated</h5>
             <div style={{ marginTop: 8 }}>
                 {rewards?.allocated}
+                {<button disabled={!rewards?.allocated || isLoadingStake} onClick={stake} style={{ marginLeft: 16 }}>Stake rewards</button>}
+                {isLoadingStake && <span> Loading...</span>}
             </div>
             <h5>Current Epoch</h5>
             <div style={{ marginTop: 8 }}>

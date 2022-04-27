@@ -42,6 +42,13 @@ export type RewardsType = {
     initialised: boolean;
 };
 
+export type StakingType = {
+    stakedAmount: number;
+    apr: number;
+    earned: number;
+    initialised: boolean;
+};
+
 const initialRewards: RewardsType = {
     allocated: 0,
     claimable: 0,
@@ -61,6 +68,13 @@ const intialProviderData: {
     connection: null as any,
     provider: null as any,
     subgraph: null as any
+};
+
+const initialStaking: StakingType = {
+    apr: 0,
+    earned: 0,
+    initialised: false,
+    stakedAmount: 0
 };
 
 const intialCUSDBalanceStateData: {
@@ -95,11 +109,20 @@ const intialRewardsStateData: {
     setRewards: () => {}
 };
 
+const intialStakingStateData: {
+    staking: StakingType;
+    setStaking: React.Dispatch<React.SetStateAction<StakingType>>;
+} = {
+    setStaking: () => {},
+    staking: initialStaking
+};
+
 export const ImpactProviderContext = React.createContext(intialProviderData);
 export const CUSDBalanceContext = React.createContext(intialCUSDBalanceStateData);
 export const PACTBalanceContext = React.createContext(intialPACTBalanceStateData);
 export const EpochContext = React.createContext(intialEpochStateData);
 export const RewardsContext = React.createContext(intialRewardsStateData);
+export const StakingContext = React.createContext(intialStakingStateData);
 
 type ProviderProps = {
     children?: any;
@@ -172,6 +195,22 @@ const RewardsProvider = React.memo((props: { children?: any }) => {
     );
 });
 
+const StakingProvider = React.memo((props: { children?: any }) => {
+    const { children } = props;
+    const [staking, setStaking] = useState<StakingType>(initialStaking);
+
+    return (
+        <StakingContext.Provider
+            value={{
+                setStaking,
+                staking,
+            }}
+        >
+            {children}
+        </StakingContext.Provider>
+    );
+});
+
 export const ImpactProvider = (props: ProviderProps) => {
     const { children, address, jsonRpc, web3 } = props;
 
@@ -184,13 +223,15 @@ export const ImpactProvider = (props: ProviderProps) => {
                 subgraph: new ImpactMarketSubgraph(jsonRpc.indexOf('alfajores') !== -1)
             }}
         >
-            <RewardsProvider>
-                <EpochProvider>
-                    <PACTBalanceProvider>
-                        <CUSDBalanceProvider>{children}</CUSDBalanceProvider>
-                    </PACTBalanceProvider>
-                </EpochProvider>
-            </RewardsProvider>
+            <StakingProvider>
+                <RewardsProvider>
+                    <EpochProvider>
+                        <PACTBalanceProvider>
+                            <CUSDBalanceProvider>{children}</CUSDBalanceProvider>
+                        </PACTBalanceProvider>
+                    </EpochProvider>
+                </RewardsProvider>
+            </StakingProvider>
         </ImpactProviderContext.Provider>
     );
 };
