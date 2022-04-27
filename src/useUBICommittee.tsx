@@ -3,10 +3,15 @@ import { ImpactProviderContext } from './ImpactProvider';
 import { Interface, defaultAbiCoder } from '@ethersproject/abi';
 import { executeTransaction } from './executeTransaction';
 import { getContracts } from './contracts';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import UBICommitteeABI from './abi/UBICommittee.json';
 
-type CommunityArgs = {
+type BaseProposalArgs = {
+    proposalTitle: string;
+    proposalDescription: string;
+};
+
+type CommunityAddArgs = BaseProposalArgs & {
     baseInterval: string | BigNumber;
     claimAmount: string | BigNumber;
     decreaseStep: string | BigNumber;
@@ -16,45 +21,52 @@ type CommunityArgs = {
     maxClaim: string | BigNumber;
     maxTranche: string | BigNumber;
     minTranche: string | BigNumber;
-    proposalTitle: string;
-    proposalDescription: string;
 };
-type CommunityRemoveArgs = {
+type CommunityRemoveArgs = BaseProposalArgs & {
     communityAddress: string;
-    proposalTitle: string;
-    proposalDescription: string;
 };
-type CommunityUpdateParamsArgs = {
+type CommunityUpdateParamsArgs = BaseProposalArgs & {
     communityAddress: string;
     minTranche: string | BigNumber;
     maxTranche: string | BigNumber;
-    proposalTitle: string;
-    proposalDescription: string;
 };
-type CommunityUpdateBeneficiaryParamsArgs = {
+type CommunityUpdateBeneficiaryParamsArgs = BaseProposalArgs & {
     communityAddress: string;
     baseInterval: string | BigNumber;
     incrementInterval: string | BigNumber;
     claimAmount: string | BigNumber;
     maxClaim: string | BigNumber;
     decreaseStep: string | BigNumber;
-    proposalTitle: string;
-    proposalDescription: string;
 };
 
 export const useUBICommittee = () => {
     const { connection, address, provider, ubiManagementSubgraph } = React.useContext(ImpactProviderContext);
+    const [quorumVotes, setQuorumVotes] = useState<number>(0);
+    const [initialized, setInitialized] = useState(false);
+
+    useEffect(() => {
+        if (connection && address) {
+            const getQuorumVotes = async () => {
+                const { ubiCommittee } = await getContracts(provider);
+                const quorumVotes = await ubiCommittee.quorumVotes();
+
+                setQuorumVotes(quorumVotes.toNumber());
+                setInitialized(true);
+            }
+    
+            getQuorumVotes();
+        }}, [connection, address]);
 
     /**
      * @dev Generates proposal to create new community
      * @param {CommunityArgs} community community parameters
      * @returns {Promise<number>} proposal id
      */
-    const addCommunity = async (community: CommunityArgs) => {
+    const addCommunity = async (community: CommunityAddArgs) => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, ubiCommittee, addresses } = await getContracts(provider);
+        const { cusd, ubiCommittee } = await getContracts(provider);
         const {
             baseInterval,
             claimAmount,
@@ -68,8 +80,6 @@ export const useUBICommittee = () => {
             proposalTitle,
             proposalDescription
         } = community;
-        const targets = [addresses.communityAdmin];
-        const values = [0];
         const signatures = ['addCommunity(address[],address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)'];
 
         const calldatas = [
@@ -90,8 +100,6 @@ export const useUBICommittee = () => {
         ];
 
         const tx = await ubiCommittee.populateTransaction.propose(
-            targets,
-            values,
             signatures,
             calldatas,
             JSON.stringify({
@@ -114,14 +122,12 @@ export const useUBICommittee = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, ubiCommittee, addresses } = await getContracts(provider);
+        const { cusd, ubiCommittee } = await getContracts(provider);
         const {
             communityAddress,
             proposalTitle,
             proposalDescription
         } = community;
-        const targets = [addresses.communityAdmin];
-        const values = [0];
         const signatures = ['removeCommunity(address)'];
 
         const calldatas = [
@@ -132,8 +138,6 @@ export const useUBICommittee = () => {
         ];
 
         const tx = await ubiCommittee.populateTransaction.propose(
-            targets,
-            values,
             signatures,
             calldatas,
             JSON.stringify({
@@ -156,7 +160,7 @@ export const useUBICommittee = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, ubiCommittee, addresses } = await getContracts(provider);
+        const { cusd, ubiCommittee } = await getContracts(provider);
         const {
             communityAddress,
             minTranche,
@@ -164,8 +168,6 @@ export const useUBICommittee = () => {
             proposalTitle,
             proposalDescription
         } = community;
-        const targets = [addresses.communityAdmin];
-        const values = [0];
         const signatures = ['updateCommunityParams(address,uint256,uint256)'];
 
         const calldatas = [
@@ -176,8 +178,6 @@ export const useUBICommittee = () => {
         ];
 
         const tx = await ubiCommittee.populateTransaction.propose(
-            targets,
-            values,
             signatures,
             calldatas,
             JSON.stringify({
@@ -200,7 +200,7 @@ export const useUBICommittee = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, ubiCommittee, addresses } = await getContracts(provider);
+        const { cusd, ubiCommittee } = await getContracts(provider);
         const {
             communityAddress,
             baseInterval,
@@ -211,8 +211,6 @@ export const useUBICommittee = () => {
             proposalTitle,
             proposalDescription
         } = community;
-        const targets = [addresses.communityAdmin];
-        const values = [0];
         const signatures = ['updateBeneficiaryParams(address,uint256,uint256,uint256,uint256,uint256)'];
 
         const calldatas = [
@@ -230,8 +228,6 @@ export const useUBICommittee = () => {
         ];
 
         const tx = await ubiCommittee.populateTransaction.propose(
-            targets,
-            values,
             signatures,
             calldatas,
             JSON.stringify({
@@ -309,6 +305,8 @@ export const useUBICommittee = () => {
         cancel,
         execute,
         getProposals,
+        initialized,
+        quorumVotes,
         removeCommunity,
         updateBeneficiaryParams,
         updateCommunityParams,

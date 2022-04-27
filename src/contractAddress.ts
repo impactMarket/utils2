@@ -30,7 +30,7 @@ export const ContractAddresses = new Map<
             SPACTToken: '0x6732B3e5643dEBfaB7d1570f313271dD9E24c58C',
             Staking: '0x2Bdd85857eDd9A4fAA72b663536189e38D8E3C71',
             Treasury: '0xB0deEE097B5227C5E6bbE787665e4e62b4fE85f3',
-            UBICommittee: '0x0000000000000000000000000000000000000000',
+            UBICommittee: '0x7ddCAc3Bbd654b6c0aA46f6512A30dDbeF011F72',
             cUSD: '0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1'
         }
     ],

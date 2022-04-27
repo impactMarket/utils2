@@ -63,7 +63,7 @@ class ImpactMarketUBIManagementSubgraph {
         votesAgainst: number;
         votesFor: number;
         votesAbstain: number;
-    }> {
+    }[]> {
         const result = await this.client.query({
             query: gql`
                 {
