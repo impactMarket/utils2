@@ -54,7 +54,22 @@ export const useBeneficiary = (communityAddress: string) => {
             subgraph.getCommunityData(_contract.address, '{ baseInterval, claimAmount, maxClaim, beneficiaries, state }'),
         ]);
 
-        if (community.maxClaim === 0) {
+        // if not beneficiary, prevent method from throwing error
+        if (beneficiaryGraph === null) {
+            setBeneficiary(b => ({
+                ...b,
+                claimedAmount: 0,
+                locked: false,
+            }));
+            setCommunity(c => ({
+                ...c,
+                claimAmount: 0,
+                hasFunds: false,
+                locked: false,
+                maxClaim: 0,
+            }));
+        }
+        else if (community.maxClaim === 0) {
             setBeneficiary(b => ({
                 ...b,
                 claimedAmount: parseInt(beneficiaryGraph.claimed!, 10),

@@ -20,7 +20,7 @@ export const ContractAddresses = new Map<
     [
         44787,
         {
-            Ambassadors: '0x0000000000000000000000000000000000000000',
+            Ambassadors: '0x5b7B94a63c64bdddCCa8eE2D1d823e359Fa77AB9',
             CommunityAdmin: '0x1c33D75bcE52132c7a0e220c1C338B9db7cf3f3A',
             DonationMiner: '0x09Cdc8f50994F63103bc165B139631A6ad18EF49',
             IDO: '0x0000000000000000000000000000000000000000',

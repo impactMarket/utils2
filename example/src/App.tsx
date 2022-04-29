@@ -24,7 +24,7 @@ const components = [
 
 const options = components.map(({ label }) => label);
 
-const initialOption = options[6];
+const initialOption = options[3];
 
 const network = Alfajores;
 
