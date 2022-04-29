@@ -10,10 +10,13 @@ const Beneficiary = () => {
         claim,
         community,
         fundsRemainingDays
-    } = useBeneficiary('0x6dcf4B577309aF974216b46817e98833Ad27c0Ab');
+    } = useBeneficiary('0xbd6ab0e04ad0ac42cfba93a3cd84a107644b0378');
 
     if(!isReady) {
         return <div>Loading</div>;
+    }
+    if(community.claimAmount === 0) {
+        return <div>Not beneficiary</div>;
     }
 
     return (

@@ -1,5 +1,6 @@
 import { Contract } from '@ethersproject/contracts';
 import { ContractAddresses } from './contractAddress';
+import AmbassadorsABI from './abi/Ambassadors.json';
 import BaseERC20ABI from './abi/BaseERC20.json';
 import DonationMinerABI from './abi/DonationMiner.json';
 import DonationMinerOldABI from './abi/DonationMinerOld.json';
@@ -21,10 +22,11 @@ export const getContracts = async (provider: BaseProvider) => {
     }
     const contractAddresses = ContractAddresses.get(chainId)!;
 
-    const { CommunityAdmin, cUSD, PACTDelegate, PACTDelegator, PACTToken, SPACTToken, DonationMiner, MerkleDistributor, Staking, UBICommittee } =
+    const { Ambassadors, CommunityAdmin, cUSD, PACTDelegate, PACTDelegator, PACTToken, SPACTToken, DonationMiner, MerkleDistributor, Staking, UBICommittee } =
         contractAddresses;
 
     const addresses = {
+        ambassadors: Ambassadors || '',
         communityAdmin: CommunityAdmin || '',
         cusd: cUSD || '',
         delegate: PACTDelegate || '',
@@ -37,6 +39,8 @@ export const getContracts = async (provider: BaseProvider) => {
         ubiCommittee: UBICommittee || ''
     };
 
+    const ambassadors = new Contract(addresses.ambassadors, AmbassadorsABI, provider);
+    
     const merkleDistributor = new Contract(addresses.merkleDistributor, MerkleDistributorABI, provider);
 
     const donationMinerOld = new Contract(addresses.donationMiner, DonationMinerOldABI, provider);
@@ -56,6 +60,7 @@ export const getContracts = async (provider: BaseProvider) => {
 
     return {
         addresses,
+        ambassadors,
         cusd,
         delegate,
         donationMiner,

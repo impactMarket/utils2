@@ -4,12 +4,10 @@ import { toToken } from '@impact-market/utils/toToken';
 import { useUBICommittee } from '@impact-market/utils/useUBICommittee';
 import React, { useEffect, useState } from 'react';
 import { impactMarket } from '../../services/impactMarket';
-import { useContractKit } from '@celo-tools/use-contractkit';
 
 const Community = (props: any) => {
-    const { id, name, description, contract, requestByAddress } = props;
+    const { id, name, description, contract, requestByAddress, ambassadorAddress } = props;
     const { addCommunity } = useUBICommittee();
-    const { address } = useContractKit();
     const [isLoading, setIsLoading] = useState(false);
     const [isAdded, setIsAdded] = useState(false);
 
@@ -18,7 +16,7 @@ const Community = (props: any) => {
 
         const response = await addCommunity({
             ...contract,
-            ambassador: address,
+            ambassador: ambassadorAddress,
             decreaseStep: toToken(0.01),
             managers: [requestByAddress],
             maxTranche: toToken(5, { EXPONENTIAL_AT: 25 }),
@@ -56,7 +54,7 @@ const AddCommunity = () => {
             setIsLoading(true);
             const response = await impactMarket.getPendingCommunities();
 
-            setCommunities(response?.data || []);
+            setCommunities(response?.data.rows || []);
             setIsLoading(false);
         }
 
