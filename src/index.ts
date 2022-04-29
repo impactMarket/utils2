@@ -12,6 +12,9 @@ export * from './useManager';
 export * from './useEpoch';
 export * from './useRewards';
 export * from './useMerkleDistributor';
+export * from './useAmbassador';
+export * from './useUBICommittee';
+export * from './useStaking';
 
 export * from './toNumber';
 export * from './toToken';

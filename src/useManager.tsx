@@ -12,6 +12,7 @@ export const useManager = (communityAddress: string) => {
      * Add beneficiary to community
      * @param {string} beneficiaryAddress Beneficiary address to be added
      * @returns {Promise<CeloTxReceipt>} transaction response object
+     * @throws {Error} "No connection"
      * @throws {Error} "Community: NOT_MANAGER"
      * @example
      * ```typescript
@@ -34,6 +35,7 @@ export const useManager = (communityAddress: string) => {
      * Remove beneficiary from community
      * @param {string} beneficiaryAddress Beneficiary address to be removed
      * @returns {Promise<CeloTxReceipt>} transaction response object
+     * @throws {Error} "No connection"
      * @throws {Error} "Community: NOT_MANAGER"
      * @throws {Error} "Community::removeBeneficiary: NOT_YET"
      * @example
@@ -57,6 +59,7 @@ export const useManager = (communityAddress: string) => {
      * Lock beneficiary in community
      * @param {string} beneficiaryAddress Beneficiary address to be locked
      * @returns {Promise<CeloTxReceipt>} transaction response object
+     * @throws {Error} "No connection"
      * @throws {Error} "Community: NOT_MANAGER"
      * @throws {Error} "Community::lockBeneficiary: NOT_YET"
      * @example
@@ -80,6 +83,7 @@ export const useManager = (communityAddress: string) => {
      * Unlock beneficiary in community
      * @param {string} beneficiaryAddress Beneficiary address to be unlocked
      * @returns {Promise<CeloTxReceipt>} transaction response object
+     * @throws {Error} "No connection"
      * @throws {Error} "Community: NOT_MANAGER"
      * @throws {Error} "Community::unlockBeneficiary: NOT_YET"
      * @example
@@ -102,6 +106,7 @@ export const useManager = (communityAddress: string) => {
     /**
      * Allow manager to request funds from the DAO treasury
      * @returns {Promise<CeloTxReceipt>} transaction response object
+     * @throws {Error} "No connection"
      * @throws {Error} "CommunityAdmin::fundCommunity: Not enough funds"
      * @throws {Error} "ERC20: transfer amount exceeds balance"
      * @throws {Error} "Community: NOT_MANAGER"
