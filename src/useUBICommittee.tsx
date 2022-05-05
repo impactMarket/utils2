@@ -42,19 +42,22 @@ type CommunityUpdateBeneficiaryParamsArgs = BaseProposalArgs & {
 export const useUBICommittee = () => {
     const { connection, address, provider, ubiManagementSubgraph } = React.useContext(ImpactProviderContext);
     const [quorumVotes, setQuorumVotes] = useState<number>(0);
+    const [proposalCount, setProposalCount] = useState<number>(0);
     const [initialized, setInitialized] = useState(false);
 
     useEffect(() => {
         if (connection && address) {
-            const getQuorumVotes = async () => {
+            const getState = async () => {
                 const { ubiCommittee } = await getContracts(provider);
                 const quorumVotes = await ubiCommittee.quorumVotes();
+                const proposalCount = await ubiCommittee.proposalCount();
 
                 setQuorumVotes(quorumVotes.toNumber());
+                setProposalCount(proposalCount.toNumber());
                 setInitialized(true);
             }
     
-            getQuorumVotes();
+            getState();
         }}, [connection, address]);
 
     /**
@@ -306,6 +309,7 @@ export const useUBICommittee = () => {
         execute,
         getProposals,
         initialized,
+        proposalCount,
         quorumVotes,
         removeCommunity,
         updateBeneficiaryParams,
