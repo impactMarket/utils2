@@ -297,10 +297,11 @@ export const useUBICommittee = () => {
      * @dev Get proposals details
      * @param {number} first first x proposals
      * @param {number} skip skip x proposals
+     * @param {sring | undefined} userAddress user address (optional - usd to verify if user voted)
      * @returns {object} proposals array
      */
-    const getProposals = async (first: number, skip: number) => {
-        return await ubiManagementSubgraph.getProposals(first, skip);
+    const getProposals = async (first: number, skip: number, userAddress?: string) => {
+        return await ubiManagementSubgraph.getProposals(first, skip, userAddress);
     }
 
     return {

@@ -16,12 +16,13 @@ const ListProposals = () => {
         votesAgainst: number;
         votesFor: number;
         votesAbstain: number;
+        userHasVoted?: boolean;
     }[]>([]);
     const [blockNumber, setBlockNumber] = useState(0);
 
     useEffect(() => {
         if (address) {
-            getProposals(5, 0).then((p) => setProposals(p));
+            getProposals(5, 0, address).then((p) => setProposals(p));
             provider.getBlockNumber().then((b) => setBlockNumber(b));
         }
     }, [address]);
@@ -36,12 +37,13 @@ const ListProposals = () => {
         votesAgainst: number;
         votesFor: number;
         votesAbstain: number;
+        userHasVoted?: boolean;
     }) => {
         return <div key={p.id}>
             <p>{p.id} | {p.proposer}: {p.description}</p>
             {
                 p.status === 2 ? <p>canceled</p> :
-                    p.status === 1 ? <p>executed</p> :
+                    p.status === 1 ? <p>executed - userHasVoted: {p.userHasVoted?.toString()}</p> :
                         p.votesFor >= quorumVotes ? <><button onClick={() => execute(p.id)}>execute</button><button onClick={() => cancel(p.id)}>cancel</button></> :
                             p.votesAgainst >= quorumVotes ? <p>defeated</p> :
                                 p.endBlock < blockNumber ? <p>expired</p> :

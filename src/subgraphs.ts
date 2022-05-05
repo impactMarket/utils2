@@ -53,7 +53,7 @@ class ImpactMarketUBIManagementSubgraph {
         });
     }
 
-    async getProposals(first: number, skip: number): Promise<{
+    async getProposals(first: number, skip: number, userAddress?: string): Promise<{
         id: number;
         proposer: string;
         signatures: string[];
@@ -63,6 +63,7 @@ class ImpactMarketUBIManagementSubgraph {
         votesAgainst: number;
         votesFor: number;
         votesAbstain: number;
+        userHasVoted?: boolean;
     }[]> {
         const result = await this.client.query({
             query: gql`
@@ -77,11 +78,19 @@ class ImpactMarketUBIManagementSubgraph {
                         votesAgainst
                         votesFor
                         votesAbstain
+                        votedBy
                     }
                 }
                 `
         });
     
+        if (userAddress) {
+            return result.data.proposalEntities.map((proposal: any) => ({
+                ...proposal,
+                userHasVoted: proposal.votedBy.includes(userAddress)
+            }));
+        }
+
         return result.data.proposalEntities;
     }
 }
