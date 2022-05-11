@@ -1,4 +1,5 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject, gql } from '@apollo/client';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { subgraphCeloAlfajores, subgraphCeloMainnet, ubiManagementSubgraphCeloAlfajores, ubiManagementSubgraphCeloMainnet } from './config';
 
 class ImpactMarketSubgraph {
@@ -46,11 +47,13 @@ class ImpactMarketSubgraph {
 }
 class ImpactMarketUBIManagementSubgraph {
     private client: ApolloClient<NormalizedCacheObject>;
-    constructor(isTestnet = false) {
+    private provider: JsonRpcProvider;
+    constructor(rpcUrl: string, isTestnet = false) {
         this.client = new ApolloClient({
             cache: new InMemoryCache(),
             uri: isTestnet ? ubiManagementSubgraphCeloAlfajores : ubiManagementSubgraphCeloMainnet
         });
+        this.provider = new JsonRpcProvider(rpcUrl);
     }
 
     async getProposals(first: number, skip: number, userAddress?: string): Promise<{
@@ -59,12 +62,13 @@ class ImpactMarketUBIManagementSubgraph {
         signatures: string[];
         endBlock: number;
         description: string;
-        status: number;
         votesAgainst: number;
         votesFor: number;
         votesAbstain: number;
-        userHasVoted?: boolean;
+        userVoted: number;
+        status: 'canceled' | 'executed' | 'ready' | 'defeated' | 'expired' | 'active';
     }[]> {
+        const blockNumber = await this.provider.getBlockNumber();
         const result = await this.client.query({
             query: gql`
                 {
@@ -75,23 +79,36 @@ class ImpactMarketUBIManagementSubgraph {
                         endBlock
                         description
                         status
-                        votesAgainst
-                        votesFor
-                        votesAbstain
-                        votedBy
+                        votedAgainst
+                        votedFor
+                        votedAbstain
                     }
                 }
                 `
         });
-    
-        if (userAddress) {
-            return result.data.proposalEntities.map((proposal: any) => ({
-                ...proposal,
-                userHasVoted: proposal.votedBy.includes(userAddress)
-            }));
-        }
 
-        return result.data.proposalEntities;
+        // eslint-disable-next-line no-nested-ternary
+        const userVoted = (proposal: any) => proposal.votedAgainst.includes(userAddress?.toLowerCase()) ? 0
+            // eslint-disable-next-line no-nested-ternary
+            : proposal.votedFor.includes(userAddress?.toLowerCase()) ? 1
+            : proposal.votedAbstain.includes(userAddress?.toLowerCase()) ? 2 : -1
+    
+        return result.data.proposalEntities.map((proposal: any) => ({
+            ...proposal,
+            // eslint-disable-next-line no-nested-ternary
+            status: proposal.status === 2 ? 'canceled' :
+                // eslint-disable-next-line no-nested-ternary
+                proposal.status === 1 ? 'executed' :
+                    // eslint-disable-next-line no-nested-ternary
+                    proposal.votedFor.length >= proposal.quorumVotes ? 'ready' :
+                        // eslint-disable-next-line no-nested-ternary
+                        proposal.votedAgainst.length >= proposal.quorumVotes ? 'defeated' :
+                            proposal.endBlock < blockNumber ? 'expired' : 'active',
+            userVoted: userVoted(proposal),
+            votesAbstain: proposal.votedAbstain.length,
+            votesAgainst: proposal.votedAgainst.length,
+            votesFor: proposal.votedFor.length,
+        }));
     }
 }
 
