@@ -43,7 +43,7 @@ export const useUBICommittee = () => {
     const { connection, address, provider, ubiManagementSubgraph } = React.useContext(ImpactProviderContext);
     const [quorumVotes, setQuorumVotes] = useState<number>(0);
     const [proposalCount, setProposalCount] = useState<number>(0);
-    const [initialized, setInitialized] = useState(false);
+    const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
         if (connection && address) {
@@ -54,7 +54,7 @@ export const useUBICommittee = () => {
 
                 setQuorumVotes(quorumVotes.toNumber());
                 setProposalCount(proposalCount.toNumber());
-                setInitialized(true);
+                setIsReady(true);
             }
     
             getState();
@@ -309,7 +309,7 @@ export const useUBICommittee = () => {
         cancel,
         execute,
         getProposals,
-        initialized,
+        isReady,
         proposalCount,
         quorumVotes,
         removeCommunity,

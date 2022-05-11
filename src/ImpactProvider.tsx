@@ -223,7 +223,7 @@ export const ImpactProvider = (props: ProviderProps) => {
                 connection: new Connection(web3),
                 provider: new JsonRpcProvider(jsonRpc),
                 subgraph: new ImpactMarketSubgraph(jsonRpc.indexOf('alfajores') !== -1),
-                ubiManagementSubgraph: new ImpactMarketUBIManagementSubgraph(jsonRpc.indexOf('alfajores') !== -1)
+                ubiManagementSubgraph: new ImpactMarketUBIManagementSubgraph(jsonRpc, jsonRpc.indexOf('alfajores') !== -1)
             }}
         >
             <StakingProvider>
