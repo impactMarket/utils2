@@ -4,7 +4,7 @@ import { useContractKit } from '@celo-tools/use-contractkit';
 
 const ListProposals = () => {
     const { address } = useContractKit();
-    const { cancel, execute, getProposals, vote, quorumVotes } = useUBICommittee();
+    const { cancel, execute, getProposals, vote, quorumVotes, isReady } = useUBICommittee();
     const [proposals, setProposals] = useState<{
         id: number;
         proposer: string;
@@ -19,11 +19,11 @@ const ListProposals = () => {
     }[]>([]);
 
     useEffect(() => {
-        if (address) {
+        if (address && isReady) {
             getProposals(10, 0, address).then((p) => setProposals(p));
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [address]);
+    }, [address, isReady]);
 
     const proposalComponent = (p: {
         id: number;
@@ -38,7 +38,7 @@ const ListProposals = () => {
         status: 'canceled' | 'executed' | 'ready' | 'defeated' | 'expired' | 'active';
     }) => {
         return <div key={p.id}>
-            <p>{p.id} | {p.proposer}: {p.description}</p>
+            <p>{p.id} [{p.votesFor}, {p.votesAgainst}, {p.votesAbstain}] | {p.proposer}: {p.description}</p>
             {
                 p.status === 'canceled' ? <p>canceled</p> :
                     p.status === 'executed' ? <p>executed - userVoted: {p.userVoted.toString()}</p> :

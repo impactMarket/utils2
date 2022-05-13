@@ -56,7 +56,7 @@ class ImpactMarketUBIManagementSubgraph {
         this.provider = new JsonRpcProvider(rpcUrl);
     }
 
-    async getProposals(first: number, skip: number, userAddress?: string): Promise<{
+    async getProposals(first: number, skip: number, quorumVotes: number, userAddress?: string): Promise<{
         id: number;
         proposer: string;
         signatures: string[];
@@ -100,9 +100,9 @@ class ImpactMarketUBIManagementSubgraph {
                 // eslint-disable-next-line no-nested-ternary
                 proposal.status === 1 ? 'executed' :
                     // eslint-disable-next-line no-nested-ternary
-                    proposal.votedFor.length >= proposal.quorumVotes ? 'ready' :
+                    proposal.votedAgainst.length >= quorumVotes ? 'defeated' :
                         // eslint-disable-next-line no-nested-ternary
-                        proposal.votedAgainst.length >= proposal.quorumVotes ? 'defeated' :
+                        proposal.votedFor.length >= quorumVotes ? 'ready' :
                             proposal.endBlock < blockNumber ? 'expired' : 'active',
             userVoted: userVoted(proposal),
             votesAbstain: proposal.votedAbstain.length,
