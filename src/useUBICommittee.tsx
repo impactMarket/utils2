@@ -301,7 +301,11 @@ export const useUBICommittee = () => {
      * @returns {object} proposals array
      */
     const getProposals = async (first: number, skip: number, userAddress?: string) => {
-        return await ubiManagementSubgraph.getProposals(first, skip, userAddress);
+        if (!isReady) {
+            throw new Error('wait until isReady is true');
+        }
+
+        return await ubiManagementSubgraph.getProposals(first, skip, quorumVotes, userAddress);
     }
 
     return {
