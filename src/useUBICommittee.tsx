@@ -46,7 +46,7 @@ export const useUBICommittee = () => {
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
-        if (connection && address) {
+        if (connection) {
             const getState = async () => {
                 const { ubiCommittee } = await getContracts(provider);
                 const quorumVotes = await ubiCommittee.quorumVotes();
@@ -58,7 +58,7 @@ export const useUBICommittee = () => {
             }
     
             getState();
-        }}, [connection, address]);
+        }}, [connection]);
 
     /**
      * @dev Generates proposal to create new community
