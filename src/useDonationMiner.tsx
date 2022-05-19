@@ -14,16 +14,19 @@ export const useDonationMiner = () => {
     const { setRewards } = React.useContext(RewardsContext);
     const { setBalance } = React.useContext(CUSDBalanceContext);
 
-    const approve = async (value: string | number) => {
+    const approve = async (value: string | number, to?: string) => {
         try {
             const { cusd, donationMiner } = await getContracts(provider);
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-
+            
+            if (to === undefined) {
+                to = donationMiner.address;
+            }
             if (!address || !donationMiner?.provider || !cusd?.provider || !amount) {
                 return;
             }
 
-            const cUSDAllowance = await cusd.allowance(address, donationMiner.address);
+            const cUSDAllowance = await cusd.allowance(address, to);
             const cusdAllowance = toNumber(cUSDAllowance);
             const allowance = cusdAllowance || 0;
 
@@ -31,7 +34,7 @@ export const useDonationMiner = () => {
                 return { status: true };
             }
 
-            const tx = await cusd.populateTransaction.approve(donationMiner.address, amount);
+            const tx = await cusd.populateTransaction.approve(to, amount);
 
             return await executeTransaction(connection, address, cusd.address, tx);
         } catch (error) {
