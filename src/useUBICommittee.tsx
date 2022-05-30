@@ -55,10 +55,11 @@ export const useUBICommittee = () => {
                 setQuorumVotes(quorumVotes.toNumber());
                 setProposalCount(proposalCount.toNumber());
                 setIsReady(true);
-            }
-    
+            };
+
             getState();
-        }}, [connection]);
+        }
+    }, [connection]);
 
     /**
      * @dev Generates proposal to create new community
@@ -112,7 +113,8 @@ export const useUBICommittee = () => {
         );
         const response = await executeTransaction(connection, address, cusd.address, tx);
         const ifaceDAO = new Interface(UBICommitteeABI);
-        
+
+        // TODO: filter out events
         return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
     };
 
@@ -126,19 +128,10 @@ export const useUBICommittee = () => {
             return;
         }
         const { cusd, ubiCommittee } = await getContracts(provider);
-        const {
-            communityAddress,
-            proposalTitle,
-            proposalDescription
-        } = community;
+        const { communityAddress, proposalTitle, proposalDescription } = community;
         const signatures = ['removeCommunity(address)'];
 
-        const calldatas = [
-            defaultAbiCoder.encode(
-                ['address'],
-                [communityAddress]
-            )
-        ];
+        const calldatas = [defaultAbiCoder.encode(['address'], [communityAddress])];
 
         const tx = await ubiCommittee.populateTransaction.propose(
             signatures,
@@ -150,7 +143,7 @@ export const useUBICommittee = () => {
         );
         const response = await executeTransaction(connection, address, cusd.address, tx);
         const ifaceDAO = new Interface(UBICommitteeABI);
-        
+
         return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
     };
 
@@ -164,20 +157,11 @@ export const useUBICommittee = () => {
             return;
         }
         const { cusd, ubiCommittee } = await getContracts(provider);
-        const {
-            communityAddress,
-            minTranche,
-            maxTranche,
-            proposalTitle,
-            proposalDescription
-        } = community;
+        const { communityAddress, minTranche, maxTranche, proposalTitle, proposalDescription } = community;
         const signatures = ['updateCommunityParams(address,uint256,uint256)'];
 
         const calldatas = [
-            defaultAbiCoder.encode(
-                ['address', 'uint256', 'uint256'],
-                [communityAddress, minTranche, maxTranche]
-            )
+            defaultAbiCoder.encode(['address', 'uint256', 'uint256'], [communityAddress, minTranche, maxTranche])
         ];
 
         const tx = await ubiCommittee.populateTransaction.propose(
@@ -190,7 +174,7 @@ export const useUBICommittee = () => {
         );
         const response = await executeTransaction(connection, address, cusd.address, tx);
         const ifaceDAO = new Interface(UBICommitteeABI);
-        
+
         return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
     };
 
@@ -219,14 +203,7 @@ export const useUBICommittee = () => {
         const calldatas = [
             defaultAbiCoder.encode(
                 ['address', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256'],
-                [
-                    communityAddress,
-                    claimAmount,
-                    maxClaim,
-                    decreaseStep,
-                    baseInterval,
-                    incrementInterval,
-                ]
+                [communityAddress, claimAmount, maxClaim, decreaseStep, baseInterval, incrementInterval]
             )
         ];
 
@@ -240,7 +217,7 @@ export const useUBICommittee = () => {
         );
         const response = await executeTransaction(connection, address, cusd.address, tx);
         const ifaceDAO = new Interface(UBICommitteeABI);
-        
+
         return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
     };
 
@@ -258,7 +235,7 @@ export const useUBICommittee = () => {
         const response = await executeTransaction(connection, address, cusd.address, tx);
 
         return response;
-    }
+    };
 
     /**
      * @dev Cancel a proposal
@@ -274,7 +251,7 @@ export const useUBICommittee = () => {
         const response = await executeTransaction(connection, address, cusd.address, tx);
 
         return response;
-    }
+    };
 
     /**
      * @dev Vote on a proposal
@@ -291,7 +268,7 @@ export const useUBICommittee = () => {
         const response = await executeTransaction(connection, address, cusd.address, tx);
 
         return response;
-    }
+    };
 
     /**
      * @dev Get proposals details
@@ -306,7 +283,7 @@ export const useUBICommittee = () => {
         }
 
         return await ubiManagementSubgraph.getProposals(first, skip, quorumVotes, userAddress);
-    }
+    };
 
     return {
         addCommunity,
@@ -319,6 +296,6 @@ export const useUBICommittee = () => {
         removeCommunity,
         updateBeneficiaryParams,
         updateCommunityParams,
-        vote,
+        vote
     };
 };

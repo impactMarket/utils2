@@ -34,7 +34,7 @@ export const useBeneficiary = (communityAddress: string) => {
         claimAmount: 0,
         hasFunds: false,
         locked: false,
-        maxClaim: 0,
+        maxClaim: 0
     });
     const [claimCooldown, setClaimCooldown] = useState(0);
     const [contract, setContract] = useState<Contract | null>(null);
@@ -51,7 +51,10 @@ export const useBeneficiary = (communityAddress: string) => {
         const [communityBalance, beneficiaryGraph, communityGraph] = await Promise.all([
             cusd.balanceOf(_contract.address),
             subgraph.getBeneficiaryData(address, '{ claimed, state }'),
-            subgraph.getCommunityData(_contract.address, '{ baseInterval, claimAmount, maxClaim, beneficiaries, state }'),
+            subgraph.getCommunityData(
+                _contract.address,
+                '{ baseInterval, claimAmount, maxClaim, beneficiaries, state }'
+            )
         ]);
 
         // if not beneficiary, prevent method from throwing error
@@ -59,39 +62,38 @@ export const useBeneficiary = (communityAddress: string) => {
             setBeneficiary(b => ({
                 ...b,
                 claimedAmount: 0,
-                locked: false,
+                locked: false
             }));
             setCommunity(c => ({
                 ...c,
                 claimAmount: 0,
                 hasFunds: false,
                 locked: false,
-                maxClaim: 0,
+                maxClaim: 0
             }));
-        }
-        else if (community.maxClaim === 0) {
+        } else if (community.maxClaim === 0) {
             setBeneficiary(b => ({
                 ...b,
                 claimedAmount: parseInt(beneficiaryGraph.claimed!, 10),
-                locked: beneficiaryGraph.state === 2,
+                locked: beneficiaryGraph.state === 2
             }));
             setCommunity(c => ({
                 ...c,
                 claimAmount: parseFloat(communityGraph.claimAmount!),
                 hasFunds: toNumber(communityBalance) > parseFloat(communityGraph.claimAmount!),
                 locked: communityGraph.state === 2,
-                maxClaim: parseFloat(communityGraph.maxClaim!),
+                maxClaim: parseFloat(communityGraph.maxClaim!)
             }));
         } else {
             setBeneficiary(b => ({
                 ...b,
                 claimedAmount: parseInt(beneficiaryGraph.claimed!, 10),
-                locked: beneficiaryGraph.state === 2,
+                locked: beneficiaryGraph.state === 2
             }));
             setCommunity(c => ({
                 ...c,
                 hasFunds: toNumber(communityBalance) > parseFloat(communityGraph.claimAmount!),
-                locked: communityGraph.state === 2,
+                locked: communityGraph.state === 2
             }));
         }
         setFundsRemainingDays(
@@ -99,9 +101,9 @@ export const useBeneficiary = (communityAddress: string) => {
                 baseInterval: communityGraph.baseInterval!,
                 beneficiaries: communityGraph.beneficiaries!,
                 claimAmount: parseFloat(communityGraph.claimAmount!),
-                fundsOnContract: toNumber(communityBalance),
+                fundsOnContract: toNumber(communityBalance)
             })
-        )
+        );
         setIsReady(true);
     };
 
