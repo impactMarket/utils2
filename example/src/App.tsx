@@ -1,5 +1,5 @@
 import '@celo-tools/use-contractkit/lib/styles.css';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import Intro from './components/Intro';
 import WalletsBalance from './components/WalletsBalance';
 import DaoBreakdown from './components/DaoBreakdown';
@@ -19,12 +19,12 @@ const components = [
     { label: 'Community', component: Community },
     { label: 'PACT Metrics', component: PACTMetrics },
     { label: 'Staking', component: Staking },
-    { label: 'UBICommittee', component: UBICommittee },
-]
+    { label: 'UBICommittee', component: UBICommittee }
+];
 
 const options = components.map(({ label }) => label);
 
-const initialOption = options[6];
+const initialOption = options[3];
 
 const network = Alfajores;
 
@@ -47,38 +47,34 @@ function App() {
             }
 
             if (providerNetworkChainId !== chainId) {
-                setProviderNetworkChainId(chainId)
+                setProviderNetworkChainId(chainId);
             }
-        }
+        };
         if (!providerNetworkChainId) {
             setChainId();
         }
-    }, [providerNetworkChainId])
+    }, [providerNetworkChainId]);
 
     if (!initialised || !providerNetworkChainId) {
-        return <div>Loading...</div>
+        return <div>Loading...</div>;
     }
 
-    const isSameNetwork = walletNetwork?.chainId === providerNetworkChainId
+    const isSameNetwork = walletNetwork?.chainId === providerNetworkChainId;
 
     if (walletNetwork?.chainId && !isSameNetwork) {
-        return <div>The app and your wallet are in different networks!</div>
+        return <div>The app and your wallet are in different networks!</div>;
     }
 
-    console.log(signer)
+    console.log(signer);
 
     return (
         <>
-            <ImpactProvider
-                jsonRpc={network.rpcUrl}
-                web3={kit.web3}
-                address={isSameNetwork ? address : null}
-            >
+            <ImpactProvider jsonRpc={network.rpcUrl} web3={kit.web3} address={isSameNetwork ? address : null}>
                 <Intro handleChange={setSelectedOption} initialOption={initialOption} options={options} />
                 {!!Component && <Component />}
             </ImpactProvider>
         </>
-    )
+    );
 }
 
 function WrappedApp() {
@@ -94,7 +90,7 @@ function WrappedApp() {
         >
             <App />
         </ContractKitProvider>
-    )
+    );
 }
 
-export default WrappedApp
+export default WrappedApp;

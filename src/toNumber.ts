@@ -2,9 +2,9 @@ import { BigNumber } from 'bignumber.js';
 
 export const toNumber = (value: any) => {
     try {
-        const amount = new BigNumber(value.toString()).dividedBy(new BigNumber(10).pow(18)).toNumber();
+        const amount = new BigNumber(value.toString()).dividedBy(new BigNumber(10).pow(18)).toString();
 
-        return amount;
+        return parseFloat(amount);
     } catch (error) {
         return 0;
     }

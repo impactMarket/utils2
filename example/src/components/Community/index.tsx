@@ -22,6 +22,6 @@ const Community = () => {
             </WalletConnection>
         </>
     );
-}
+};
 
 export default Community;
