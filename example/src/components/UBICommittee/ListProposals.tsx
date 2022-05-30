@@ -19,11 +19,11 @@ const ListProposals = () => {
     }[]>([]);
 
     useEffect(() => {
-        if (address && isReady) {
-            getProposals(10, 0, address).then((p) => setProposals(p));
+        if (isReady) {
+            getProposals(10, 0).then((p) => setProposals(p));
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [address, isReady]);
+    }, [isReady]);
 
     const proposalComponent = (p: {
         id: number;
