@@ -3,15 +3,39 @@ import { useManager } from '@impact-market/utils/useManager';
 
 const Beneficiary = () => {
     const [beneficiaryAddress, setBeneficiaryAddress] = React.useState('');
-    const { addBeneficiary } = useManager('0xbd6ab0e04ad0ac42cfba93a3cd84a107644b0378');
+    const { addBeneficiary, canRequestFunds, requestFunds, nextRequestFundsAvailability } = useManager(
+        '0xbd6ab0e04ad0ac42cfba93a3cd84a107644b0378'
+    );
+
+    const RequestFundsComponent = () => {
+        if (canRequestFunds) {
+            return <button onClick={() => requestFunds()}>Request funds</button>;
+        } else {
+            return <div>Next funds request available: {nextRequestFundsAvailability.toString()}</div>;
+        }
+    };
+
+    const AddBeneficiaryComponent = () => (
+        <>
+            <input
+                type="text"
+                placeholder="beneficiary address"
+                value={beneficiaryAddress}
+                onChange={e => setBeneficiaryAddress(e.currentTarget.value)}
+            />
+            <button onClick={() => addBeneficiary(beneficiaryAddress)}>Add beneficiary</button>
+        </>
+    );
 
     return (
         <>
-            <h3>Manager</h3>
-            <input type="text" placeholder='beneficiary address' value={beneficiaryAddress} onChange={(e) => setBeneficiaryAddress(e.currentTarget.value)} />
-            <button onClick={() => addBeneficiary(beneficiaryAddress)}>Add beneficiary</button>
+            <h2>Manager</h2>
+            <h3>add beneficiary</h3>
+            <AddBeneficiaryComponent />
+            <h3>request funds</h3>
+            <RequestFundsComponent />
         </>
-    )
-}
+    );
+};
 
-export default Beneficiary
+export default Beneficiary;
