@@ -107,31 +107,16 @@ export const updateUserContributionData = async (provider: BaseProvider, address
 export const getEstimatedClaimableRewards = async (donationMiner: Contract, donationMinerOld: Contract, address: string) => {
     const rewardPeriodCount = await donationMiner.rewardPeriodCount();
     const claimDelay = await donationMiner.claimDelay();
-    const version = (await donationMiner.getVersion()).toNumber();
 
-    if (version === 4) {
-        const claimableDonations = await donationMiner.calculateClaimableRewardsByPeriodNumber(
-            address,
-            Math.max(0, parseInt(rewardPeriodCount.toString(), 10) - parseInt(claimDelay.toString(), 10) - 1)
-        );
-        const allDonations = await donationMiner.calculateClaimableRewardsByPeriodNumber(
-            address,
-            parseInt(rewardPeriodCount.toString(), 10) - 1
-        );
-        const currentEpochDonations = await donationMiner.estimateClaimableReward(address);
-    
-        return toNumber(allDonations[0]) - toNumber(claimableDonations[0]) + toNumber(currentEpochDonations);
-    }
-    // TODO: should be removed once contracts v4 is default
-    const claimableDonations = await donationMinerOld.calculateClaimableRewardsByPeriodNumber(
+    const claimableDonations = await donationMiner.calculateClaimableRewardsByPeriodNumber(
         address,
         Math.max(0, parseInt(rewardPeriodCount.toString(), 10) - parseInt(claimDelay.toString(), 10) - 1)
     );
-    const allDonations = await donationMinerOld.calculateClaimableRewardsByPeriodNumber(
+    const allDonations = await donationMiner.calculateClaimableRewardsByPeriodNumber(
         address,
         parseInt(rewardPeriodCount.toString(), 10) - 1
     );
-    const currentEpochDonations = await donationMinerOld.estimateClaimableReward(address);
+    const currentEpochDonations = await donationMiner.estimateClaimableReward(address);
 
     return toNumber(allDonations) - toNumber(claimableDonations) + toNumber(currentEpochDonations);
 };
@@ -145,19 +130,8 @@ export const getEstimatedClaimableRewards = async (donationMiner: Contract, dona
  */
 export const getAllocatedRewards = async (donationMiner: Contract, donationMinerOld: Contract, address: string) => {
     const rewardPeriodCount = await donationMiner.rewardPeriodCount();
-    const version = (await donationMiner.getVersion()).toNumber();
 
-    if (version === 4) {
-        const pastDonations = await donationMiner.calculateClaimableRewardsByPeriodNumber(
-            address,
-            parseInt(rewardPeriodCount.toString(), 10) - 1
-        );
-    
-        return toNumber(pastDonations[0]);
-        
-    }
-    // TODO: should be removed once contracts v4 is default
-    const pastDonations = await donationMinerOld.calculateClaimableRewardsByPeriodNumber(
+    const pastDonations = await donationMiner.calculateClaimableRewardsByPeriodNumber(
         address,
         parseInt(rewardPeriodCount.toString(), 10) - 1
     );
@@ -187,18 +161,8 @@ export const getCurrentEpochEstimatedRewards = async (donationMiner: Contract, a
 export const getClaimableRewards = async (donationMiner: Contract, donationMinerOld: Contract, address: string) => {
     const rewardPeriodCount = await donationMiner.rewardPeriodCount();
     const claimDelay = await donationMiner.claimDelay();
-    const version = (await donationMiner.getVersion()).toNumber();
 
-    if (version === 4) {
-        const value = await donationMiner.calculateClaimableRewardsByPeriodNumber(
-            address,
-            Math.max(0, parseInt(rewardPeriodCount.toString(), 10) - parseInt(claimDelay.toString(), 10) - 1)
-        );
-
-        return toNumber(value[0]);
-    }
-    // TODO: should be removed once contracts v4 is default
-    const value = await donationMinerOld.calculateClaimableRewardsByPeriodNumber(
+    const value = await donationMiner.calculateClaimableRewardsByPeriodNumber(
         address,
         Math.max(0, parseInt(rewardPeriodCount.toString(), 10) - parseInt(claimDelay.toString(), 10) - 1)
     );

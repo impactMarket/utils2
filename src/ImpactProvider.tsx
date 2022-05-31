@@ -43,10 +43,12 @@ export type RewardsType = {
 };
 
 export type StakingType = {
-    stakedAmount: number;
+    allocated: number;
     apr: number;
-    earned: number;
+    claimableUnstaked: number;
     initialised: boolean;
+    stakedAmount: number;
+    unstakeCooldown: number;
 };
 
 const initialRewards: RewardsType = {
@@ -73,10 +75,12 @@ const intialProviderData: {
 };
 
 const initialStaking: StakingType = {
+    allocated: 0,
     apr: 0,
-    earned: 0,
+    claimableUnstaked: 0,
     initialised: false,
-    stakedAmount: 0
+    stakedAmount: 0,
+    unstakeCooldown: 0
 };
 
 const intialCUSDBalanceStateData: {
@@ -205,7 +209,7 @@ const StakingProvider = React.memo((props: { children?: any }) => {
         <StakingContext.Provider
             value={{
                 setStaking,
-                staking,
+                staking
             }}
         >
             {children}
@@ -223,7 +227,10 @@ export const ImpactProvider = (props: ProviderProps) => {
                 connection: new Connection(web3),
                 provider: new JsonRpcProvider(jsonRpc),
                 subgraph: new ImpactMarketSubgraph(jsonRpc.indexOf('alfajores') !== -1),
-                ubiManagementSubgraph: new ImpactMarketUBIManagementSubgraph(jsonRpc, jsonRpc.indexOf('alfajores') !== -1)
+                ubiManagementSubgraph: new ImpactMarketUBIManagementSubgraph(
+                    jsonRpc,
+                    jsonRpc.indexOf('alfajores') !== -1
+                )
             }}
         >
             <StakingProvider>

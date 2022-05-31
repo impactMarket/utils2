@@ -50,12 +50,26 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "claimAmount",
+        "name": "",
         "type": "uint256"
-      },
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_stakeholderAddress",
+        "type": "address"
+      }
+    ],
+    "name": "apr",
+    "outputs": [
       {
         "internalType": "uint256",
-        "name": "lastDonorStakeAmount",
+        "name": "",
         "type": "uint256"
       }
     ],
@@ -79,12 +93,7 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "claimAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "lastDonorStakeAmount",
+        "name": "",
         "type": "uint256"
       }
     ],
