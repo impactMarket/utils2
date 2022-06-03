@@ -11,7 +11,6 @@ export const useStaking = () => {
     const { connection, address, provider } = React.useContext(ImpactProviderContext);
     const { setBalance } = React.useContext(PACTBalanceContext);
     const { staking, setStaking } = React.useContext(StakingContext);
-    const [unstakedClaimable] = React.useState(0);
 
     /**
      * Private method to update staking data.
@@ -160,10 +159,18 @@ export const useStaking = () => {
                 staking.cooldown()
             ]);
 
+            // TODO: temporary fallback
+            let claimable = 0;
+
+            try {
+                claimable = (await staking.claimAmount(address)).toNumber();
+            } catch (_) {}
+
             setStaking(s => ({
                 ...s,
                 allocated,
                 apr: toNumber(apr),
+                claimableUnstaked: claimable,
                 initialised: true,
                 stakedAmount: toNumber(stakedAmount),
                 unstakeCooldown: unstakeCooldown.toNumber()
@@ -173,5 +180,5 @@ export const useStaking = () => {
         getStakeholderAmount();
     }, []);
 
-    return { approve, claim, stake, stakeRewards, staking, unstake, unstakedClaimable };
+    return { approve, claim, stake, stakeRewards, staking, unstake };
 };
