@@ -9,7 +9,7 @@ import { JsonRpcProvider } from '@ethersproject/providers';
 import PACTMetrics from './components/PACTMetrics';
 import Community from './components/Community';
 import Staking from './components/Staking';
-import UBICommittee from './components/UBICommittee';
+import ImpactMarketCouncil from './components/ImpactMarketCouncil';
 import { ImpactProvider } from '@impact-market/utils/ImpactProvider';
 
 const components = [
@@ -19,7 +19,7 @@ const components = [
     { label: 'Community', component: Community },
     { label: 'PACT Metrics', component: PACTMetrics },
     { label: 'Staking', component: Staking },
-    { label: 'UBICommittee', component: UBICommittee }
+    { label: 'ImpactMarketCouncil', component: ImpactMarketCouncil }
 ];
 
 const options = components.map(({ label }) => label);
