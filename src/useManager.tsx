@@ -15,6 +15,11 @@ export const useManager = (communityAddress: string) => {
     const [nextRequestFundsAvailability, setNextRequestFundsAvailability] = useState(new Date(0));
     const [fundsRemainingDays, setFundsRemainingDays] = useState<number>(0);
     const [canRequestFunds, setCanRequestFunds] = useState(false);
+    const [community, setCommunity] = useState<{
+        hasFunds: boolean;
+    }>({
+        hasFunds: false
+    });
 
     /**
      * Add beneficiary to community
@@ -177,6 +182,10 @@ export const useManager = (communityAddress: string) => {
                     fundsOnContract: toNumber(communityBalance)
                 })
             );
+            setCommunity(c => ({
+                ...c,
+                hasFunds: toNumber(communityBalance) > parseFloat(communityGraph.claimAmount!)
+            }));
             setIsReady(true);
         };
 
@@ -186,6 +195,7 @@ export const useManager = (communityAddress: string) => {
     return {
         addBeneficiary,
         canRequestFunds,
+        community,
         fundsRemainingDays,
         isReady,
         lockBeneficiary,
