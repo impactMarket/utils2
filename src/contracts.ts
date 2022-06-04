@@ -4,11 +4,11 @@ import AmbassadorsABI from './abi/Ambassadors.json';
 import BaseERC20ABI from './abi/BaseERC20.json';
 import DonationMinerABI from './abi/DonationMiner.json';
 import DonationMinerOldABI from './abi/DonationMinerOld.json';
+import ImpactMarketCouncilABI from './abi/ImpactMarketCouncil.json';
 import MerkleDistributorABI from './abi/MerkleDistributor.json';
 import PACTDelegateABI from './abi/PACTDelegate.json';
 import PACTTokenABI from './abi/PACTToken.json';
 import StakingABI from './abi/Staking.json';
-import UBICommitteeABI from './abi/UBICommittee.json';
 import type { BaseProvider } from '@ethersproject/providers';
 
 export const getContracts = async (provider: BaseProvider) => {
@@ -22,7 +22,7 @@ export const getContracts = async (provider: BaseProvider) => {
     }
     const contractAddresses = ContractAddresses.get(chainId)!;
 
-    const { Ambassadors, CommunityAdmin, cUSD, PACTDelegate, PACTDelegator, PACTToken, SPACTToken, DonationMiner, MerkleDistributor, Staking, UBICommittee } =
+    const { Ambassadors, CommunityAdmin, cUSD, PACTDelegate, PACTDelegator, PACTToken, SPACTToken, DonationMiner, MerkleDistributor, Staking, ImpactMarketCouncil } =
         contractAddresses;
 
     const addresses = {
@@ -32,11 +32,11 @@ export const getContracts = async (provider: BaseProvider) => {
         delegate: PACTDelegate || '',
         delegator: PACTDelegator || '',
         donationMiner: DonationMiner || '',
+        impactMarketCouncil: ImpactMarketCouncil || '',
         merkleDistributor: MerkleDistributor || '',
         pactToken: PACTToken || '',
         spactToken: SPACTToken || '',
-        staking: Staking || '',
-        ubiCommittee: UBICommittee || ''
+        staking: Staking || ''
     };
 
     const ambassadors = new Contract(addresses.ambassadors, AmbassadorsABI, provider);
@@ -56,7 +56,7 @@ export const getContracts = async (provider: BaseProvider) => {
 
     const delegate = new Contract(addresses.delegate, PACTDelegateABI, provider).attach(addresses.delegator);
     
-    const ubiCommittee = new Contract(addresses.ubiCommittee, UBICommitteeABI, provider);
+    const impactMarketCouncil = new Contract(addresses.impactMarketCouncil, ImpactMarketCouncilABI, provider);
 
     return {
         addresses,
@@ -65,10 +65,10 @@ export const getContracts = async (provider: BaseProvider) => {
         delegate,
         donationMiner,
         donationMinerOld,
+        impactMarketCouncil,
         merkleDistributor,
         pact,
         spact,
-        staking,
-        ubiCommittee
+        staking
     };
 };

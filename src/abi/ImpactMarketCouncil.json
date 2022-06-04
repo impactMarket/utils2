@@ -379,7 +379,7 @@
               "type": "uint96"
             }
           ],
-          "internalType": "struct UBICommitteeStorageV1.Receipt",
+          "internalType": "struct ImpactMarketCouncilStorageV1.Receipt",
           "name": "",
           "type": "tuple"
         }
@@ -696,7 +696,7 @@
       "name": "state",
       "outputs": [
         {
-          "internalType": "enum UBICommitteeStorageV1.ProposalState",
+          "internalType": "enum ImpactMarketCouncilStorageV1.ProposalState",
           "name": "",
           "type": "uint8"
         }

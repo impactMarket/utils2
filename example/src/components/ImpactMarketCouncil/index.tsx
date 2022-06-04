@@ -5,7 +5,7 @@ import ListProposals from './ListProposals';
 
 const DaoHooks = () => {
     return (
-        <WalletConnection title="UBICommittee">
+        <WalletConnection title="ImpactMarketCouncil">
             <ul>
                 <li style={{ marginTop: 16 }}>
                     <AddCommunity />
@@ -14,6 +14,6 @@ const DaoHooks = () => {
             </ul>
         </WalletConnection>
     );
-}
+};
 
 export default DaoHooks;

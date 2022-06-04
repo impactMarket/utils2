@@ -13,7 +13,7 @@ export * from './useEpoch';
 export * from './useRewards';
 export * from './useMerkleDistributor';
 export * from './useAmbassador';
-export * from './useUBICommittee';
+export * from './useImpactMarketCouncil';
 export * from './useStaking';
 
 export * from './toNumber';

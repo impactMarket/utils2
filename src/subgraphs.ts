@@ -58,6 +58,7 @@ class ImpactMarketUBIManagementSubgraph {
 
     async getProposals(first: number, skip: number, quorumVotes: number, userAddress?: string): Promise<{
         id: number;
+        createdAt: number;
         proposer: string;
         signatures: string[];
         endBlock: number;
@@ -72,8 +73,9 @@ class ImpactMarketUBIManagementSubgraph {
         const result = await this.client.query({
             query: gql`
                 {
-                    proposalEntities(first: ${first} skip: ${skip} orderBy: id orderDirection: desc) {
+                    proposalEntities(first: ${first} skip: ${skip} orderBy: createdAt orderDirection: desc) {
                         id
+                        createdAt
                         proposer
                         signatures
                         endBlock

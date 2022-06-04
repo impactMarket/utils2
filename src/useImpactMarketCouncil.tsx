@@ -3,8 +3,8 @@ import { ImpactProviderContext } from './ImpactProvider';
 import { Interface, defaultAbiCoder } from '@ethersproject/abi';
 import { executeTransaction } from './executeTransaction';
 import { getContracts } from './contracts';
+import ImpactMarketCouncilABI from './abi/ImpactMarketCouncil.json';
 import React, { useEffect, useState } from 'react';
-import UBICommitteeABI from './abi/UBICommittee.json';
 
 type BaseProposalArgs = {
     proposalTitle: string;
@@ -39,7 +39,7 @@ type CommunityUpdateBeneficiaryParamsArgs = BaseProposalArgs & {
     decreaseStep: string | BigNumber;
 };
 
-export const useUBICommittee = () => {
+export const useImpactMarketCouncil = () => {
     const { connection, address, provider, ubiManagementSubgraph } = React.useContext(ImpactProviderContext);
     const [quorumVotes, setQuorumVotes] = useState<number>(0);
     const [proposalCount, setProposalCount] = useState<number>(0);
@@ -48,9 +48,9 @@ export const useUBICommittee = () => {
     useEffect(() => {
         if (connection) {
             const getState = async () => {
-                const { ubiCommittee } = await getContracts(provider);
-                const quorumVotes = await ubiCommittee.quorumVotes();
-                const proposalCount = await ubiCommittee.proposalCount();
+                const { impactMarketCouncil } = await getContracts(provider);
+                const quorumVotes = await impactMarketCouncil.quorumVotes();
+                const proposalCount = await impactMarketCouncil.proposalCount();
 
                 setQuorumVotes(quorumVotes.toNumber());
                 setProposalCount(proposalCount.toNumber());
@@ -70,7 +70,7 @@ export const useUBICommittee = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, ubiCommittee } = await getContracts(provider);
+        const { cusd, impactMarketCouncil } = await getContracts(provider);
         const {
             baseInterval,
             claimAmount,
@@ -103,7 +103,7 @@ export const useUBICommittee = () => {
             )
         ];
 
-        const tx = await ubiCommittee.populateTransaction.propose(
+        const tx = await impactMarketCouncil.populateTransaction.propose(
             signatures,
             calldatas,
             JSON.stringify({
@@ -112,7 +112,7 @@ export const useUBICommittee = () => {
             })
         );
         const response = await executeTransaction(connection, address, cusd.address, tx);
-        const ifaceDAO = new Interface(UBICommitteeABI);
+        const ifaceDAO = new Interface(ImpactMarketCouncilABI);
 
         // TODO: filter out events
         return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
@@ -127,13 +127,13 @@ export const useUBICommittee = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, ubiCommittee } = await getContracts(provider);
+        const { cusd, impactMarketCouncil } = await getContracts(provider);
         const { communityAddress, proposalTitle, proposalDescription } = community;
         const signatures = ['removeCommunity(address)'];
 
         const calldatas = [defaultAbiCoder.encode(['address'], [communityAddress])];
 
-        const tx = await ubiCommittee.populateTransaction.propose(
+        const tx = await impactMarketCouncil.populateTransaction.propose(
             signatures,
             calldatas,
             JSON.stringify({
@@ -142,7 +142,7 @@ export const useUBICommittee = () => {
             })
         );
         const response = await executeTransaction(connection, address, cusd.address, tx);
-        const ifaceDAO = new Interface(UBICommitteeABI);
+        const ifaceDAO = new Interface(ImpactMarketCouncilABI);
 
         return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
     };
@@ -156,7 +156,7 @@ export const useUBICommittee = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, ubiCommittee } = await getContracts(provider);
+        const { cusd, impactMarketCouncil } = await getContracts(provider);
         const { communityAddress, minTranche, maxTranche, proposalTitle, proposalDescription } = community;
         const signatures = ['updateCommunityParams(address,uint256,uint256)'];
 
@@ -164,7 +164,7 @@ export const useUBICommittee = () => {
             defaultAbiCoder.encode(['address', 'uint256', 'uint256'], [communityAddress, minTranche, maxTranche])
         ];
 
-        const tx = await ubiCommittee.populateTransaction.propose(
+        const tx = await impactMarketCouncil.populateTransaction.propose(
             signatures,
             calldatas,
             JSON.stringify({
@@ -173,7 +173,7 @@ export const useUBICommittee = () => {
             })
         );
         const response = await executeTransaction(connection, address, cusd.address, tx);
-        const ifaceDAO = new Interface(UBICommitteeABI);
+        const ifaceDAO = new Interface(ImpactMarketCouncilABI);
 
         return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
     };
@@ -187,7 +187,7 @@ export const useUBICommittee = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, ubiCommittee } = await getContracts(provider);
+        const { cusd, impactMarketCouncil } = await getContracts(provider);
         const {
             communityAddress,
             baseInterval,
@@ -207,7 +207,7 @@ export const useUBICommittee = () => {
             )
         ];
 
-        const tx = await ubiCommittee.populateTransaction.propose(
+        const tx = await impactMarketCouncil.populateTransaction.propose(
             signatures,
             calldatas,
             JSON.stringify({
@@ -216,7 +216,7 @@ export const useUBICommittee = () => {
             })
         );
         const response = await executeTransaction(connection, address, cusd.address, tx);
-        const ifaceDAO = new Interface(UBICommitteeABI);
+        const ifaceDAO = new Interface(ImpactMarketCouncilABI);
 
         return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
     };
@@ -230,8 +230,8 @@ export const useUBICommittee = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, ubiCommittee } = await getContracts(provider);
-        const tx = await ubiCommittee.populateTransaction.execute(proposalId);
+        const { cusd, impactMarketCouncil } = await getContracts(provider);
+        const tx = await impactMarketCouncil.populateTransaction.execute(proposalId);
         const response = await executeTransaction(connection, address, cusd.address, tx);
 
         return response;
@@ -246,8 +246,8 @@ export const useUBICommittee = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, ubiCommittee } = await getContracts(provider);
-        const tx = await ubiCommittee.populateTransaction.cancel(proposalId);
+        const { cusd, impactMarketCouncil } = await getContracts(provider);
+        const tx = await impactMarketCouncil.populateTransaction.cancel(proposalId);
         const response = await executeTransaction(connection, address, cusd.address, tx);
 
         return response;
@@ -263,8 +263,8 @@ export const useUBICommittee = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, ubiCommittee } = await getContracts(provider);
-        const tx = await ubiCommittee.populateTransaction.castVote(proposalId, support);
+        const { cusd, impactMarketCouncil } = await getContracts(provider);
+        const tx = await impactMarketCouncil.populateTransaction.castVote(proposalId, support);
         const response = await executeTransaction(connection, address, cusd.address, tx);
 
         return response;
