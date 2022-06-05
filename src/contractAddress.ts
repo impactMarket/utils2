@@ -50,7 +50,7 @@ export const ContractAddresses = new Map<
             PACTDelegator: '0x8f8BB984e652Cb8D0aa7C9D6712Ec2020EB1BAb4',
             PACTToken: '0x46c9757C5497c5B1f2eb73aE79b6B67D119B0B58',
             SPACTToken: '0xFC39D3f2cBE4D5efc21CE48047bB2511ACa5cAF3',
-            Staking: '0x6e6b29711A6544cf928708EE0FAA1021FC0DBbEc',
+            Staking: '0x1751e740379FC08b7f0eF6d49183fc0931Bd8179',
             Treasury: '0xa302dd52a4a85e6778E6A64A0E5EB0e8C76463d6',
             cUSD: '0x765de816845861e75a25fca122bb6898b8b1282a',
         }
