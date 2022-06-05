@@ -48,6 +48,7 @@ export type StakingType = {
     claimableUnstaked: number;
     initialised: boolean;
     stakedAmount: number;
+    totalStaked: number;
     unstakeCooldown: number;
 };
 
@@ -80,6 +81,7 @@ const initialStaking: StakingType = {
     claimableUnstaked: 0,
     initialised: false,
     stakedAmount: 0,
+    totalStaked: 0,
     unstakeCooldown: 0
 };
 
