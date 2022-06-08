@@ -18,7 +18,7 @@ export const useDonationMiner = () => {
         try {
             const { cusd, donationMiner } = await getContracts(provider);
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-            
+
             if (to === undefined) {
                 to = donationMiner.address;
             }
@@ -36,7 +36,7 @@ export const useDonationMiner = () => {
 
             const tx = await cusd.populateTransaction.approve(to, amount);
 
-            return await executeTransaction(connection, address, cusd.address, tx);
+            return await executeTransaction(connection, address, cusd, tx);
         } catch (error) {
             console.log('Error approving amount: \n', error);
 
@@ -60,7 +60,7 @@ export const useDonationMiner = () => {
             } else {
                 tx = await donationMinerOld.populateTransaction.donate(amount);
             }
-            const response = await executeTransaction(connection, address, cusd.address, tx);
+            const response = await executeTransaction(connection, address, cusd, tx);
 
             setEpoch(epoch => ({
                 ...epoch,
@@ -106,11 +106,16 @@ export const useDonationMiner = () => {
             let tx;
 
             if (version > 3) {
-                tx = await donationMiner.populateTransaction.donateToCommunity(community, cusd.address, amount, address);
+                tx = await donationMiner.populateTransaction.donateToCommunity(
+                    community,
+                    cusd.address,
+                    amount,
+                    address
+                );
             } else {
                 tx = await donationMinerOld.populateTransaction.donateToCommunity(community, amount);
             }
-            const response = await executeTransaction(connection, address, cusd.address, tx);
+            const response = await executeTransaction(connection, address, cusd, tx);
 
             setEpoch(epoch => ({
                 ...epoch,

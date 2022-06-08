@@ -60,7 +60,7 @@ export const useStaking = () => {
         const { staking, cusd } = await getContracts(provider);
 
         const tx = await staking.populateTransaction.stake(address, amount);
-        const response = await executeTransaction(connection, address, cusd.address, tx);
+        const response = await executeTransaction(connection, address, cusd, tx);
 
         await _updateStaking();
 
@@ -87,7 +87,7 @@ export const useStaking = () => {
             return { status: true };
         }
         const tx = await pact.populateTransaction.approve(staking.address, amount);
-        const response = await executeTransaction(connection, address, cusd.address, tx);
+        const response = await executeTransaction(connection, address, cusd, tx);
 
         return response;
     };
@@ -102,7 +102,7 @@ export const useStaking = () => {
         }
         const { donationMiner, cusd } = await getContracts(provider);
         const tx = await donationMiner.populateTransaction.stakeRewards();
-        const response = await executeTransaction(connection, address, cusd.address, tx);
+        const response = await executeTransaction(connection, address, cusd, tx);
 
         await _updateStaking();
 
@@ -121,7 +121,7 @@ export const useStaking = () => {
         const amount = toToken(value, { EXPONENTIAL_AT: 29 });
         const { staking, cusd } = await getContracts(provider);
         const tx = await staking.populateTransaction.unstake(amount);
-        const response = await executeTransaction(connection, address, cusd.address, tx);
+        const response = await executeTransaction(connection, address, cusd, tx);
 
         await _updateStaking();
 
@@ -138,7 +138,7 @@ export const useStaking = () => {
         }
         const { staking, cusd } = await getContracts(provider);
         const tx = await staking.populateTransaction.claim();
-        const response = await executeTransaction(connection, address, cusd.address, tx);
+        const response = await executeTransaction(connection, address, cusd, tx);
 
         await _updateStaking();
 
@@ -151,15 +151,17 @@ export const useStaking = () => {
             if (!connection || !address) {
                 return;
             }
-            const { donationMiner, donationMinerOld, staking } = await getContracts(provider);
-            const [stakedAmount, allocated, apr, unstakeCooldown, totalAmount] = await Promise.all([
+            const { donationMiner, donationMinerOld, staking, spact } = await getContracts(provider);
+            const [stakedAmount, allocated, apr, unstakeCooldown, totalAmount, spactbalance] = await Promise.all([
                 staking.stakeholderAmount(address),
                 getAllocatedRewards(donationMiner, donationMinerOld, address),
                 donationMiner.apr(address),
                 staking.cooldown(),
-                staking.currentTotalAmount()
+                staking.currentTotalAmount(),
+                spact.balanceOf(address)
             ]);
 
+            const unstaked = toNumber(spactbalance) - toNumber(stakedAmount);
             // TODO: temporary fallback
             let claimable = 0;
 
@@ -175,7 +177,8 @@ export const useStaking = () => {
                 initialised: true,
                 stakedAmount: toNumber(stakedAmount),
                 totalStaked: toNumber(totalAmount),
-                unstakeCooldown: unstakeCooldown.toNumber()
+                unstakeCooldown: unstakeCooldown.toNumber() / 17280,
+                unstaked
             }));
         };
 

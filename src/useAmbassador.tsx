@@ -26,7 +26,7 @@ export const useAmbassador = () => {
         }
         const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.addManager(managerAddress);
-        const response = await executeTransaction(connection, address, cusd.address, tx);
+        const response = await executeTransaction(connection, address, cusd, tx);
 
         return response;
     };
@@ -44,7 +44,7 @@ export const useAmbassador = () => {
         }
         const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.removeManager(managerAddress);
-        const response = await executeTransaction(connection, address, cusd.address, tx);
+        const response = await executeTransaction(connection, address, cusd, tx);
 
         return response;
     };
@@ -61,7 +61,7 @@ export const useAmbassador = () => {
         }
         const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.lock();
-        const response = await executeTransaction(connection, address, cusd.address, tx);
+        const response = await executeTransaction(connection, address, cusd, tx);
 
         return response;
     };
@@ -78,7 +78,7 @@ export const useAmbassador = () => {
         }
         const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.unlock();
-        const response = await executeTransaction(connection, address, cusd.address, tx);
+        const response = await executeTransaction(connection, address, cusd, tx);
 
         return response;
     };

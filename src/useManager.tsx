@@ -39,7 +39,7 @@ export const useManager = (communityAddress: string) => {
         }
         const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.addBeneficiary(beneficiaryAddress);
-        const response = await executeTransaction(connection, address, cusd.address, tx);
+        const response = await executeTransaction(connection, address, cusd, tx);
 
         return response;
     };
@@ -63,7 +63,7 @@ export const useManager = (communityAddress: string) => {
         }
         const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.removeBeneficiary(beneficiaryAddress);
-        const response = await executeTransaction(connection, address, cusd.address, tx);
+        const response = await executeTransaction(connection, address, cusd, tx);
 
         return response;
     };
@@ -87,7 +87,7 @@ export const useManager = (communityAddress: string) => {
         }
         const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.lockBeneficiary(beneficiaryAddress);
-        const response = await executeTransaction(connection, address, cusd.address, tx);
+        const response = await executeTransaction(connection, address, cusd, tx);
 
         return response;
     };
@@ -111,7 +111,7 @@ export const useManager = (communityAddress: string) => {
         }
         const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.unlockBeneficiary(beneficiaryAddress);
-        const response = await executeTransaction(connection, address, cusd.address, tx);
+        const response = await executeTransaction(connection, address, cusd, tx);
 
         return response;
     };
@@ -135,7 +135,7 @@ export const useManager = (communityAddress: string) => {
         }
         const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.requestFunds();
-        const response = await executeTransaction(connection, address, cusd.address, tx);
+        const response = await executeTransaction(connection, address, cusd, tx);
 
         const received = filterEvent(
             'event CommunityFunded(address indexed community, uint256 amount)',
