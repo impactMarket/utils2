@@ -47,7 +47,7 @@ export const useRewards = () => {
         try {
             const { cusd, donationMiner } = await getContracts(provider);
             const tx = await donationMiner.populateTransaction.claimRewards();
-            const response = await executeTransaction(connection, address, cusd.address, tx);
+            const response = await executeTransaction(connection, address, cusd, tx);
 
             setRewards(rewards => ({
                 ...rewards,

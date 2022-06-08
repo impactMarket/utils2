@@ -29,7 +29,7 @@ export const useMerkleDistributor = (treeAccount: { index: number; amount: strin
                 treeAccount.amount,
                 treeAccount.proof
             );
-            const response = await executeTransaction(connection, address, cusd.address, tx);
+            const response = await executeTransaction(connection, address, cusd, tx);
 
             updatePACTBalance(provider, address);
 

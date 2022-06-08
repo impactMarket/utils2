@@ -1,11 +1,28 @@
 import { Connection } from '@celo/connect';
+import { ContractAddresses } from './contractAddress';
+import BigNumber from 'bignumber.js';
+import type { Contract } from '@ethersproject/contracts';
 
 export async function executeTransaction(
     connection: Connection,
     address: string,
-    cusdAddress: string,
+    cusdContract: Contract,
     tx: { data?: string; to?: string }
 ) {
+    // if user has at least 0.01 cUSD, pay with cUSD, othwerwise CELO.
+    const hasBalance = new BigNumber((await cusdContract.balanceOf(address)).toString()).dividedBy(10 ** 18).gte('0.01');
+
+    if (!hasBalance) {
+        const txResponse = await connection.sendTransaction({
+            data: tx.data,
+            from: address,
+            gasPrice: '500000000',
+            to: tx.to,
+        });
+    
+        return await txResponse.waitReceipt();
+    }
+
     const gasLimit = await connection.estimateGas({
         data: tx.data,
         from: address,
@@ -24,7 +41,7 @@ export async function executeTransaction(
 
     const txResponse = await connection.sendTransaction({
         data: tx.data,
-        feeCurrency: cusdAddress,
+        feeCurrency: hasBalance ? cusdContract.address : ContractAddresses.get(await connection.chainId())!.CELO,
         from: address,
         gas: adjustedGasLimit,
         gasPrice,

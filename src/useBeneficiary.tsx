@@ -130,7 +130,7 @@ export const useBeneficiary = (communityAddress: string) => {
         }
         const { cusd } = await getContracts(provider);
         const tx = await contract.populateTransaction.claim();
-        const response = await executeTransaction(connection, address, cusd.address, tx);
+        const response = await executeTransaction(connection, address, cusd, tx);
 
         updateClaimData(contract);
         updateCUSDBalance(provider, address);

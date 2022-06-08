@@ -72,9 +72,9 @@ export const useDAO = () => {
                     title: proposalTitle
                 })
             );
-            const response = await executeTransaction(connection, address, cusd.address, tx);
+            const response = await executeTransaction(connection, address, cusd, tx);
             const ifaceDAO = new Interface(PACTDelegateABI);
-            
+
             return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
         } catch (error) {
             console.log('Error in addCommunity function: \n', error);
@@ -84,4 +84,4 @@ export const useDAO = () => {
     };
 
     return { addCommunity };
-}
+};

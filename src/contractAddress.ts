@@ -3,6 +3,7 @@ export const ContractAddresses = new Map<
     {
         Ambassadors: string;
         cUSD: string;
+        CELO: string;
         DonationMiner: string;
         CommunityAdmin: string;
         PACTDelegate: string;
@@ -21,6 +22,7 @@ export const ContractAddresses = new Map<
         44787,
         {
             Ambassadors: '0x5b7B94a63c64bdddCCa8eE2D1d823e359Fa77AB9',
+            CELO: '0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9',
             CommunityAdmin: '0x1c33D75bcE52132c7a0e220c1C338B9db7cf3f3A',
             DonationMiner: '0x09Cdc8f50994F63103bc165B139631A6ad18EF49',
             IDO: '0x0000000000000000000000000000000000000000',
@@ -33,13 +35,14 @@ export const ContractAddresses = new Map<
             SPACTToken: '0x6732B3e5643dEBfaB7d1570f313271dD9E24c58C',
             Staking: '0x2Bdd85857eDd9A4fAA72b663536189e38D8E3C71',
             Treasury: '0xB0deEE097B5227C5E6bbE787665e4e62b4fE85f3',
-            cUSD: '0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1'
+            cUSD: '0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1',
         }
     ],
     [
         42220,
         {
             Ambassadors: '0x0000000000000000000000000000000000000000',
+            CELO: '0x471EcE3750Da237f93B8E339c536989b8978a438',
             CommunityAdmin: '0xd61c407c3A00dFD8C355973f7a14c55ebaFDf6F9',
             DonationMiner: '0x1C51657af2ceBA3D5492bA0c5A17E562F7ba6593',
             IDO: '0xBbA4ED9462ABDb4010Bb12881895fb1E77284B6b',
