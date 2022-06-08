@@ -44,8 +44,10 @@ export type RewardsType = {
 
 export type StakingType = {
     allocated: number;
-    apr: number;
+    userAPR: number;
+    generalAPR: number;
     claimableUnstaked: number;
+    estimateClaimableRewardByStaking: number;
     initialised: boolean;
     stakedAmount: number;
     totalStaked: number;
@@ -77,12 +79,14 @@ const intialProviderData: {
 
 const initialStaking: StakingType = {
     allocated: 0,
-    apr: 0,
     claimableUnstaked: 0,
+    estimateClaimableRewardByStaking: 0,
+    generalAPR: 0,
     initialised: false,
     stakedAmount: 0,
     totalStaked: 0,
-    unstakeCooldown: 0
+    unstakeCooldown: 0,
+    userAPR: 0
 };
 
 const intialCUSDBalanceStateData: {
