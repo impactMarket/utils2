@@ -151,15 +151,17 @@ export const useStaking = () => {
             if (!connection || !address) {
                 return;
             }
-            const { donationMiner, donationMinerOld, staking } = await getContracts(provider);
-            const [stakedAmount, allocated, apr, unstakeCooldown, totalAmount] = await Promise.all([
+            const { donationMiner, donationMinerOld, staking, spact } = await getContracts(provider);
+            const [stakedAmount, allocated, apr, unstakeCooldown, totalAmount, spactbalance] = await Promise.all([
                 staking.stakeholderAmount(address),
                 getAllocatedRewards(donationMiner, donationMinerOld, address),
                 donationMiner.apr(address),
                 staking.cooldown(),
-                staking.currentTotalAmount()
+                staking.currentTotalAmount(),
+                spact.balanceOf(address)
             ]);
 
+            const unstaked = toNumber(spactbalance) - toNumber(stakedAmount);
             // TODO: temporary fallback
             let claimable = 0;
 
@@ -175,7 +177,8 @@ export const useStaking = () => {
                 initialised: true,
                 stakedAmount: toNumber(stakedAmount),
                 totalStaked: toNumber(totalAmount),
-                unstakeCooldown: unstakeCooldown.toNumber()
+                unstakeCooldown: unstakeCooldown.toNumber() / 17280,
+                unstaked
             }));
         };
 
