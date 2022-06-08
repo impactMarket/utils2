@@ -14,6 +14,8 @@ const Unstake = () => {
         setUnstakingIsLoading(false);
     };
 
+    staking.unstakingUserInfo().then(console.log);
+
     return (
         <>
             <h3>Unstake</h3>

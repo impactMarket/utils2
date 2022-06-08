@@ -17,13 +17,22 @@ const Staking = () => {
                     <div>pact: {balancePACT}</div>
                 </li>
                 <li style={{ marginTop: 16 }}>
-                    <div>stakedAmount: {staking.stakedAmount}</div>
+                    <div>stakedAmount: {staking.stakedAmount} PACT</div>
                 </li>
                 <li style={{ marginTop: 16 }}>
-                    <div>apr: {staking.apr}%</div>
+                    <div>userAPR: {staking.userAPR}%</div>
                 </li>
                 <li style={{ marginTop: 16 }}>
-                    <div>allocated: {staking.allocated}</div>
+                    <div>generalAPR: {staking.generalAPR}%</div>
+                </li>
+                <li style={{ marginTop: 16 }}>
+                    <div>claimableUnstaked: {staking.claimableUnstaked} PACT</div>
+                </li>
+                <li style={{ marginTop: 16 }}>
+                    <div>estimateClaimableRewardByStaking: {staking.estimateClaimableRewardByStaking} PACT</div>
+                </li>
+                <li style={{ marginTop: 16 }}>
+                    <div>allocated: {staking.allocated} PACT</div>
                 </li>
                 <li style={{ marginTop: 16 }}>
                     <div>unstakeCooldown: {staking.unstakeCooldown}</div>

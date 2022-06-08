@@ -125,5 +125,75 @@
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_holderAddress",
+                "type": "address"
+            }
+        ],
+        "name": "stakeholder",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "nextUnstakeId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "unstakeListLength",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "unstakedAmount",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_holderAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_unstakeIndex",
+                "type": "uint256"
+            }
+        ],
+        "name": "stakeholderUnstakeAt",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "cooldownBlock",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct IStaking.Unstake",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
     }
 ]
