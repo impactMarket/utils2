@@ -190,14 +190,19 @@ export const useStaking = () => {
         const blockNumber = await provider.getBlockNumber();
 
         const info = [];
+        const currentTimestamp = Math.floor(new Date().getTime() / 1000);
 
         for (let index = _stakeholder[1].toNumber(); index < _stakeholder[2].toNumber(); index++) {
             const _info = await staking.stakeholderUnstakeAt(address, index);
 
-            info.push({
-                amount: toNumber(_info[0]),
-                cooldown: Math.floor(estimateBlockTime(blockNumber, _info[1].toNumber()).getTime() / 1000)
-            });
+            const unstakeTimestamp = Math.floor(estimateBlockTime(blockNumber, _info[1].toNumber()).getTime() / 1000);
+
+            if (unstakeTimestamp > currentTimestamp) {
+                info.push({
+                    amount: toNumber(_info[0]),
+                    cooldown: unstakeTimestamp
+                });
+            }
         }
 
         return info;
