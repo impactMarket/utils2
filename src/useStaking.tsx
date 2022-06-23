@@ -229,7 +229,11 @@ export const useStaking = () => {
                 );
             } catch (_) {}
             try {
-                generalAPR = toNumber(await donationMiner.generalApr());
+                // generalAPR = toNumber(await donationMiner.generalApr());
+
+                const period = await donationMiner.rewardPeriodCount();
+                generalAPR = 365 * 100 * toNumber((await donationMiner.rewardPeriods(period)).rewardAmount) /
+                    (toNumber((await donationMiner.lastPeriodsDonations(address)).totalAmount) * 10000 + toNumber(totalAmount))
             } catch (_) {}
 
             setStaking(s => ({
