@@ -201,23 +201,15 @@ export const useStaking = () => {
     // Get stakeholder amount
     useEffect(() => {
         const getStakeholderAmount = async () => {
-            if (!connection || !address) {
+            if (!connection) {
                 return;
             }
             const { donationMiner, donationMinerOld, staking, spact } = await getContracts(provider);
-            const [stakedAmount, allocated, apr, unstakeCooldown, totalAmount, spactbalance] = await Promise.all([
-                staking.stakeholderAmount(address),
-                getAllocatedRewards(donationMiner, donationMinerOld, address),
-                donationMiner.apr(address),
+            const [unstakeCooldown, totalAmount] = await Promise.all([
                 staking.cooldown(),
-                staking.currentTotalAmount(),
-                spact.balanceOf(address)
+                staking.currentTotalAmount()
             ]);
 
-            const unstaked = toNumber(spactbalance) - toNumber(stakedAmount);
-            // TODO: temporary fallback
-            let claimable = 0;
-            let estimateClaimableRewardByStaking = 0;
             let generalAPR = 0;
 
             try {
@@ -233,22 +225,50 @@ export const useStaking = () => {
 
                 const period = await donationMiner.rewardPeriodCount();
                 generalAPR = 365 * 100 * toNumber((await donationMiner.rewardPeriods(period)).rewardAmount) /
-                    (toNumber((await donationMiner.lastPeriodsDonations(address)).totalAmount) * 10000 + toNumber(totalAmount))
+                    (toNumber((await donationMiner.lastPeriodsDonations(address)).totalAmount) * 10000 + toNumber(totalAmount));
             } catch (_) {}
 
             setStaking(s => ({
                 ...s,
-                allocated,
-                claimableUnstaked: claimable,
-                estimateClaimableRewardByStaking,
                 generalAPR,
                 initialised: true,
-                stakedAmount: toNumber(stakedAmount),
                 totalStaked: toNumber(totalAmount),
-                unstakeCooldown: unstakeCooldown.toNumber() / 17280,
-                unstaked,
-                userAPR: toNumber(apr)
+                unstakeCooldown: unstakeCooldown.toNumber() / 17280
             }));
+            if (address) {
+                const [stakedAmount, allocated, apr, spactbalance] = await Promise.all([
+                    staking.stakeholderAmount(address),
+                    getAllocatedRewards(donationMiner, donationMinerOld, address),
+                    donationMiner.apr(address),
+                    spact.balanceOf(address)
+                ]);
+
+                const unstaked = toNumber(spactbalance) - toNumber(stakedAmount);
+                // TODO: temporary fallback
+                let claimable = 0;
+                let estimateClaimableRewardByStaking = 0;
+
+                try {
+                    claimable = toNumber(await staking.claimAmount(address));
+                } catch (_) {}
+                try {
+                    estimateClaimableRewardByStaking = toNumber(
+                        await donationMiner.estimateClaimableRewardByStaking(address)
+                    );
+                } catch (_) {}
+
+                setStaking(s => ({
+                    ...s,
+                    allocated,
+                    claimableUnstaked: claimable,
+                    estimateClaimableRewardByStaking,
+                    generalAPR,
+                    initialised: true,
+                    stakedAmount: toNumber(stakedAmount),
+                    unstaked,
+                    userAPR: toNumber(apr)
+                }));
+            }
         };
 
         getStakeholderAmount();
