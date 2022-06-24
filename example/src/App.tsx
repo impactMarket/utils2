@@ -1,10 +1,10 @@
-import '@celo-tools/use-contractkit/lib/styles.css';
+import '@celo/react-celo/lib/styles.css';
 import React, { useEffect, useState } from 'react';
 import Intro from './components/Intro';
 import WalletsBalance from './components/WalletsBalance';
 import DaoBreakdown from './components/DaoBreakdown';
 import DaoHooks from './components/DaoHooks';
-import { ContractKitProvider, Alfajores, useContractKit, useProviderOrSigner } from '@celo-tools/use-contractkit';
+import { Alfajores, CeloProvider, useCelo, useProviderOrSigner } from '@celo/react-celo';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import PACTMetrics from './components/PACTMetrics';
 import Community from './components/Community';
@@ -31,7 +31,7 @@ const network = Alfajores;
 const provider = new JsonRpcProvider(network.rpcUrl);
 function App() {
     const signer = useProviderOrSigner();
-    const { address, initialised, network: walletNetwork, kit } = useContractKit();
+    const { address, initialised, network: walletNetwork, kit } = useCelo();
     const [selectedOption, setSelectedOption] = useState<string>(initialOption);
     const [providerNetworkChainId, setProviderNetworkChainId] = useState<number | undefined>();
 
@@ -69,7 +69,11 @@ function App() {
 
     return (
         <>
-            <ImpactProvider jsonRpc={network.rpcUrl} web3={kit.web3} address={isSameNetwork ? address : null}>
+            <ImpactProvider
+                jsonRpc={network.rpcUrl}
+                connection={kit.connection}
+                address={isSameNetwork ? address : null}
+            >
                 <Intro handleChange={setSelectedOption} initialOption={initialOption} options={options} />
                 {!!Component && <Component />}
             </ImpactProvider>
@@ -79,7 +83,7 @@ function App() {
 
 function WrappedApp() {
     return (
-        <ContractKitProvider
+        <CeloProvider
             network={network}
             dapp={{
                 name: 'My awesome dApp',
@@ -89,7 +93,7 @@ function WrappedApp() {
             }}
         >
             <App />
-        </ContractKitProvider>
+        </CeloProvider>
     );
 }
 
