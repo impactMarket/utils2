@@ -11,38 +11,42 @@ const Staking = () => {
     const balancePACT = usePACTBalance();
 
     return (
-        <ul>
-            <li style={{ marginTop: 16 }}>
-                <div>pact: {balancePACT}</div>
-            </li>
-            <li style={{ marginTop: 16 }}>
-                <div>stakedAmount: {staking.stakedAmount} PACT</div>
-            </li>
-            <li style={{ marginTop: 16 }}>
-                <div>userAPR: {staking.userAPR}%</div>
-            </li>
-            <li style={{ marginTop: 16 }}>
-                <div>generalAPR: {staking.generalAPR}%</div>
-            </li>
-            <li style={{ marginTop: 16 }}>
-                <div>claimableUnstaked: {staking.claimableUnstaked} PACT</div>
-            </li>
-            <li style={{ marginTop: 16 }}>
-                <div>estimateClaimableRewardByStaking: {staking.estimateClaimableRewardByStaking} PACT</div>
-            </li>
-            <li style={{ marginTop: 16 }}>
-                <div>allocated: {staking.allocated} PACT</div>
-            </li>
-            <li style={{ marginTop: 16 }}>
-                <div>unstakeCooldown: {staking.unstakeCooldown}</div>
-            </li>
-            <li style={{ marginTop: 16 }}>
-                <div>totalStaked: {staking.totalStaked}</div>
-            </li>
-            <li style={{ marginTop: 16 }}>
-                <div>initialised: {staking.initialised.toString()}</div>
-            </li>
-        </ul>
+        <>
+            <ul>
+                <li style={{ marginTop: 16 }}>
+                    <div>pact: {balancePACT}</div>
+                </li>
+                <li style={{ marginTop: 16 }}>
+                    <div>stakedAmount: {staking.stakedAmount} PACT</div>
+                </li>
+                <li style={{ marginTop: 16 }}>
+                    <div>userAPR: {staking.userAPR}%</div>
+                </li>
+                <li style={{ marginTop: 16 }}>
+                    <div>generalAPR: {staking.generalAPR}%</div>
+                </li>
+                <li style={{ marginTop: 16 }}>
+                    <div>claimableUnstaked: {staking.claimableUnstaked} PACT</div>
+                </li>
+                <li style={{ marginTop: 16 }}>
+                    <div>estimateClaimableRewardByStaking: {staking.estimateClaimableRewardByStaking} PACT</div>
+                </li>
+                <li style={{ marginTop: 16 }}>
+                    <div>allocated: {staking.allocated} PACT</div>
+                </li>
+                <li style={{ marginTop: 16 }}>
+                    <div>unstakeCooldown: {staking.unstakeCooldown}</div>
+                </li>
+                <li style={{ marginTop: 16 }}>
+                    <div>initialised: {staking.initialised.toString()}</div>
+                </li>
+            </ul>
+            <WalletConnection title="Staking">
+                <ApproveStake />
+                <Unstake />
+                <ClaimUnstaked />
+            </WalletConnection>
+        </>
     );
 };
 
