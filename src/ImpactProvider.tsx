@@ -3,7 +3,6 @@ import { BaseProvider, JsonRpcProvider } from '@ethersproject/providers';
 import { Connection } from '@celo/connect';
 import { ImpactMarketSubgraph, ImpactMarketUBIManagementSubgraph } from './subgraphs';
 import React, { useState } from 'react';
-import Web3 from 'web3';
 
 export type EpochType = {
     endPeriod?: string;
@@ -139,7 +138,7 @@ export const StakingContext = React.createContext(intialStakingStateData);
 type ProviderProps = {
     children?: any;
     address: string | null;
-    web3: Web3;
+    connection: Connection;
     jsonRpc: string;
 };
 
@@ -224,13 +223,13 @@ const StakingProvider = React.memo((props: { children?: any }) => {
 });
 
 export const ImpactProvider = (props: ProviderProps) => {
-    const { children, address, jsonRpc, web3 } = props;
+    const { children, address, jsonRpc, connection } = props;
 
     return (
         <ImpactProviderContext.Provider
             value={{
                 address,
-                connection: new Connection(web3),
+                connection,
                 provider: new JsonRpcProvider(jsonRpc),
                 subgraph: new ImpactMarketSubgraph(jsonRpc.indexOf('alfajores') !== -1),
                 ubiManagementSubgraph: new ImpactMarketUBIManagementSubgraph(

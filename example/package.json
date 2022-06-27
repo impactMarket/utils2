@@ -10,7 +10,8 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@celo-tools/use-contractkit": "npm:@poofcash/use-contractkit@1.0.10",
+    "@celo/contractkit": "2.0.0",
+    "@celo/react-celo": "4.0.1-beta.2",
     "@impact-market/utils": "link:..",
     "@types/node": "link:../node_modules/@types/node",
     "@types/react": "link:../node_modules/@types/react",
@@ -24,9 +25,8 @@
     "@babel/plugin-syntax-object-rest-spread": "^7.8.3"
   },
   "resolutions": {
-    "@walletconnect/client": "1.6.0",
-    "@walletconnect/types": "1.7.0",
-    "@celo-tools/use-contractkit": "npm:@poofcash/use-contractkit@1.0.10"
+    "@celo/contractkit": "2.0.0",
+    "@celo/react-celo": "4.0.1-beta.2"
   },
   "eslintConfig": {
     "extends": "react-app"

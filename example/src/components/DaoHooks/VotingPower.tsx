@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { hasPACTVotingPower } from '@impact-market/utils/pact'
-import { useProvider, useContractKit } from '@celo-tools/use-contractkit';
+import { hasPACTVotingPower } from '@impact-market/utils/pact';
+import { useProvider, useCelo } from '@celo/react-celo';
 
 const VotingPower = () => {
     const provider = useProvider();
-    const { address } = useContractKit();
+    const { address } = useCelo();
     const [hasVotingPower, setHasVotingPower] = useState(false);
 
     useEffect(() => {
         if (address) {
-            hasPACTVotingPower(provider, address).then((has) => setHasVotingPower(has));
+            hasPACTVotingPower(provider, address).then(has => setHasVotingPower(has));
         }
     }, [address, provider]);
 
@@ -19,6 +19,6 @@ const VotingPower = () => {
             enough voting power to propose: {hasVotingPower.toString()}
         </div>
     );
-}
+};
 
 export default VotingPower;

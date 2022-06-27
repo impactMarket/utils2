@@ -1,12 +1,12 @@
-import {  useContractKit } from '@celo-tools/use-contractkit';
+import { useCelo } from '@celo/react-celo';
 import React from 'react';
 
-const WalletConnection = (props: { children: any, title?: string }) => {
+const WalletConnection = (props: { children: any; title?: string }) => {
     const { children, title } = props;
-    const { address, connect, destroy, initialised } = useContractKit();
+    const { address, connect, destroy, initialised } = useCelo();
 
     if (!initialised) {
-        return <div>loading...</div>
+        return <div>loading...</div>;
     }
 
     return (
@@ -25,13 +25,11 @@ const WalletConnection = (props: { children: any, title?: string }) => {
                         <h3>Address</h3>
                         <span>{address}</span>
                     </div>
-                    <div style={{ marginTop: 32 }}>
-                    {children}
-                    </div>
+                    <div style={{ marginTop: 32 }}>{children}</div>
                 </>
             )}
         </div>
-    )
-}
+    );
+};
 
 export default WalletConnection;

@@ -1,6 +1,6 @@
 {
     "name": "@impact-market/utils",
-    "version": "2.0.0-beta.37",
+    "version": "3.0.0-beta.1",
     "description": "impactMarket utils",
     "repository": {
         "type": "git",
@@ -43,7 +43,8 @@
     "devDependencies": {
         "@apollo/client": "^3.5.10",
         "@babel/core": "^7.16.10",
-        "@celo-tools/use-contractkit": "npm:@poofcash/use-contractkit@1.0.10",
+        "@celo/contractkit": "2.0.0",
+        "@celo/react-celo": "4.0.1-beta.2",
         "@ethersproject/abi": "5.6.0",
         "@ethersproject/abstract-signer": "5.6.0",
         "@ethersproject/contracts": "5.6.0",
@@ -60,6 +61,7 @@
         "axios-mock-adapter": "^1.20.0",
         "babel-eslint": "^10.1.0",
         "bignumber.js": "^9.0.2",
+        "chai": "^4.3.6",
         "eslint": "^8.13.0",
         "eslint-config-impact-market": "impactMarket/eslint-config-impact-market",
         "graphql": "^16.3.0",
@@ -73,7 +75,8 @@
     },
     "peerDependencies": {
         "@apollo/client": "^3.5.10",
-        "@celo-tools/use-contractkit": "npm:@poofcash/use-contractkit@1.0.10",
+        "@celo/contractkit": "2.0.0",
+        "@celo/react-celo": "4.0.1-beta.2",
         "@ethersproject/abi": "5.6.0",
         "@ethersproject/abstract-signer": "5.6.0",
         "@ethersproject/contracts": "5.6.0",
@@ -84,12 +87,11 @@
         "react": "^17.0.2"
     },
     "resolutions": {
-        "@walletconnect/client": "1.6.0",
-        "@walletconnect/types": "1.7.0",
-        "@celo-tools/use-contractkit": "npm:@poofcash/use-contractkit@1.0.10"
+        "@celo/contractkit": "2.0.0",
+        "@celo/react-celo": "4.0.1-beta.2"
     },
     "dependencies": {
-        "@celo/connect": "^2.0.0-beta.1",
+        "@celo/connect": "2.0.0",
         "ethers": "5.6.0"
     }
 }
