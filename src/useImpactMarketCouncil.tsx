@@ -21,6 +21,7 @@ type CommunityAddArgs = BaseProposalArgs & {
     maxClaim: string | BigNumber;
     maxTranche: string | BigNumber;
     minTranche: string | BigNumber;
+    maxBeneficiaries: number;
 };
 type CommunityRemoveArgs = BaseProposalArgs & {
     communityAddress: string;
@@ -36,6 +37,7 @@ type CommunityUpdateBeneficiaryParamsArgs = BaseProposalArgs & {
     incrementInterval: string | BigNumber;
     claimAmount: string | BigNumber;
     maxClaim: string | BigNumber;
+    maxBeneficiaries: number;
     decreaseStep: string | BigNumber;
 };
 
@@ -81,14 +83,28 @@ export const useImpactMarketCouncil = () => {
             maxClaim,
             maxTranche,
             minTranche,
+            maxBeneficiaries,
             proposalTitle,
             proposalDescription
         } = community;
-        const signatures = ['addCommunity(address[],address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)'];
+        const signatures = [
+            'addCommunity(address[],address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)'
+        ];
 
         const calldatas = [
             defaultAbiCoder.encode(
-                ['address[]', 'address', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256'],
+                [
+                    'address[]',
+                    'address',
+                    'uint256',
+                    'uint256',
+                    'uint256',
+                    'uint256',
+                    'uint256',
+                    'uint256',
+                    'uint256',
+                    'uint256'
+                ],
                 [
                     managers,
                     ambassador,
@@ -98,7 +114,8 @@ export const useImpactMarketCouncil = () => {
                     baseInterval,
                     incrementInterval,
                     minTranche,
-                    maxTranche
+                    maxTranche,
+                    maxBeneficiaries
                 ]
             )
         ];
@@ -195,15 +212,24 @@ export const useImpactMarketCouncil = () => {
             decreaseStep,
             incrementInterval,
             maxClaim,
+            maxBeneficiaries,
             proposalTitle,
             proposalDescription
         } = community;
-        const signatures = ['updateBeneficiaryParams(address,uint256,uint256,uint256,uint256,uint256)'];
+        const signatures = ['updateBeneficiaryParams(address,uint256,uint256,uint256,uint256,uint256,uint256)'];
 
         const calldatas = [
             defaultAbiCoder.encode(
-                ['address', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256'],
-                [communityAddress, claimAmount, maxClaim, decreaseStep, baseInterval, incrementInterval]
+                ['address', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256'],
+                [
+                    communityAddress,
+                    claimAmount,
+                    maxClaim,
+                    decreaseStep,
+                    baseInterval,
+                    incrementInterval,
+                    maxBeneficiaries
+                ]
             )
         ];
 
