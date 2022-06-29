@@ -22,6 +22,7 @@ const Community = (props: any) => {
             maxTranche: toToken(5, { EXPONENTIAL_AT: 25 }),
             minTranche: toToken(1),
             proposalTitle: `[New Community] ${name}`,
+            maxBeneficiaries: 50,
             proposalDescription: `## Description:\n${description}\n\nUBI Contract Parameters:\nClaim Amount: ${toNumber(
                 contract.claimAmount
             )}\nMax Claim: ${toNumber(contract.maxClaim)}\nBase Interval: ${frequencyToText(
