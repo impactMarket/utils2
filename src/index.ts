@@ -15,6 +15,7 @@ export * from './useMerkleDistributor';
 export * from './useAmbassador';
 export * from './useImpactMarketCouncil';
 export * from './useStaking';
+export * from './useSignatures';
 
 export * from './toNumber';
 export * from './toToken';
