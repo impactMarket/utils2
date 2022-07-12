@@ -50,16 +50,9 @@ export const useDonationMiner = () => {
                 return;
             }
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-            const { cusd, donationMiner, donationMinerOld } = await getContracts(provider);
+            const { cusd, donationMiner } = await getContracts(provider);
 
-            const version = (await donationMiner.getVersion()).toNumber();
-            let tx;
-
-            if (version > 3) {
-                tx = await donationMiner.populateTransaction.donate(cusd.address, amount, address);
-            } else {
-                tx = await donationMinerOld.populateTransaction.donate(amount);
-            }
+            const tx = await donationMiner.populateTransaction.donate(cusd.address, amount, address);
             const response = await executeTransaction(connection, address, cusd, tx);
 
             setEpoch(epoch => ({
@@ -100,21 +93,14 @@ export const useDonationMiner = () => {
                 return;
             }
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-            const { cusd, donationMiner, donationMinerOld } = await getContracts(provider);
+            const { cusd, donationMiner } = await getContracts(provider);
 
-            const version = (await donationMiner.getVersion()).toNumber();
-            let tx;
-
-            if (version > 3) {
-                tx = await donationMiner.populateTransaction.donateToCommunity(
-                    community,
-                    cusd.address,
-                    amount,
-                    address
-                );
-            } else {
-                tx = await donationMinerOld.populateTransaction.donateToCommunity(community, amount);
-            }
+            const tx = await donationMiner.populateTransaction.donateToCommunity(
+                community,
+                cusd.address,
+                amount,
+                address
+            );
             const response = await executeTransaction(connection, address, cusd, tx);
 
             setEpoch(epoch => ({

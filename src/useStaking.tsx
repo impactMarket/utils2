@@ -25,12 +25,12 @@ export const useStaking = () => {
         }
         setStaking(s => ({ ...s, initialised: false }));
 
-        const { donationMiner, donationMinerOld, staking, spact } = await getContracts(provider);
+        const { donationMiner, staking, spact } = await getContracts(provider);
         const [updatedPACTBalance, stakedAmount, allocated, apr, unstakeCooldown, totalAmount, spactbalance] =
             await Promise.all([
                 updatePACTBalance(provider, address),
                 staking.stakeholderAmount(address),
-                getAllocatedRewards(donationMiner, donationMinerOld, address),
+                getAllocatedRewards(donationMiner, address),
                 donationMiner.apr(address),
                 staking.cooldown(),
                 staking.currentTotalAmount(),
@@ -217,7 +217,7 @@ export const useStaking = () => {
             if (!connection) {
                 return;
             }
-            const { donationMiner, donationMinerOld, staking, spact } = await getContracts(provider);
+            const { donationMiner, staking, spact } = await getContracts(provider);
             const [unstakeCooldown, totalAmount] = await Promise.all([
                 staking.cooldown(),
                 staking.currentTotalAmount()
@@ -249,7 +249,7 @@ export const useStaking = () => {
             if (address) {
                 const [stakedAmount, allocated, apr, spactbalance] = await Promise.all([
                     staking.stakeholderAmount(address),
-                    getAllocatedRewards(donationMiner, donationMinerOld, address),
+                    getAllocatedRewards(donationMiner, address),
                     donationMiner.apr(address),
                     spact.balanceOf(address)
                 ]);

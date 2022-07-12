@@ -3,7 +3,6 @@ import { ContractAddresses } from './contractAddress';
 import AmbassadorsABI from './abi/Ambassadors.json';
 import BaseERC20ABI from './abi/BaseERC20.json';
 import DonationMinerABI from './abi/DonationMiner.json';
-import DonationMinerOldABI from './abi/DonationMinerOld.json';
 import ImpactMarketCouncilABI from './abi/ImpactMarketCouncil.json';
 import MerkleDistributorABI from './abi/MerkleDistributor.json';
 import PACTDelegateABI from './abi/PACTDelegate.json';
@@ -54,7 +53,6 @@ export const getContracts = async (provider: BaseProvider) => {
 
     const merkleDistributor = new Contract(addresses.merkleDistributor, MerkleDistributorABI, provider);
 
-    const donationMinerOld = new Contract(addresses.donationMiner, DonationMinerOldABI, provider);
     const donationMiner = new Contract(addresses.donationMiner, DonationMinerABI, provider);
 
     const cusd = new Contract(addresses.cusd, BaseERC20ABI, provider);
@@ -75,7 +73,6 @@ export const getContracts = async (provider: BaseProvider) => {
         cusd,
         delegate,
         donationMiner,
-        donationMinerOld,
         impactMarketCouncil,
         merkleDistributor,
         pact,
