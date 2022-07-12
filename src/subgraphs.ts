@@ -10,6 +10,22 @@ class ImpactMarketSubgraph {
             uri: isTestnet ? subgraphCeloAlfajores : subgraphCeloMainnet
         });
     }
+    
+    async findBeneficiaries(beneficiaries: string[], query: string): Promise<[{
+        id?: string;
+        state?: number;
+        community?: {id: string};
+    }]> {
+        const result = await this.client.query({
+            query: gql`
+                {
+                    beneficiaryEntities(where: { id_in: [${beneficiaries.map((b) => `"${b.toLowerCase()}"`)}] }) ${query}
+                }
+                `
+        });
+    
+        return result.data.beneficiaryEntities;
+    }
 
     async getBeneficiaryData(beneficiary: string, query: string): Promise<{
         state?: number;

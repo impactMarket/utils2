@@ -146,6 +146,31 @@ export const useManager = (communityAddress: string) => {
         return parseInt(received.args![1].toString(), 10);
     };
 
+    /**
+     * Verify if an array of addresses can be beneficiary to the community
+     * @param {string[]} addresses Array of user addresses to be beneficiaries
+     * @returns {Promise<boolean>} true if all are allowed
+     * @throws {Error} "UserNotAllowed: <addresses not allowed>"
+     * @example
+     * ```typescript
+     * const { canUsersBeBeneficiaries } = useManager('community-address');
+     * const canBe = await canUsersBeBeneficiaries();
+     * ```
+     */
+    const canUsersBeBeneficiaries = async (addresses: string[]) => {
+        const beneficiaries = await subgraph.findBeneficiaries(addresses, '{ state, community { id } }');
+
+        const notAllowed = beneficiaries.filter(
+            b => b.state === 2 || (b.state === 1 && b.community?.id === communityAddress.toLowerCase())
+        );
+
+        if (notAllowed) {
+            throw new Error(`UserNotAllowed: ${notAllowed.map(b => b.id)}`);
+        }
+
+        return true;
+    };
+
     useEffect(() => {
         // load request funds interval
         const loadRequestFundsTimeInterval = async () => {
@@ -195,6 +220,7 @@ export const useManager = (communityAddress: string) => {
     return {
         addBeneficiary,
         canRequestFunds,
+        canUsersBeBeneficiaries,
         community,
         fundsRemainingDays,
         isReady,
