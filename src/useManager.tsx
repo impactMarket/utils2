@@ -154,17 +154,17 @@ export const useManager = (communityAddress: string) => {
      * @example
      * ```typescript
      * const { canUsersBeBeneficiaries } = useManager('community-address');
-     * const canBe = await canUsersBeBeneficiaries();
+     * const canBe = await canUsersBeBeneficiaries(['address']);
      * ```
      */
     const canUsersBeBeneficiaries = async (addresses: string[]) => {
-        const beneficiaries = await subgraph.findBeneficiaries(addresses, '{ state, community { id } }');
+        const beneficiaries = await subgraph.findBeneficiaries(addresses, '{ id, state, community { id } }');
 
         const notAllowed = beneficiaries.filter(
-            b => b.state === 2 || (b.state === 1 && b.community?.id === communityAddress.toLowerCase())
+            b => b.state === 0 || b.state === 2 || (b.state === 1 && b.community?.id === communityAddress.toLowerCase())
         );
 
-        if (notAllowed) {
+        if (notAllowed.length > 0) {
             throw new Error(`UserNotAllowed: ${notAllowed.map(b => b.id)}`);
         }
 
