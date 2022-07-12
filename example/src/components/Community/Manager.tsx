@@ -3,9 +3,14 @@ import { useManager } from '@impact-market/utils/useManager';
 
 const Beneficiary = () => {
     const [beneficiaryAddress, setBeneficiaryAddress] = React.useState('');
-    const { addBeneficiary, canRequestFunds, requestFunds, nextRequestFundsAvailability } = useManager(
-        '0xbd6ab0e04ad0ac42cfba93a3cd84a107644b0378'
-    );
+    const { addBeneficiary, canRequestFunds, requestFunds, nextRequestFundsAvailability, canUsersBeBeneficiaries } =
+        useManager('0xbd6ab0e04ad0ac42cfba93a3cd84a107644b0378');
+
+    const handleAddBeneficiary = () => {
+        canUsersBeBeneficiaries([beneficiaryAddress])
+            .then(() => addBeneficiary(beneficiaryAddress))
+            .catch(console.error);
+    };
 
     const RequestFundsComponent = () => {
         if (canRequestFunds) {
@@ -23,7 +28,7 @@ const Beneficiary = () => {
                 value={beneficiaryAddress}
                 onChange={e => setBeneficiaryAddress(e.currentTarget.value)}
             />
-            <button onClick={() => addBeneficiary(beneficiaryAddress)}>Add beneficiary</button>
+            <button onClick={handleAddBeneficiary}>Add beneficiary</button>
         </>
     );
 
