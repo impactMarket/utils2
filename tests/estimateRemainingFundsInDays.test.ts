@@ -11,7 +11,7 @@ describe('#estimateRemainingFundsInDays()', () => {
                 beneficiaries: 5,
                 // $1
                 claimAmount: 1,
-                fundsOnContract: 0,
+                fundsOnContract: 0
             });
 
             expect(result).to.equal(0);
@@ -23,7 +23,7 @@ describe('#estimateRemainingFundsInDays()', () => {
                 beneficiaries: 5,
                 // $1
                 claimAmount: 1,
-                fundsOnContract: 5,
+                fundsOnContract: 5
             });
 
             expect(result).to.equal(1);
@@ -35,7 +35,7 @@ describe('#estimateRemainingFundsInDays()', () => {
                 beneficiaries: 5,
                 // $1
                 claimAmount: 1,
-                fundsOnContract: 15,
+                fundsOnContract: 15
             });
 
             expect(result).to.equal(3);
@@ -47,7 +47,7 @@ describe('#estimateRemainingFundsInDays()', () => {
                 beneficiaries: 5,
                 // $1
                 claimAmount: 1,
-                fundsOnContract: 17,
+                fundsOnContract: 17
             });
 
             expect(result).to.equal(3);
@@ -59,7 +59,7 @@ describe('#estimateRemainingFundsInDays()', () => {
                 beneficiaries: 5,
                 // $1
                 claimAmount: 1,
-                fundsOnContract: 19,
+                fundsOnContract: 19
             });
 
             expect(result).to.equal(3);
@@ -71,7 +71,7 @@ describe('#estimateRemainingFundsInDays()', () => {
                 beneficiaries: 5,
                 // $1
                 claimAmount: 1,
-                fundsOnContract: 50,
+                fundsOnContract: 50
             });
 
             expect(result).to.equal(10);
@@ -85,7 +85,7 @@ describe('#estimateRemainingFundsInDays()', () => {
                 beneficiaries: 5,
                 // $1
                 claimAmount: 7,
-                fundsOnContract: 8,
+                fundsOnContract: 8
             });
 
             expect(result).to.equal(1);
@@ -97,7 +97,7 @@ describe('#estimateRemainingFundsInDays()', () => {
                 beneficiaries: 5,
                 // $1
                 claimAmount: 7,
-                fundsOnContract: 16,
+                fundsOnContract: 16
             });
 
             expect(result).to.equal(2);

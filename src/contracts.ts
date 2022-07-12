@@ -22,8 +22,19 @@ export const getContracts = async (provider: BaseProvider) => {
     }
     const contractAddresses = ContractAddresses.get(chainId)!;
 
-    const { Ambassadors, CommunityAdmin, cUSD, PACTDelegate, PACTDelegator, PACTToken, SPACTToken, DonationMiner, MerkleDistributor, Staking, ImpactMarketCouncil } =
-        contractAddresses;
+    const {
+        Ambassadors,
+        CommunityAdmin,
+        cUSD,
+        PACTDelegate,
+        PACTDelegator,
+        PACTToken,
+        SPACTToken,
+        DonationMiner,
+        MerkleDistributor,
+        Staking,
+        ImpactMarketCouncil
+    } = contractAddresses;
 
     const addresses = {
         ambassadors: Ambassadors || '',
@@ -40,7 +51,7 @@ export const getContracts = async (provider: BaseProvider) => {
     };
 
     const ambassadors = new Contract(addresses.ambassadors, AmbassadorsABI, provider);
-    
+
     const merkleDistributor = new Contract(addresses.merkleDistributor, MerkleDistributorABI, provider);
 
     const donationMinerOld = new Contract(addresses.donationMiner, DonationMinerOldABI, provider);
@@ -49,13 +60,13 @@ export const getContracts = async (provider: BaseProvider) => {
     const cusd = new Contract(addresses.cusd, BaseERC20ABI, provider);
 
     const pact = new Contract(addresses.pactToken, PACTTokenABI, provider);
-    
+
     const spact = new Contract(addresses.spactToken, BaseERC20ABI, provider);
 
     const staking = new Contract(addresses.staking, StakingABI, provider);
 
     const delegate = new Contract(addresses.delegate, PACTDelegateABI, provider).attach(addresses.delegator);
-    
+
     const impactMarketCouncil = new Contract(addresses.impactMarketCouncil, ImpactMarketCouncilABI, provider);
 
     return {

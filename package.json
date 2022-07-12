@@ -36,7 +36,7 @@
         "docs": "typedoc src",
         "version": "auto-changelog -p && git add CHANGELOG.md",
         "prettier": "prettier --write \"./{src,tests}/**/*.{ts,tsx}\"",
-        "prettier:dryrun": "prettier \"./{src,tests}/**/*.{ts,tsx}\"",
+        "prettier:dryrun": "prettier -l \"./{src,tests}/**/*.{ts,tsx}\"",
         "eslint": "eslint --fix \"./{src,tests}/**/*.{ts,tsx}\" --max-warnings=0",
         "eslint:dryrun": "eslint \"./{src,tests}/**/*.{ts,tsx}\" --max-warnings=0"
     },

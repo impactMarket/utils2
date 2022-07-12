@@ -10,16 +10,18 @@ export async function executeTransaction(
     tx: { data?: string; to?: string }
 ) {
     // if user has at least 0.01 cUSD, pay with cUSD, othwerwise CELO.
-    const hasBalance = new BigNumber((await cusdContract.balanceOf(address)).toString()).dividedBy(10 ** 18).gte('0.01');
+    const hasBalance = new BigNumber((await cusdContract.balanceOf(address)).toString())
+        .dividedBy(10 ** 18)
+        .gte('0.01');
 
     if (!hasBalance) {
         const txResponse = await connection.sendTransaction({
             data: tx.data,
             from: address,
             gasPrice: '500000000',
-            to: tx.to,
+            to: tx.to
         });
-    
+
         return await txResponse.waitReceipt();
     }
 
@@ -32,7 +34,7 @@ export async function executeTransaction(
 
     try {
         gasPrice = await connection.gasPrice();
-    } catch(_) {}
+    } catch (_) {}
 
     // Gas estimation doesn't currently work properly
     // The gas limit must be padded to increase tx success rate

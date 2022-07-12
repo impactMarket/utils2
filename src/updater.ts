@@ -104,7 +104,11 @@ export const updateUserContributionData = async (provider: BaseProvider, address
  * @param {string} address The address of the user.
  * @returns {number} Estimated rewards.
  */
-export const getEstimatedClaimableRewards = async (donationMiner: Contract, donationMinerOld: Contract, address: string) => {
+export const getEstimatedClaimableRewards = async (
+    donationMiner: Contract,
+    donationMinerOld: Contract,
+    address: string
+) => {
     const rewardPeriodCount = await donationMiner.rewardPeriodCount();
     const claimDelay = await donationMiner.claimDelay();
 
@@ -183,12 +187,12 @@ export const getLastEpochsDonations = async (donationMiner: Contract, donationMi
     if (version === 4) {
         try {
             const donations = await donationMiner.lastPeriodsDonations(address);
-    
+
             return {
                 everyone: toNumber(donations[1]),
                 user: toNumber(donations[0])
             };
-        } catch(_) {
+        } catch (_) {
             // TODO: should be removed once fixed on testnet
             return {
                 everyone: 0,

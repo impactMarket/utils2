@@ -54,8 +54,11 @@ export const useStaking = () => {
 
             const period = await donationMiner.rewardPeriodCount();
 
-            generalAPR = 365 * 100 * toNumber((await donationMiner.rewardPeriods(period)).rewardAmount) /
-                (toNumber((await donationMiner.lastPeriodsDonations('0x0000000000000000000000000000000000000000'))[1]) * 10000 + toNumber(totalAmount));
+            generalAPR =
+                (365 * 100 * toNumber((await donationMiner.rewardPeriods(period)).rewardAmount)) /
+                (toNumber((await donationMiner.lastPeriodsDonations('0x0000000000000000000000000000000000000000'))[1]) *
+                    10000 +
+                    toNumber(totalAmount));
         } catch (_) {}
 
         setBalance(updatedPACTBalance);
@@ -226,9 +229,14 @@ export const useStaking = () => {
                 // generalAPR = toNumber(await donationMiner.generalApr());
 
                 const period = await donationMiner.rewardPeriodCount();
-                
-                generalAPR = 365 * 100 * toNumber((await donationMiner.rewardPeriods(period)).rewardAmount) /
-                    (toNumber((await donationMiner.lastPeriodsDonations('0x0000000000000000000000000000000000000000'))[1]) * 10000 + toNumber(totalAmount));
+
+                generalAPR =
+                    (365 * 100 * toNumber((await donationMiner.rewardPeriods(period)).rewardAmount)) /
+                    (toNumber(
+                        (await donationMiner.lastPeriodsDonations('0x0000000000000000000000000000000000000000'))[1]
+                    ) *
+                        10000 +
+                        toNumber(totalAmount));
             } catch (_) {}
 
             setStaking(s => ({
