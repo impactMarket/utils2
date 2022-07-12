@@ -11,14 +11,14 @@
   },
   "dependencies": {
     "@celo/contractkit": "2.0.0",
-    "@celo/react-celo": "4.0.1-beta.2",
+    "@celo/react-celo": "4.0.1",
     "@impact-market/utils": "link:..",
     "@types/node": "link:../node_modules/@types/node",
     "@types/react": "link:../node_modules/@types/react",
     "@types/react-dom": "link:../node_modules/@types/react-dom",
     "react": "link:../node_modules/react",
     "react-dom": "link:../node_modules/react-dom",
-    "react-scripts": "^3.4.1",
+    "react-scripts": "4.0.3",
     "typescript": "link:../node_modules/typescript"
   },
   "devDependencies": {
@@ -26,7 +26,7 @@
   },
   "resolutions": {
     "@celo/contractkit": "2.0.0",
-    "@celo/react-celo": "4.0.1-beta.2"
+    "@celo/react-celo": "4.0.1"
   },
   "eslintConfig": {
     "extends": "react-app"
