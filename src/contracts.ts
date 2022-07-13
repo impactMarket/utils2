@@ -5,7 +5,6 @@ import BaseERC20ABI from './abi/BaseERC20.json';
 import DonationMinerABI from './abi/DonationMiner.json';
 import ImpactMarketCouncilABI from './abi/ImpactMarketCouncil.json';
 import MerkleDistributorABI from './abi/MerkleDistributor.json';
-import PACTDelegateABI from './abi/PACTDelegate.json';
 import PACTTokenABI from './abi/PACTToken.json';
 import StakingABI from './abi/Staking.json';
 import type { BaseProvider } from '@ethersproject/providers';
@@ -25,8 +24,6 @@ export const getContracts = async (provider: BaseProvider) => {
         Ambassadors,
         CommunityAdmin,
         cUSD,
-        PACTDelegate,
-        PACTDelegator,
         PACTToken,
         SPACTToken,
         DonationMiner,
@@ -39,8 +36,6 @@ export const getContracts = async (provider: BaseProvider) => {
         ambassadors: Ambassadors || '',
         communityAdmin: CommunityAdmin || '',
         cusd: cUSD || '',
-        delegate: PACTDelegate || '',
-        delegator: PACTDelegator || '',
         donationMiner: DonationMiner || '',
         impactMarketCouncil: ImpactMarketCouncil || '',
         merkleDistributor: MerkleDistributor || '',
@@ -63,7 +58,6 @@ export const getContracts = async (provider: BaseProvider) => {
 
     const staking = new Contract(addresses.staking, StakingABI, provider);
 
-    const delegate = new Contract(addresses.delegate, PACTDelegateABI, provider).attach(addresses.delegator);
 
     const impactMarketCouncil = new Contract(addresses.impactMarketCouncil, ImpactMarketCouncilABI, provider);
 
@@ -71,7 +65,6 @@ export const getContracts = async (provider: BaseProvider) => {
         addresses,
         ambassadors,
         cusd,
-        delegate,
         donationMiner,
         impactMarketCouncil,
         merkleDistributor,
