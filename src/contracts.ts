@@ -58,7 +58,6 @@ export const getContracts = async (provider: BaseProvider) => {
 
     const staking = new Contract(addresses.staking, StakingABI, provider);
 
-
     const impactMarketCouncil = new Contract(addresses.impactMarketCouncil, ImpactMarketCouncilABI, provider);
 
     return {
