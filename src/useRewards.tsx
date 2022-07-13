@@ -15,12 +15,12 @@ export const updateRewards = async (provider: BaseProvider, address: string) => 
     if (!address) {
         return;
     }
-    const { donationMiner, donationMinerOld } = await getContracts(provider);
+    const { donationMiner } = await getContracts(provider);
     const [estimated, claimable, currentEpoch, allocated] = await Promise.all([
-        getEstimatedClaimableRewards(donationMiner, donationMinerOld, address),
-        getClaimableRewards(donationMiner, donationMinerOld, address),
+        getEstimatedClaimableRewards(donationMiner, address),
+        getClaimableRewards(donationMiner, address),
         getCurrentEpochEstimatedRewards(donationMiner, address),
-        getAllocatedRewards(donationMiner, donationMinerOld, address)
+        getAllocatedRewards(donationMiner, address)
     ]);
 
     return {

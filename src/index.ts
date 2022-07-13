@@ -3,7 +3,6 @@ export * from './pact';
 export * from './community';
 export * from './useDonationMiner';
 
-export * from './useDAO';
 export * from './useCUSDBalance';
 export * from './usePACTBalance';
 export * from './ImpactProvider';

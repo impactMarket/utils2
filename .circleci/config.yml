@@ -6,14 +6,14 @@ orbs:
 jobs:
   test:
     docker:
-      - image: circleci/node:16.13.0
+      - image: cimg/node:16.13.0
     steps:
       - checkout
       - run: yarn
       - run: yarn test:unit
   lint:
     docker:
-      - image: circleci/node:16.13.0
+      - image: cimg/node:16.13.0
     steps:
       - checkout
       - run: yarn
