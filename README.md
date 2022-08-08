@@ -15,6 +15,9 @@ yarn add @impact-market/utils
 
 See docs for further details. Use `yarn docs` to generate docs and open index.html at docs folder.
 
+If you use this within react native, please install and add `import '@ethersproject/shims';` at App.{jsx,tsx}.
+It is required by ethers.
+
 ## Development
 
 Local development is broken into two parts (ideally using two tabs).
