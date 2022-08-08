@@ -31,3 +31,5 @@ yarn-error.log*
 /output/docs
 /docs
 /ethers-wrapper
+
+coverage
