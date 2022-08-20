@@ -10,7 +10,7 @@ jobs:
     steps:
       - checkout
       - run: yarn
-      - run: yarn test:unit
+      - run: yarn test
   lint:
     docker:
       - image: cimg/node:16.13.0
