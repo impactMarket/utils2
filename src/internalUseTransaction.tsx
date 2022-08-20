@@ -8,7 +8,7 @@ export const internalUseTransaction = () => {
 
     const executeTransaction = async (tx: { data?: string; from?: string; to?: string }) => {
         if (!address) {
-            return;
+            throw new Error('no valid address connected');
         }
 
         const { cusd } = await getContracts(provider);

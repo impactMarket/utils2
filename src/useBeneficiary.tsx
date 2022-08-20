@@ -2,8 +2,8 @@ import { ImpactProviderContext } from './ImpactProvider';
 import { communityContract } from './community';
 import { estimateBlockTime } from './estimateBlockTime';
 import { estimateRemainingFundsInDays } from './estimateRemainingFundsInDays';
-import { executeTransaction } from './executeTransaction';
 import { getContracts } from './contracts';
+import { internalUseTransaction } from './internalUseTransaction';
 import { toNumber } from './toNumber';
 import { updateCUSDBalance } from './useCUSDBalance';
 import React, { useEffect, useState } from 'react';
@@ -40,6 +40,7 @@ export const useBeneficiary = (communityAddress: string) => {
     const [contract, setContract] = useState<Contract | null>(null);
     const [fundsRemainingDays, setFundsRemainingDays] = useState<number>(0);
     const { connection, provider, address, subgraph } = React.useContext(ImpactProviderContext);
+    const executeTransaction = internalUseTransaction();
     let refreshInterval: NodeJS.Timeout;
     let timeoutInterval: NodeJS.Timeout;
 
@@ -128,9 +129,8 @@ export const useBeneficiary = (communityAddress: string) => {
         if (!contract || !connection || !address) {
             throw new Error('No connection');
         }
-        const { cusd } = await getContracts(provider);
         const tx = await contract.populateTransaction.claim();
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         updateClaimData(contract);
         updateCUSDBalance(provider, address);

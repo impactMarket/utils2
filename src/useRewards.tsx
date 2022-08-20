@@ -1,5 +1,4 @@
 import { ImpactProviderContext, PACTBalanceContext, RewardsContext } from './ImpactProvider';
-import { executeTransaction } from './executeTransaction';
 import {
     getAllocatedRewards,
     getClaimableRewards,
@@ -7,6 +6,7 @@ import {
     getEstimatedClaimableRewards
 } from './updater';
 import { getContracts } from './contracts';
+import { internalUseTransaction } from './internalUseTransaction';
 import { updatePACTBalance } from './usePACTBalance';
 import React, { useEffect } from 'react';
 import type { BaseProvider } from '@ethersproject/providers';
@@ -35,6 +35,7 @@ export const useRewards = () => {
     const { connection, provider, address } = React.useContext(ImpactProviderContext);
     const { setBalance } = React.useContext(PACTBalanceContext);
     const { rewards, setRewards } = React.useContext(RewardsContext);
+    const executeTransaction = internalUseTransaction();
 
     /**
      * Claims rewards.
@@ -45,9 +46,9 @@ export const useRewards = () => {
             throw new Error('No connection');
         }
         try {
-            const { cusd, donationMiner } = await getContracts(provider);
+            const { donationMiner } = await getContracts(provider);
             const tx = await donationMiner.populateTransaction.claimRewards();
-            const response = await executeTransaction(connection, address, cusd, tx);
+            const response = await executeTransaction(tx);
 
             setRewards(rewards => ({
                 ...rewards,
