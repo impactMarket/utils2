@@ -1,12 +1,12 @@
 import { ImpactProviderContext } from './ImpactProvider';
 import { communityContract } from './community';
-import { executeTransaction } from './executeTransaction';
-import { getContracts } from './contracts';
+import { internalUseTransaction } from './internalUseTransaction';
 import React from 'react';
 import type { CeloTxReceipt } from '@celo/connect';
 
 export const useAmbassador = () => {
-    const { connection, address, provider } = React.useContext(ImpactProviderContext);
+    const { connection, address } = React.useContext(ImpactProviderContext);
+    const executeTransaction = internalUseTransaction();
 
     /**
      * Add manager to community
@@ -24,9 +24,8 @@ export const useAmbassador = () => {
         if (!connection || !address) {
             throw new Error('No connection');
         }
-        const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.addManager(managerAddress);
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         return response;
     };
@@ -42,9 +41,8 @@ export const useAmbassador = () => {
         if (!connection || !address) {
             throw new Error('No connection');
         }
-        const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.removeManager(managerAddress);
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         return response;
     };
@@ -59,9 +57,8 @@ export const useAmbassador = () => {
         if (!connection || !address) {
             throw new Error('No connection');
         }
-        const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.lock();
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         return response;
     };
@@ -76,9 +73,8 @@ export const useAmbassador = () => {
         if (!connection || !address) {
             throw new Error('No connection');
         }
-        const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.unlock();
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         return response;
     };

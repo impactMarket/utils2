@@ -2,9 +2,9 @@ import { ImpactProviderContext } from './ImpactProvider';
 import { communityContract } from './community';
 import { estimateBlockTime } from './estimateBlockTime';
 import { estimateRemainingFundsInDays } from './estimateRemainingFundsInDays';
-import { executeTransaction } from './executeTransaction';
 import { filterEvent } from './filterEvent';
 import { getContracts } from './contracts';
+import { internalUseTransaction } from './internalUseTransaction';
 import { toNumber } from './toNumber';
 import React, { useEffect, useState } from 'react';
 import type { CeloTxReceipt } from '@celo/connect';
@@ -20,6 +20,7 @@ export const useManager = (communityAddress: string) => {
     }>({
         hasFunds: false
     });
+    const executeTransaction = internalUseTransaction();
 
     /**
      * Add beneficiary to community
@@ -37,9 +38,8 @@ export const useManager = (communityAddress: string) => {
         if (!connection || !address) {
             throw new Error('No connection');
         }
-        const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.addBeneficiary(beneficiaryAddress);
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         return response;
     };
@@ -61,9 +61,8 @@ export const useManager = (communityAddress: string) => {
         if (!connection || !address) {
             throw new Error('No connection');
         }
-        const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.removeBeneficiary(beneficiaryAddress);
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         return response;
     };
@@ -85,9 +84,8 @@ export const useManager = (communityAddress: string) => {
         if (!connection || !address) {
             throw new Error('No connection');
         }
-        const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.lockBeneficiary(beneficiaryAddress);
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         return response;
     };
@@ -109,9 +107,8 @@ export const useManager = (communityAddress: string) => {
         if (!connection || !address) {
             throw new Error('No connection');
         }
-        const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.unlockBeneficiary(beneficiaryAddress);
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         return response;
     };
@@ -133,9 +130,8 @@ export const useManager = (communityAddress: string) => {
         if (!connection || !address) {
             throw new Error('No connection');
         }
-        const { cusd } = await getContracts(provider);
         const tx = await communityContract(communityAddress).populateTransaction.requestFunds();
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         const received = filterEvent(
             'event CommunityFunded(address indexed community, uint256 amount)',

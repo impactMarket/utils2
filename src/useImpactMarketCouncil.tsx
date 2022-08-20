@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js';
 import { ImpactProviderContext } from './ImpactProvider';
 import { Interface, defaultAbiCoder } from '@ethersproject/abi';
-import { executeTransaction } from './executeTransaction';
 import { getContracts } from './contracts';
+import { internalUseTransaction } from './internalUseTransaction';
 import ImpactMarketCouncilABI from './abi/ImpactMarketCouncil.json';
 import React, { useEffect, useState } from 'react';
 
@@ -46,6 +46,7 @@ export const useImpactMarketCouncil = () => {
     const [quorumVotes, setQuorumVotes] = useState<number>(0);
     const [proposalCount, setProposalCount] = useState<number>(0);
     const [isReady, setIsReady] = useState(false);
+    const executeTransaction = internalUseTransaction();
 
     useEffect(() => {
         if (connection) {
@@ -72,7 +73,7 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, impactMarketCouncil } = await getContracts(provider);
+        const { impactMarketCouncil } = await getContracts(provider);
         const {
             baseInterval,
             claimAmount,
@@ -128,7 +129,7 @@ export const useImpactMarketCouncil = () => {
                 title: proposalTitle
             })
         );
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
         const ifaceDAO = new Interface(ImpactMarketCouncilABI);
 
         // TODO: filter out events
@@ -144,7 +145,7 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, impactMarketCouncil } = await getContracts(provider);
+        const { impactMarketCouncil } = await getContracts(provider);
         const { communityAddress, proposalTitle, proposalDescription } = community;
         const signatures = ['removeCommunity(address)'];
 
@@ -158,7 +159,7 @@ export const useImpactMarketCouncil = () => {
                 title: proposalTitle
             })
         );
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
         const ifaceDAO = new Interface(ImpactMarketCouncilABI);
 
         return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
@@ -173,7 +174,7 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, impactMarketCouncil } = await getContracts(provider);
+        const { impactMarketCouncil } = await getContracts(provider);
         const { communityAddress, minTranche, maxTranche, proposalTitle, proposalDescription } = community;
         const signatures = ['updateCommunityParams(address,uint256,uint256)'];
 
@@ -189,7 +190,7 @@ export const useImpactMarketCouncil = () => {
                 title: proposalTitle
             })
         );
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
         const ifaceDAO = new Interface(ImpactMarketCouncilABI);
 
         return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
@@ -204,7 +205,7 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, impactMarketCouncil } = await getContracts(provider);
+        const { impactMarketCouncil } = await getContracts(provider);
         const {
             communityAddress,
             baseInterval,
@@ -241,7 +242,7 @@ export const useImpactMarketCouncil = () => {
                 title: proposalTitle
             })
         );
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
         const ifaceDAO = new Interface(ImpactMarketCouncilABI);
 
         return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
@@ -256,9 +257,9 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, impactMarketCouncil } = await getContracts(provider);
+        const { impactMarketCouncil } = await getContracts(provider);
         const tx = await impactMarketCouncil.populateTransaction.execute(proposalId);
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         return response;
     };
@@ -272,9 +273,9 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, impactMarketCouncil } = await getContracts(provider);
+        const { impactMarketCouncil } = await getContracts(provider);
         const tx = await impactMarketCouncil.populateTransaction.cancel(proposalId);
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         return response;
     };
@@ -289,9 +290,9 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { cusd, impactMarketCouncil } = await getContracts(provider);
+        const { impactMarketCouncil } = await getContracts(provider);
         const tx = await impactMarketCouncil.populateTransaction.castVote(proposalId, support);
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         return response;
     };

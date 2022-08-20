@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { ImpactProviderContext } from './ImpactProvider';
-import { executeTransaction } from './executeTransaction';
 import { getContracts } from './contracts';
+import { internalUseTransaction } from './internalUseTransaction';
 import { toNumber } from './toNumber';
 import { updatePACTBalance } from './usePACTBalance';
 import React, { useEffect, useState } from 'react';
@@ -10,6 +10,7 @@ export const useMerkleDistributor = (treeAccount: { index: number; amount: strin
     const { provider, address, connection } = React.useContext(ImpactProviderContext);
     const [hasClaim, setHasClaim] = useState(false);
     const [amountToClaim, setAmountToClaim] = useState(0);
+    const executeTransaction = internalUseTransaction();
 
     /**
      * Claims airgrab rewards.
@@ -17,7 +18,7 @@ export const useMerkleDistributor = (treeAccount: { index: number; amount: strin
      */
     const claim = async () => {
         try {
-            const { cusd, merkleDistributor } = await getContracts(provider);
+            const { merkleDistributor } = await getContracts(provider);
 
             if (!address || !connection) {
                 return;
@@ -29,7 +30,7 @@ export const useMerkleDistributor = (treeAccount: { index: number; amount: strin
                 treeAccount.amount,
                 treeAccount.proof
             );
-            const response = await executeTransaction(connection, address, cusd, tx);
+            const response = await executeTransaction(tx);
 
             updatePACTBalance(provider, address);
 

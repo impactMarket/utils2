@@ -1,8 +1,8 @@
 import { ImpactProviderContext, PACTBalanceContext, StakingContext } from './ImpactProvider';
 import { estimateBlockTime } from './estimateBlockTime';
-import { executeTransaction } from './executeTransaction';
 import { getAllocatedRewards } from './updater';
 import { getContracts } from './contracts';
+import { internalUseTransaction } from './internalUseTransaction';
 import { toNumber } from './toNumber';
 import { toToken } from './toToken';
 import { updatePACTBalance } from './usePACTBalance';
@@ -12,16 +12,15 @@ export const useStaking = () => {
     const { connection, address, provider } = React.useContext(ImpactProviderContext);
     const { setBalance } = React.useContext(PACTBalanceContext);
     const { staking, setStaking } = React.useContext(StakingContext);
+    const executeTransaction = internalUseTransaction();
 
     /**
      * Private method to update staking data.
-     * @param {object} staking staking contract object
-     * @param {string} address user address
      * @returns {Promise<void>} void
      */
-    const _updateStaking = async () => {
+    const _updateStaking = async (): Promise<void> => {
         if (!address) {
-            return;
+            throw new Error('no valid address connected');
         }
         setStaking(s => ({ ...s, initialised: false }));
 
@@ -92,10 +91,10 @@ export const useStaking = () => {
             return;
         }
         const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-        const { staking, cusd } = await getContracts(provider);
+        const { staking } = await getContracts(provider);
 
         const tx = await staking.populateTransaction.stake(address, amount);
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         await _updateStaking();
 
@@ -112,7 +111,7 @@ export const useStaking = () => {
             return;
         }
         const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-        const { pact, staking, cusd } = await getContracts(provider);
+        const { pact, staking } = await getContracts(provider);
 
         const PACTAllowance = await pact.allowance(address, staking.address);
         const pactAllowance = toNumber(PACTAllowance);
@@ -122,7 +121,7 @@ export const useStaking = () => {
             return { status: true };
         }
         const tx = await pact.populateTransaction.approve(staking.address, amount);
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         return response;
     };
@@ -135,9 +134,9 @@ export const useStaking = () => {
         if (!connection || !address) {
             return;
         }
-        const { donationMiner, cusd } = await getContracts(provider);
+        const { donationMiner } = await getContracts(provider);
         const tx = await donationMiner.populateTransaction.stakeRewards();
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         await _updateStaking();
 
@@ -154,9 +153,9 @@ export const useStaking = () => {
             return;
         }
         const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-        const { staking, cusd } = await getContracts(provider);
+        const { staking } = await getContracts(provider);
         const tx = await staking.populateTransaction.unstake(amount);
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         await _updateStaking();
 
@@ -171,9 +170,9 @@ export const useStaking = () => {
         if (!connection || !address) {
             return;
         }
-        const { staking, cusd } = await getContracts(provider);
+        const { staking } = await getContracts(provider);
         const tx = await staking.populateTransaction.claim();
-        const response = await executeTransaction(connection, address, cusd, tx);
+        const response = await executeTransaction(tx);
 
         await _updateStaking();
 

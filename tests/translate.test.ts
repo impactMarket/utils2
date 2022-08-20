@@ -8,7 +8,7 @@ describe('#translate()', () => {
     let mock: MockAdapter;
     const googleApiKey = 'xyz';
 
-    before(() => {
+    beforeAll(() => {
         mock = new MockAdapter(axios);
     });
 
