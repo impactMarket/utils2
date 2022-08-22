@@ -192,7 +192,7 @@ export const useManager = (communityAddress: string) => {
 
                 setNextRequestFundsAvailability(estimateBlockTime(_currentBlockNumber, nextRequestFundsBlock));
                 setCanRequestFunds(
-                    toNumber(communityBalance) < toNumber(minTranche) && nextRequestFundsBlock >= _currentBlockNumber
+                    toNumber(communityBalance) < toNumber(minTranche) && nextRequestFundsBlock <= _currentBlockNumber
                 );
             }
             setFundsRemainingDays(
