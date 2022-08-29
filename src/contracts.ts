@@ -25,6 +25,8 @@ export const getContracts = async (provider: BaseProvider) => {
         Ambassadors,
         CommunityAdmin,
         cUSD,
+        cEUR,
+        CELO,
         PACTDelegate,
         PACTDelegator,
         PACTToken,
@@ -37,6 +39,8 @@ export const getContracts = async (provider: BaseProvider) => {
 
     const addresses = {
         ambassadors: Ambassadors || '',
+        celo: CELO || '',
+        ceur: cEUR || '',
         communityAdmin: CommunityAdmin || '',
         cusd: cUSD || '',
         delegate: PACTDelegate || '',
@@ -57,6 +61,10 @@ export const getContracts = async (provider: BaseProvider) => {
 
     const cusd = new Contract(addresses.cusd, BaseERC20ABI, provider);
 
+    const ceur = new Contract(addresses.ceur, BaseERC20ABI, provider);
+
+    const celo = new Contract(addresses.celo, BaseERC20ABI, provider);
+
     const pact = new Contract(addresses.pactToken, PACTTokenABI, provider);
 
     const spact = new Contract(addresses.spactToken, BaseERC20ABI, provider);
@@ -70,6 +78,8 @@ export const getContracts = async (provider: BaseProvider) => {
     return {
         addresses,
         ambassadors,
+        celo,
+        ceur,
         cusd,
         delegate,
         donationMiner,
