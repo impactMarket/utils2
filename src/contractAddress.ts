@@ -37,7 +37,7 @@ export const ContractAddresses = new Map<
             Staking: '0x2Bdd85857eDd9A4fAA72b663536189e38D8E3C71',
             Treasury: '0xB0deEE097B5227C5E6bbE787665e4e62b4fE85f3',
             cEUR: '0x10c892A6EC43a53E45D0B916B4b7D383B1b78C0F',
-            cUSD: '0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1',
+            cUSD: '0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1'
         }
     ],
     [
@@ -58,7 +58,7 @@ export const ContractAddresses = new Map<
             Staking: '0x1751e740379FC08b7f0eF6d49183fc0931Bd8179',
             Treasury: '0xa302dd52a4a85e6778E6A64A0E5EB0e8C76463d6',
             cEUR: '0xD8763CBa276a3738E6DE85b4b3bF5FDed6D6cA73',
-            cUSD: '0x765de816845861e75a25fca122bb6898b8b1282a',
+            cUSD: '0x765de816845861e75a25fca122bb6898b8b1282a'
         }
     ]
 ]);

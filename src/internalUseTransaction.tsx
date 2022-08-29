@@ -32,14 +32,15 @@ export const internalUseTransaction = () => {
         // othwerwise default to CELO (below).
         do {
             enoughBalanceForTxFee = new BigNumber(
-                    (await feesInCStable[feesInCStableIndex].balanceOf(address)).toString()
-                )
-                .dividedBy(tokenDecimals).gte(txFeeCStableThreshold);
+                (await feesInCStable[feesInCStableIndex].balanceOf(address)).toString()
+            )
+                .dividedBy(tokenDecimals)
+                .gte(txFeeCStableThreshold);
             if (enoughBalanceForTxFee) {
                 txFeeInCStable = feesInCStable[feesInCStableIndex].address;
                 break;
             }
-        } while(++feesInCStableIndex < feesInCStable.length);
+        } while (++feesInCStableIndex < feesInCStable.length);
 
         if (txFeeInCStable) {
             gasLimit = await connection.estimateGas({
@@ -67,8 +68,9 @@ export const internalUseTransaction = () => {
             };
         } else {
             enoughBalanceForTxFee = new BigNumber((await celo.balanceOf(address)).toString())
-                .dividedBy(tokenDecimals).gte(txFeeCELOThreshold);
-    
+                .dividedBy(tokenDecimals)
+                .gte(txFeeCELOThreshold);
+
             if (!enoughBalanceForTxFee) {
                 throw new Error('NOT_ENOUGH_FUNDS: not enough funds to submit a transaction.');
             }
