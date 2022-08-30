@@ -29,20 +29,21 @@ describe('internalUseTransaction hook runs correctly', () => {
     it('with cUSD fees', async () => {
         const testEstimatedGas = 10;
         const testGasPrice = 3;
-        const cusdMock = { balanceOf: jest.fn(() => Promise.resolve(toToken(0.02))) };
+        const cusdMock = { address: '0x1', balanceOf: jest.fn(() => Promise.resolve(toToken(0.02))) };
+        const ceurMock = { address: '0x2', balanceOf: jest.fn(() => Promise.resolve(toToken(0))) };
+        const celoMock = { address: '0x3', balanceOf: jest.fn(() => Promise.resolve(toToken(0))) };
         const connectionMock = {
             estimateGas: jest.fn(() => Promise.resolve(testEstimatedGas)),
             gasPrice: jest.fn(() => Promise.resolve(testGasPrice)),
             sendTransaction: jest.fn(() => Promise.resolve({ waitReceipt: jest.fn(() => Promise.resolve(true)) }))
         };
 
-        getContractsMock.mockReturnValue(Promise.resolve({ cusd: cusdMock } as any));
-        // (getContracts as jest.Mock<any, any>).mockReturnValue(() => Promise.resolve({ cusd: 'cusd' }));
+        getContractsMock.mockReturnValue(Promise.resolve({ celo: celoMock, ceur: ceurMock, cusd: cusdMock } as any));
 
         const { getByText } = render(
             <ImpactProviderContext.Provider
                 value={{
-                    address: 'xpto',
+                    address: '0xabc',
                     connection: connectionMock as any,
                     provider: jest.fn() as any,
                     subgraph: jest.fn() as any,
@@ -69,20 +70,21 @@ describe('internalUseTransaction hook runs correctly', () => {
     it('with CELO fees', async () => {
         const testEstimatedGas = 10;
         const testGasPrice = 3;
-        const cusdMock = { balanceOf: jest.fn(() => Promise.resolve(toToken(0))) };
+        const cusdMock = { address: '0x1', balanceOf: jest.fn(() => Promise.resolve(toToken(0))) };
+        const ceurMock = { address: '0x2', balanceOf: jest.fn(() => Promise.resolve(toToken(0))) };
+        const celoMock = { address: '0x3', balanceOf: jest.fn(() => Promise.resolve(toToken(0.02))) };
         const connectionMock = {
             estimateGas: jest.fn(() => Promise.resolve(testEstimatedGas)),
             gasPrice: jest.fn(() => Promise.resolve(testGasPrice)),
             sendTransaction: jest.fn(() => Promise.resolve({ waitReceipt: jest.fn(() => Promise.resolve(true)) }))
         };
 
-        getContractsMock.mockReturnValue(Promise.resolve({ cusd: cusdMock } as any));
-        // (getContracts as jest.Mock<any, any>).mockReturnValue(() => Promise.resolve({ cusd: 'cusd' }));
+        getContractsMock.mockReturnValue(Promise.resolve({ celo: celoMock, ceur: ceurMock, cusd: cusdMock } as any));
 
         const { getByText } = render(
             <ImpactProviderContext.Provider
                 value={{
-                    address: 'xpto',
+                    address: '0xabc',
                     connection: connectionMock as any,
                     provider: jest.fn() as any,
                     subgraph: jest.fn() as any,
