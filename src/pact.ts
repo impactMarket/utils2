@@ -90,7 +90,9 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
     let counters = { data: { token_holder_count: 0, transfer_count: 0 } };
 
     try {
-        counters = await axios.get(`https://explorer.celo.org/token-counters?id=${PACTToken}`);
+        counters = await axios.get(
+            `https://explorer.celo.org/${chainId === 42220 ? 'mainnet' : 'alfajores'}/token-counters?id=${PACTToken}`
+        );
     } catch (_) {}
 
     return {
