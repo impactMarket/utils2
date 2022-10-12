@@ -44,14 +44,14 @@
     "devDependencies": {
         "@apollo/client": "3.6.9",
         "@babel/core": "7.18.10",
-        "@celo/contractkit": "2.0.0",
-        "@celo/react-celo": "4.0.1",
-        "@ethersproject/abi": "5.6.4",
-        "@ethersproject/abstract-signer": "5.6.2",
-        "@ethersproject/contracts": "5.6.2",
-        "@ethersproject/providers": "5.6.8",
-        "@ethersproject/bytes": "5.6.1",
-        "@ethersproject/strings": "5.6.1",
+        "@celo/contractkit": "2.2.0",
+        "@celo/react-celo": "4.2.1",
+        "@ethersproject/abi": "5.7.0",
+        "@ethersproject/abstract-signer": "5.7.0",
+        "@ethersproject/contracts": "5.7.0",
+        "@ethersproject/providers": "5.7.1",
+        "@ethersproject/bytes": "5.7.0",
+        "@ethersproject/strings": "5.7.0",
         "@testing-library/react": "12.1.5",
         "@testing-library/user-event": "14.4.2",
         "@types/chai": "4.3.1",
@@ -83,14 +83,14 @@
     },
     "peerDependencies": {
         "@apollo/client": "^3.6.9",
-        "@celo/contractkit": "2.0.0",
-        "@celo/react-celo": "4.1.0",
-        "@ethersproject/abi": "5.6.4",
-        "@ethersproject/abstract-signer": "5.6.2",
-        "@ethersproject/contracts": "5.6.2",
-        "@ethersproject/providers": "5.6.8",
-        "@ethersproject/bytes": "5.6.1",
-        "@ethersproject/strings": "5.6.1",
+        "@celo/contractkit": "2.2.0",
+        "@celo/react-celo": "4.2.1",
+        "@ethersproject/abi": "5.7.0",
+        "@ethersproject/abstract-signer": "5.7.0",
+        "@ethersproject/contracts": "5.7.0",
+        "@ethersproject/providers": "5.7.1",
+        "@ethersproject/bytes": "5.7.0",
+        "@ethersproject/strings": "5.7.0",
         "axios": "^0.27.2",
         "bignumber.js": "^9.0.2",
         "graphql": "^16.5.0",
@@ -101,7 +101,6 @@
         "@celo/react-celo": "4.1.0"
     },
     "dependencies": {
-        "@celo/connect": "2.0.0",
-        "ethers": "5.6.9"
+        "@celo/connect": "2.2.0"
     }
 }
