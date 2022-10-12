@@ -1,6 +1,7 @@
 import React from 'react';
 import WalletConnection from '../WalletConnection';
 import AddCommunity from './AddCommunity';
+import BuildingOperationsBlocks from './BuildingOperationBlocks';
 import ListProposals from './ListProposals';
 
 const DaoHooks = () => {
@@ -10,6 +11,7 @@ const DaoHooks = () => {
                 <li style={{ marginTop: 16 }}>
                     <AddCommunity />
                     <ListProposals />
+                    <BuildingOperationsBlocks />
                 </li>
             </ul>
         </WalletConnection>
