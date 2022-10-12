@@ -40,6 +40,13 @@ type CommunityUpdateBeneficiaryParamsArgs = BaseProposalArgs & {
     maxBeneficiaries: number;
     decreaseStep: string | BigNumber;
 };
+export type BuildingOperationBlocks = {
+    description: string;
+    name: string;
+    params: [{ type: string; description: string }];
+    signature: string;
+    values?: (string | number)[];
+};
 
 export const useImpactMarketCouncil = () => {
     const { connection, address, provider, ubiManagementSubgraph } = React.useContext(ImpactProviderContext);
@@ -130,10 +137,10 @@ export const useImpactMarketCouncil = () => {
             })
         );
         const response = await executeTransaction(tx);
-        const ifaceDAO = new Interface(ImpactMarketCouncilABI);
+        const ifaceCouncil = new Interface(ImpactMarketCouncilABI);
 
         // TODO: filter out events
-        return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
+        return parseInt(ifaceCouncil.parseLog(response.logs[0]).args![0].toString(), 10);
     };
 
     /**
@@ -160,9 +167,9 @@ export const useImpactMarketCouncil = () => {
             })
         );
         const response = await executeTransaction(tx);
-        const ifaceDAO = new Interface(ImpactMarketCouncilABI);
+        const ifaceCouncil = new Interface(ImpactMarketCouncilABI);
 
-        return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
+        return parseInt(ifaceCouncil.parseLog(response.logs[0]).args![0].toString(), 10);
     };
 
     /**
@@ -191,9 +198,9 @@ export const useImpactMarketCouncil = () => {
             })
         );
         const response = await executeTransaction(tx);
-        const ifaceDAO = new Interface(ImpactMarketCouncilABI);
+        const ifaceCouncil = new Interface(ImpactMarketCouncilABI);
 
-        return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
+        return parseInt(ifaceCouncil.parseLog(response.logs[0]).args![0].toString(), 10);
     };
 
     /**
@@ -243,9 +250,9 @@ export const useImpactMarketCouncil = () => {
             })
         );
         const response = await executeTransaction(tx);
-        const ifaceDAO = new Interface(ImpactMarketCouncilABI);
+        const ifaceCouncil = new Interface(ImpactMarketCouncilABI);
 
-        return parseInt(ifaceDAO.parseLog(response.logs[0]).args![0].toString(), 10);
+        return parseInt(ifaceCouncil.parseLog(response.logs[0]).args![0].toString(), 10);
     };
 
     /**
@@ -312,13 +319,86 @@ export const useImpactMarketCouncil = () => {
         return await ubiManagementSubgraph.getProposals(first, skip, quorumVotes, userAddress);
     };
 
+    /**
+     * List action that impactMarket council can execute, to be listed on dashboard
+     * @returns {BuildingOperationBlocks} impactmarket council available actions
+     */
+    const buildingOperationBlocks = (): BuildingOperationBlocks[] => {
+        return [
+            {
+                description: 'Change UBI communities global minimum claim amount ratio',
+                name: 'updateMinClaimAmountRatio',
+                params: [{ description: 'Ratio', type: 'uint256' }],
+                signature: 'updateMinClaimAmountRatio(uint256)'
+            }
+        ];
+    };
+
+    /**
+     * Using the building blocks for operations, setup a proposal
+     * @param {string} proposalTitle Proposal title
+     * @param {string} proposalDescription Proposal subtitle
+     * @param {BuildingOperationBlocks} operationBlocks Operations actions
+     * @returns {number} Proposal id
+     */
+    const propose = async (
+        proposalTitle: string,
+        proposalDescription: string,
+        operationBlocks: BuildingOperationBlocks[]
+    ) => {
+        if (operationBlocks.every(b => b.values && b.values.length === 0)) {
+            throw new Error('Values are required');
+        }
+        if (operationBlocks.every(b => b.values && b.values.length === b.params.length)) {
+            throw new Error('Params need to have the same length as values');
+        }
+        if (operationBlocks.length <= 10) {
+            throw new Error('Max operations is 10');
+        }
+
+        if (!connection || !address) {
+            return;
+        }
+        const { impactMarketCouncil } = await getContracts(provider);
+
+        const signatures: string[] = [];
+        const calldatas: string[] = [];
+
+        for (let b = 0; b < operationBlocks.length; b++) {
+            signatures.push(operationBlocks[b].signature);
+            // values were validated above
+            calldatas.push(
+                defaultAbiCoder.encode(
+                    operationBlocks[b].params.map(p => p.type),
+                    operationBlocks[b].values!
+                )
+            );
+        }
+
+        const tx = await impactMarketCouncil.populateTransaction.propose(
+            signatures,
+            calldatas,
+            JSON.stringify({
+                description: proposalDescription,
+                title: proposalTitle
+            })
+        );
+        const response = await executeTransaction(tx);
+        const ifaceCouncil = new Interface(ImpactMarketCouncilABI);
+
+        // TODO: filter out events
+        return parseInt(ifaceCouncil.parseLog(response.logs[0]).args![0].toString(), 10);
+    };
+
     return {
         addCommunity,
+        buildingOperationBlocks,
         cancel,
         execute,
         getProposals,
         isReady,
         proposalCount,
+        propose,
         quorumVotes,
         removeCommunity,
         updateBeneficiaryParams,
