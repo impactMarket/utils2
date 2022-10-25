@@ -8,6 +8,7 @@ import MerkleDistributorABI from './abi/MerkleDistributor.json';
 import PACTDelegateABI from './abi/PACTDelegate.json';
 import PACTTokenABI from './abi/PACTToken.json';
 import StakingABI from './abi/Staking.json';
+import TreasuryABI from './abi/TreasuryABI.json';
 import type { BaseProvider } from '@ethersproject/providers';
 
 export const getContracts = async (provider: BaseProvider) => {
@@ -34,7 +35,8 @@ export const getContracts = async (provider: BaseProvider) => {
         DonationMiner,
         MerkleDistributor,
         Staking,
-        ImpactMarketCouncil
+        ImpactMarketCouncil,
+        Treasury
     } = contractAddresses;
 
     const addresses = {
@@ -50,7 +52,8 @@ export const getContracts = async (provider: BaseProvider) => {
         merkleDistributor: MerkleDistributor || '',
         pactToken: PACTToken || '',
         spactToken: SPACTToken || '',
-        staking: Staking || ''
+        staking: Staking || '',
+        treasury: Treasury || ''
     };
 
     const ambassadors = new Contract(addresses.ambassadors, AmbassadorsABI, provider);
@@ -75,6 +78,8 @@ export const getContracts = async (provider: BaseProvider) => {
 
     const impactMarketCouncil = new Contract(addresses.impactMarketCouncil, ImpactMarketCouncilABI, provider);
 
+    const treasury = new Contract(addresses.treasury, TreasuryABI, provider);
+
     return {
         addresses,
         ambassadors,
@@ -87,6 +92,7 @@ export const getContracts = async (provider: BaseProvider) => {
         merkleDistributor,
         pact,
         spact,
-        staking
+        staking,
+        treasury
     };
 };
