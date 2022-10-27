@@ -12,6 +12,7 @@ type BaseProposalArgs = {
 };
 
 type CommunityAddArgs = BaseProposalArgs & {
+    tokenAddress: string;
     baseInterval: string | BigNumber;
     claimAmount: string | BigNumber;
     decreaseStep: string | BigNumber;
@@ -22,7 +23,6 @@ type CommunityAddArgs = BaseProposalArgs & {
     maxTranche: string | BigNumber;
     minTranche: string | BigNumber;
     maxBeneficiaries: number;
-    tokenAddress: string;
 };
 type CommunityRemoveArgs = BaseProposalArgs & {
     communityAddress: string;
@@ -83,6 +83,7 @@ export const useImpactMarketCouncil = () => {
         }
         const { impactMarketCouncil } = await getContracts(provider);
         const {
+            tokenAddress,
             baseInterval,
             claimAmount,
             decreaseStep,
@@ -94,8 +95,7 @@ export const useImpactMarketCouncil = () => {
             minTranche,
             maxBeneficiaries,
             proposalTitle,
-            proposalDescription,
-            tokenAddress
+            proposalDescription
         } = community;
         const signatures = [
             'addCommunity(address[],address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,address)'
@@ -104,6 +104,7 @@ export const useImpactMarketCouncil = () => {
         const calldatas = [
             defaultAbiCoder.encode(
                 [
+                    'address',
                     'address[]',
                     'address',
                     'uint256',
@@ -113,10 +114,10 @@ export const useImpactMarketCouncil = () => {
                     'uint256',
                     'uint256',
                     'uint256',
-                    'uint256',
-                    'address'
+                    'uint256'
                 ],
                 [
+                    tokenAddress,
                     managers,
                     ambassador,
                     claimAmount,
@@ -126,8 +127,7 @@ export const useImpactMarketCouncil = () => {
                     incrementInterval,
                     minTranche,
                     maxTranche,
-                    maxBeneficiaries,
-                    tokenAddress
+                    maxBeneficiaries
                 ]
             )
         ];
