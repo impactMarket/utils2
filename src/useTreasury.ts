@@ -4,37 +4,51 @@ import { getContracts } from './contracts';
 import BaseERC20ABI from './abi/BaseERC20.json';
 import React from 'react';
 
+type TokenArgs = {
+    address: string;
+    name: string;
+};
+
 export const useTreasury = () => {
     const { connection, address, provider } = React.useContext(ImpactProviderContext);
 
     /**
      * Get list of available community tokens
-     * @returns {Promise<{}[]>} array with title and address of the available tokens
+     * @returns {Promise<{}[]>} array with name(symbol) and address of the available tokens
      */
-    const getTokenList = async (): Promise<{ address: string; title: string }[]> => {
+    const getTokenList = async (): Promise<TokenArgs[]> => {
         if (!connection || !address) {
             throw new Error('No connection');
         }
 
-        const { treasury } = await getContracts(provider);
-        const listLength = await treasury.tokenListLength();
-        const addresses = [];
+        let token: TokenArgs;
+        const tokens: TokenArgs[] = [];
 
-        for (let index = 0; index < listLength; index++) {
-            addresses.push(treasury.tokenListAt(index));
+        try {
+            const { treasury } = await getContracts(provider);
+            const listLength = await treasury.tokenListLength();
+
+            for (let index = 0; index < listLength; index++) {
+                token = await new Promise(resolve => {
+                    const tokenAddress = treasury.tokenListAt(index);
+
+                    resolve(tokenAddress);
+                })
+                    .then(async (tokenAddress: any) => {
+                        const tokenContract = new Contract(tokenAddress, BaseERC20ABI, provider);
+                        const name = await tokenContract.symbol();
+
+                        return { address: tokenAddress, name };
+                    })
+                    .then((token: TokenArgs) => token);
+
+                tokens.push(token);
+            }
+        } catch (error) {
+            console.log(`Error fetching community tokens ${error}`);
         }
 
-        const tokenAddresses = await Promise.all(addresses);
-
-        const symbols = tokenAddresses.map(value => {
-            const token = new Contract(value, BaseERC20ABI, provider);
-
-            return token.symbol();
-        });
-
-        const tokenSymbols = await Promise.all(symbols);
-
-        return tokenSymbols.map((value, idx) => ({ address: tokenAddresses[idx], title: value }));
+        return tokens;
     };
 
     return {

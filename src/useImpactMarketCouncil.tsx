@@ -22,6 +22,7 @@ type CommunityAddArgs = BaseProposalArgs & {
     maxTranche: string | BigNumber;
     minTranche: string | BigNumber;
     maxBeneficiaries: number;
+    tokenAddress: string;
 };
 type CommunityRemoveArgs = BaseProposalArgs & {
     communityAddress: string;
@@ -93,10 +94,11 @@ export const useImpactMarketCouncil = () => {
             minTranche,
             maxBeneficiaries,
             proposalTitle,
-            proposalDescription
+            proposalDescription,
+            tokenAddress
         } = community;
         const signatures = [
-            'addCommunity(address[],address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)'
+            'addCommunity(address[],address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,address)'
         ];
 
         const calldatas = [
@@ -111,7 +113,8 @@ export const useImpactMarketCouncil = () => {
                     'uint256',
                     'uint256',
                     'uint256',
-                    'uint256'
+                    'uint256',
+                    'address'
                 ],
                 [
                     managers,
@@ -123,7 +126,8 @@ export const useImpactMarketCouncil = () => {
                     incrementInterval,
                     minTranche,
                     maxTranche,
-                    maxBeneficiaries
+                    maxBeneficiaries,
+                    tokenAddress
                 ]
             )
         ];
