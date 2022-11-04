@@ -2,6 +2,7 @@ import { Contract } from '@ethersproject/contracts';
 import { ContractAddresses } from './contractAddress';
 import AmbassadorsABI from './abi/Ambassadors.json';
 import BaseERC20ABI from './abi/BaseERC20.json';
+import CommunityAdminABI from './abi/CommunityAdminABI.json';
 import DonationMinerABI from './abi/DonationMiner.json';
 import ImpactMarketCouncilABI from './abi/ImpactMarketCouncil.json';
 import MerkleDistributorABI from './abi/MerkleDistributor.json';
@@ -80,11 +81,14 @@ export const getContracts = async (provider: BaseProvider) => {
 
     const treasury = new Contract(addresses.treasury, TreasuryABI, provider);
 
+    const communityAdmin = new Contract(addresses.communityAdmin, CommunityAdminABI, provider);
+
     return {
         addresses,
         ambassadors,
         celo,
         ceur,
+        communityAdmin,
         cusd,
         delegate,
         donationMiner,

@@ -173,27 +173,29 @@ export const useManager = (communityAddress: string) => {
             if (!connection || !address) {
                 return;
             }
-            const { cusd } = await getContracts(provider);
+            const { cusd, communityAdmin } = await getContracts(provider);
             const _communityContract = communityContract(communityAddress, provider);
-            const [_currentBlockNumber, baseInterval, lastFundRequest, minTranche, communityBalance, communityGraph] =
+            const [_currentBlockNumber, baseInterval, lastFundRequest, communityBalance, communityGraph] =
                 await Promise.all([
                     provider.getBlockNumber(),
                     _communityContract.baseInterval(),
                     _communityContract.lastFundRequest(),
-                    _communityContract.minTranche(),
                     cusd.balanceOf(communityAddress),
                     subgraph.getCommunityData(communityAddress, '{ baseInterval, claimAmount, beneficiaries }')
                 ]);
 
             if (parseInt(lastFundRequest, 10) === 0) {
-                setCanRequestFunds(toNumber(communityBalance) < toNumber(minTranche));
+                const ifTrancheNotZero =
+                    parseFloat((await communityAdmin.calculateCommunityTrancheAmount(communityAddress)).toString()) > 0;
+
+                setCanRequestFunds(ifTrancheNotZero);
             } else {
                 const nextRequestFundsBlock = parseInt(lastFundRequest, 10) + parseInt(baseInterval, 10);
+                const ifTrancheNotZero =
+                    parseFloat((await communityAdmin.calculateCommunityTrancheAmount(communityAddress)).toString()) > 0;
 
                 setNextRequestFundsAvailability(estimateBlockTime(_currentBlockNumber, nextRequestFundsBlock));
-                setCanRequestFunds(
-                    toNumber(communityBalance) < toNumber(minTranche) && nextRequestFundsBlock <= _currentBlockNumber
-                );
+                setCanRequestFunds(ifTrancheNotZero);
             }
             setFundsRemainingDays(
                 estimateRemainingFundsInDays({
