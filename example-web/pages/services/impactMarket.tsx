@@ -7,11 +7,22 @@ export const impactMarket = {
         const url = `${apiBaseUrl}/api/v2/communities?status=pending&review=accepted&fields=id;requestByAddress;name;description;country;city;coverMediaPath;ambassadorAddress;contract.maxClaim;contract.baseInterval;contract.claimAmount;contract.incrementInterval`;
 
         try {
-            const response = await axios.get(url);
+            const response = await axios.get<{
+                data: {
+                    rows: {
+                        id: number;
+                        name: string;
+                        description: string;
+                        contract: object;
+                        requestByAddress: string;
+                        ambassadorAddress: string;
+                    }[];
+                };
+            }>(url);
 
             return response?.data;
         } catch (error) {
             console.log('Error getting pending communities:\n', error);
         }
     }
-}
+};

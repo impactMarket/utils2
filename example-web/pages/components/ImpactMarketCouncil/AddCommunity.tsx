@@ -61,7 +61,7 @@ const Community = (props: any) => {
 
 const AddCommunity = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const [communities, setCommunities] = useState([]);
+    const [communities, setCommunities] = useState<any[]>([]);
 
     useEffect(() => {
         const getCommunities = async () => {
