@@ -16,6 +16,7 @@ const Community = (props: any) => {
 
         const response = await addCommunity({
             ...contract,
+            tokenAddress: '0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1',
             ambassador: ambassadorAddress,
             decreaseStep: toToken(0.01),
             managers: [requestByAddress],
