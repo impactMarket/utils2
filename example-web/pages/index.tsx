@@ -1,10 +1,9 @@
-import '@celo/react-celo/lib/styles.css';
 import React, { useEffect, useState } from 'react';
 import Intro from './components/Intro';
 import WalletsBalance from './components/WalletsBalance';
 import DaoBreakdown from './components/DaoBreakdown';
 import DaoHooks from './components/DaoHooks';
-import { Alfajores, CeloProvider, useCelo, useProviderOrSigner } from '@celo/react-celo';
+import { Alfajores, useCelo, useProvider, useProviderOrSigner } from '@celo/react-celo';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import PACTMetrics from './components/PACTMetrics';
 import Community from './components/Community';
@@ -33,6 +32,7 @@ const network = Alfajores;
 const provider = new JsonRpcProvider(network.rpcUrl);
 function App() {
     const signer = useProviderOrSigner();
+    // const provider = useProvider();
     const { address, initialised, network: walletNetwork, kit } = useCelo();
     const [selectedOption, setSelectedOption] = useState<string>(initialOption);
     const [providerNetworkChainId, setProviderNetworkChainId] = useState<number | undefined>();
@@ -74,7 +74,7 @@ function App() {
             <ImpactProvider
                 jsonRpc={network.rpcUrl}
                 connection={kit.connection}
-                address={isSameNetwork ? address : null}
+                address={isSameNetwork && address ? address : null}
             >
                 <Intro handleChange={setSelectedOption} initialOption={initialOption} options={options} />
                 {!!Component && <Component />}
@@ -83,20 +83,4 @@ function App() {
     );
 }
 
-function WrappedApp() {
-    return (
-        <CeloProvider
-            network={network}
-            dapp={{
-                name: 'My awesome dApp',
-                description: 'My awesome description',
-                url: 'https://example.com',
-                icon: 'https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/software_photos/001/044/041/datas/original.jpg'
-            }}
-        >
-            <App />
-        </CeloProvider>
-    );
-}
-
-export default WrappedApp;
+export default App;
