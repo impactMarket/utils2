@@ -10,3 +10,8 @@ export const ubiManagementSubgraphCeloAlfajores =
 export const tokenDecimals = new BigNumber(10).pow(18);
 export const txFeeCStableThreshold = '0.005';
 export const txFeeCELOThreshold = '0.003';
+
+export const networksId = {
+    CeloAlfajores: 44787,
+    CeloMainnet: 42220
+};

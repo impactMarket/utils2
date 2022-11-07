@@ -10,7 +10,7 @@ type TokenArgs = {
 };
 
 export const useTreasury = () => {
-    const { connection, address, provider } = React.useContext(ImpactProviderContext);
+    const { connection, address, provider, networkId } = React.useContext(ImpactProviderContext);
 
     /**
      * Get list of available community tokens
@@ -25,7 +25,7 @@ export const useTreasury = () => {
         const tokens: TokenArgs[] = [];
 
         try {
-            const { treasury } = await getContracts(provider);
+            const { treasury } = getContracts(provider, networkId);
             const listLength = await treasury.tokenListLength();
 
             for (let index = 0; index < listLength; index++) {

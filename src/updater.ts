@@ -1,11 +1,8 @@
 import { Contract } from '@ethersproject/contracts';
-import { getContracts } from './contracts';
 import { toNumber } from './toNumber';
 import type { BaseProvider } from '@ethersproject/providers';
 
-export const updateEpochData = async (provider: BaseProvider) => {
-    const { donationMiner } = await getContracts(provider);
-
+export const updateEpochData = async (provider: BaseProvider, donationMiner: Contract) => {
     const currentBlock = await provider.getBlockNumber();
     const period = await donationMiner.rewardPeriodCount();
 
@@ -32,9 +29,7 @@ export const updateEpochData = async (provider: BaseProvider) => {
     };
 };
 
-export const updateUserContributionData = async (provider: BaseProvider, address: string) => {
-    const { donationMiner } = await getContracts(provider);
-
+export const updateUserContributionData = async (provider: BaseProvider, donationMiner: Contract, address: string) => {
     const currentBlock = await provider.getBlockNumber();
     const period = await donationMiner.rewardPeriodCount();
 

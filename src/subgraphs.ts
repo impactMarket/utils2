@@ -1,6 +1,7 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject, gql } from '@apollo/client';
-import { JsonRpcProvider } from '@ethersproject/providers';
+import { Connection } from '@celo/connect';
 import {
+    networksId,
     subgraphCeloAlfajores,
     subgraphCeloMainnet,
     ubiManagementSubgraphCeloAlfajores,
@@ -9,10 +10,10 @@ import {
 
 class ImpactMarketSubgraph {
     private client: ApolloClient<NormalizedCacheObject>;
-    constructor(isTestnet = false) {
+    constructor(networkId = networksId.CeloAlfajores) {
         this.client = new ApolloClient({
             cache: new InMemoryCache(),
-            uri: isTestnet ? subgraphCeloAlfajores : subgraphCeloMainnet
+            uri: networkId === networksId.CeloAlfajores ? subgraphCeloAlfajores : subgraphCeloMainnet
         });
     }
 
@@ -81,13 +82,16 @@ class ImpactMarketSubgraph {
 }
 class ImpactMarketUBIManagementSubgraph {
     private client: ApolloClient<NormalizedCacheObject>;
-    private provider: JsonRpcProvider;
-    constructor(rpcUrl: string, isTestnet = false) {
+    private connection: Connection;
+    constructor(connection: Connection, networkId = networksId.CeloAlfajores) {
         this.client = new ApolloClient({
             cache: new InMemoryCache(),
-            uri: isTestnet ? ubiManagementSubgraphCeloAlfajores : ubiManagementSubgraphCeloMainnet
+            uri:
+                networkId === networksId.CeloAlfajores
+                    ? ubiManagementSubgraphCeloAlfajores
+                    : ubiManagementSubgraphCeloMainnet
         });
-        this.provider = new JsonRpcProvider(rpcUrl);
+        this.connection = connection;
     }
 
     async getProposals(
@@ -110,7 +114,7 @@ class ImpactMarketUBIManagementSubgraph {
             status: 'canceled' | 'executed' | 'ready' | 'defeated' | 'expired' | 'active';
         }[]
     > {
-        const blockNumber = await this.provider.getBlockNumber();
+        const blockNumber = await this.connection.getBlockNumber();
         const result = await this.client.query({
             query: gql`
                 {

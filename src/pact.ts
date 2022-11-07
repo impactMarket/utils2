@@ -102,8 +102,8 @@ export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
     };
 }
 
-export async function hasPACTVotingPower(provider: BaseProvider, address: string) {
-    const { pact: pactContract, delegate } = await getContracts(provider);
+export async function hasPACTVotingPower(provider: BaseProvider, networkId: number, address: string) {
+    const { pact: pactContract, delegate } = getContracts(provider, networkId);
 
     if (
         address === null ||

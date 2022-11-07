@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-use-before-define
 import { BaseProvider, JsonRpcProvider } from '@ethersproject/providers';
 import { Connection } from '@celo/connect';
 import { ImpactMarketSubgraph, ImpactMarketUBIManagementSubgraph } from './subgraphs';
@@ -65,12 +64,14 @@ const intialProviderData: {
     connection: Connection;
     provider: BaseProvider;
     address: string | null;
+    networkId: number;
     subgraph: ImpactMarketSubgraph;
     ubiManagementSubgraph: ImpactMarketUBIManagementSubgraph;
 } = {
     // mandatory, value here doesn't matter
     address: null,
     connection: null as any,
+    networkId: null as any,
     provider: null as any,
     subgraph: null as any,
     ubiManagementSubgraph: null as any
@@ -140,6 +141,7 @@ type ProviderProps = {
     address: string | null;
     connection: Connection;
     jsonRpc: string;
+    networkId: number;
 };
 
 const CUSDBalanceProvider = React.memo((props: { children?: any }) => {
@@ -223,19 +225,17 @@ const StakingProvider = React.memo((props: { children?: any }) => {
 });
 
 export const ImpactProvider = (props: ProviderProps) => {
-    const { children, address, jsonRpc, connection } = props;
+    const { children, address, jsonRpc, connection, networkId } = props;
 
     return (
         <ImpactProviderContext.Provider
             value={{
                 address,
                 connection,
+                networkId,
                 provider: new JsonRpcProvider(jsonRpc),
-                subgraph: new ImpactMarketSubgraph(jsonRpc.indexOf('alfajores') !== -1),
-                ubiManagementSubgraph: new ImpactMarketUBIManagementSubgraph(
-                    jsonRpc,
-                    jsonRpc.indexOf('alfajores') !== -1
-                )
+                subgraph: new ImpactMarketSubgraph(networkId),
+                ubiManagementSubgraph: new ImpactMarketUBIManagementSubgraph(connection, networkId)
             }}
         >
             <StakingProvider>

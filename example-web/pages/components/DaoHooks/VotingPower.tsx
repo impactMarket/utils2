@@ -9,7 +9,7 @@ const VotingPower = () => {
 
     useEffect(() => {
         if (address) {
-            hasPACTVotingPower(provider, address).then(has => setHasVotingPower(has));
+            hasPACTVotingPower(provider, 44787, address).then(has => setHasVotingPower(!!has));
         }
     }, [address, provider]);
 

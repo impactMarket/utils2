@@ -11,11 +11,11 @@ import { updatePACTBalance } from './usePACTBalance';
 import React, { useEffect } from 'react';
 import type { BaseProvider } from '@ethersproject/providers';
 
-export const updateRewards = async (provider: BaseProvider, address: string) => {
+export const updateRewards = async (provider: BaseProvider, networkId: number, address: string) => {
     if (!address) {
         return;
     }
-    const { donationMiner } = await getContracts(provider);
+    const { donationMiner } = getContracts(provider, networkId);
     const [estimated, claimable, currentEpoch, allocated] = await Promise.all([
         getEstimatedClaimableRewards(donationMiner, address),
         getClaimableRewards(donationMiner, address),
@@ -32,7 +32,7 @@ export const updateRewards = async (provider: BaseProvider, address: string) => 
 };
 
 export const useRewards = () => {
-    const { connection, provider, address } = React.useContext(ImpactProviderContext);
+    const { connection, provider, address, networkId } = React.useContext(ImpactProviderContext);
     const { setBalance } = React.useContext(PACTBalanceContext);
     const { rewards, setRewards } = React.useContext(RewardsContext);
     const executeTransaction = internalUseTransaction();
@@ -46,7 +46,7 @@ export const useRewards = () => {
             throw new Error('No connection');
         }
         try {
-            const { donationMiner } = await getContracts(provider);
+            const { donationMiner } = getContracts(provider, networkId);
             const tx = await donationMiner.populateTransaction.claimRewards();
             const response = await executeTransaction(tx);
 
@@ -54,14 +54,14 @@ export const useRewards = () => {
                 ...rewards,
                 initialised: false
             }));
-            const updatedRewards = await updateRewards(provider, address);
+            const updatedRewards = await updateRewards(provider, networkId, address);
 
             setRewards(rewards => ({
                 ...rewards,
                 ...updatedRewards,
                 initialised: true
             }));
-            const updatedPACTBalance = await updatePACTBalance(provider, address);
+            const updatedPACTBalance = await updatePACTBalance(provider, networkId, address);
 
             setBalance(updatedPACTBalance);
 
@@ -78,7 +78,7 @@ export const useRewards = () => {
 
     useEffect(() => {
         if (address) {
-            updateRewards(provider, address).then(updatedRewards =>
+            updateRewards(provider, networkId, address).then(updatedRewards =>
                 setRewards(rewards => ({
                     ...rewards,
                     ...updatedRewards,

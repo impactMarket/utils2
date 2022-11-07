@@ -3,7 +3,7 @@ import Intro from './components/Intro';
 import WalletsBalance from './components/WalletsBalance';
 import DaoBreakdown from './components/DaoBreakdown';
 import DaoHooks from './components/DaoHooks';
-import { Alfajores, useCelo, useProvider, useProviderOrSigner } from '@celo/react-celo';
+import { Alfajores, useCelo, useProviderOrSigner } from '@celo/react-celo';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import PACTMetrics from './components/PACTMetrics';
 import Community from './components/Community';
@@ -75,6 +75,7 @@ function App() {
                 jsonRpc={network.rpcUrl}
                 connection={kit.connection}
                 address={isSameNetwork && address ? address : null}
+                networkId={providerNetworkChainId}
             >
                 <Intro handleChange={setSelectedOption} initialOption={initialOption} options={options} />
                 {!!Component && <Component />}

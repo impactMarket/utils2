@@ -50,7 +50,7 @@ export type BuildingOperationBlocks = {
 };
 
 export const useImpactMarketCouncil = () => {
-    const { connection, address, provider, ubiManagementSubgraph } = React.useContext(ImpactProviderContext);
+    const { connection, address, provider, ubiManagementSubgraph, networkId } = React.useContext(ImpactProviderContext);
     const [quorumVotes, setQuorumVotes] = useState<number>(0);
     const [proposalCount, setProposalCount] = useState<number>(0);
     const [isReady, setIsReady] = useState(false);
@@ -59,7 +59,7 @@ export const useImpactMarketCouncil = () => {
     useEffect(() => {
         if (connection) {
             const getState = async () => {
-                const { impactMarketCouncil } = await getContracts(provider);
+                const { impactMarketCouncil } = getContracts(provider, networkId);
                 const quorumVotes = await impactMarketCouncil.quorumVotes();
                 const proposalCount = await impactMarketCouncil.proposalCount();
 
@@ -81,7 +81,7 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { impactMarketCouncil } = await getContracts(provider);
+        const { impactMarketCouncil } = getContracts(provider, networkId);
         const {
             tokenAddress,
             baseInterval,
@@ -156,7 +156,7 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { impactMarketCouncil } = await getContracts(provider);
+        const { impactMarketCouncil } = getContracts(provider, networkId);
         const { communityAddress, proposalTitle, proposalDescription } = community;
         const signatures = ['removeCommunity(address)'];
 
@@ -185,7 +185,7 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { impactMarketCouncil } = await getContracts(provider);
+        const { impactMarketCouncil } = getContracts(provider, networkId);
         const { communityAddress, minTranche, maxTranche, proposalTitle, proposalDescription } = community;
         const signatures = ['updateCommunityParams(address,uint256,uint256)'];
 
@@ -216,7 +216,7 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { impactMarketCouncil } = await getContracts(provider);
+        const { impactMarketCouncil } = getContracts(provider, networkId);
         const {
             communityAddress,
             baseInterval,
@@ -268,7 +268,7 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { impactMarketCouncil } = await getContracts(provider);
+        const { impactMarketCouncil } = getContracts(provider, networkId);
         const tx = await impactMarketCouncil.populateTransaction.execute(proposalId);
         const response = await executeTransaction(tx);
 
@@ -284,7 +284,7 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { impactMarketCouncil } = await getContracts(provider);
+        const { impactMarketCouncil } = getContracts(provider, networkId);
         const tx = await impactMarketCouncil.populateTransaction.cancel(proposalId);
         const response = await executeTransaction(tx);
 
@@ -301,7 +301,7 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { impactMarketCouncil } = await getContracts(provider);
+        const { impactMarketCouncil } = getContracts(provider, networkId);
         const tx = await impactMarketCouncil.populateTransaction.castVote(proposalId, support);
         const response = await executeTransaction(tx);
 
@@ -363,7 +363,7 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { impactMarketCouncil } = await getContracts(provider);
+        const { impactMarketCouncil } = getContracts(provider, networkId);
 
         const signatures: string[] = [];
         const calldatas: string[] = [];

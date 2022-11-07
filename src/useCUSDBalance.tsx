@@ -4,8 +4,8 @@ import { toNumber } from './toNumber';
 import React, { useEffect } from 'react';
 import type { BaseProvider } from '@ethersproject/providers';
 
-export const updateCUSDBalance = async (provider: BaseProvider, address: string) => {
-    const { cusd } = await getContracts(provider);
+export const updateCUSDBalance = async (provider: BaseProvider, networkId: number, address: string) => {
+    const { cusd } = getContracts(provider, networkId);
 
     if (!address || !cusd?.provider) {
         return 0;
@@ -23,12 +23,12 @@ export const updateCUSDBalance = async (provider: BaseProvider, address: string)
 };
 
 export const useCUSDBalance = () => {
-    const { provider, address } = React.useContext(ImpactProviderContext);
+    const { provider, address, networkId } = React.useContext(ImpactProviderContext);
     const { balance, setBalance } = React.useContext(CUSDBalanceContext);
 
     useEffect(() => {
         if (address) {
-            updateCUSDBalance(provider, address).then(b => setBalance(b));
+            updateCUSDBalance(provider, networkId, address).then(b => setBalance(b));
         }
     }, [address]);
 

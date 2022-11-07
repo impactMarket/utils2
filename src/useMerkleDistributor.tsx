@@ -7,7 +7,7 @@ import { updatePACTBalance } from './usePACTBalance';
 import React, { useEffect, useState } from 'react';
 
 export const useMerkleDistributor = (treeAccount: { index: number; amount: string; proof: string[] }) => {
-    const { provider, address, connection } = React.useContext(ImpactProviderContext);
+    const { provider, address, connection, networkId } = React.useContext(ImpactProviderContext);
     const [hasClaim, setHasClaim] = useState(false);
     const [amountToClaim, setAmountToClaim] = useState(0);
     const executeTransaction = internalUseTransaction();
@@ -18,7 +18,7 @@ export const useMerkleDistributor = (treeAccount: { index: number; amount: strin
      */
     const claim = async () => {
         try {
-            const { merkleDistributor } = await getContracts(provider);
+            const { merkleDistributor } = getContracts(provider, networkId);
 
             if (!address || !connection) {
                 return;
@@ -32,7 +32,7 @@ export const useMerkleDistributor = (treeAccount: { index: number; amount: strin
             );
             const response = await executeTransaction(tx);
 
-            updatePACTBalance(provider, address);
+            updatePACTBalance(provider, networkId, address);
 
             return response;
         } catch (error) {
@@ -44,7 +44,7 @@ export const useMerkleDistributor = (treeAccount: { index: number; amount: strin
 
     useEffect(() => {
         const verifyClaim = async () => {
-            const { merkleDistributor } = await getContracts(provider);
+            const { merkleDistributor } = getContracts(provider, networkId);
 
             if (!address || !connection) {
                 return;
