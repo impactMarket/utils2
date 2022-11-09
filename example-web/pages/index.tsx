@@ -11,6 +11,7 @@ import Staking from './components/Staking';
 import ImpactMarketCouncil from './components/ImpactMarketCouncil';
 import { ImpactProvider } from '@impact-market/utils/ImpactProvider';
 import Signatures from './components/Signatures';
+import Airdrop from './components/Airdrop';
 
 const components = [
     { label: 'Get wallets balance', component: WalletsBalance },
@@ -20,12 +21,13 @@ const components = [
     { label: 'PACT Metrics', component: PACTMetrics },
     { label: 'Staking', component: Staking },
     { label: 'ImpactMarketCouncil', component: ImpactMarketCouncil },
-    { label: 'Signatures', component: Signatures }
+    { label: 'Signatures', component: Signatures },
+    { label: 'Airdrop', component: Airdrop }
 ];
 
 const options = components.map(({ label }) => label);
 
-const initialOption = options[7];
+const initialOption = options[8];
 
 const network = Alfajores;
 
