@@ -98,7 +98,7 @@
     },
     "resolutions": {
         "@celo/contractkit": "2.0.0",
-        "@celo/react-celo": "4.1.0"
+        "@celo/react-celo": "4.2.1"
     },
     "dependencies": {
         "@celo/connect": "2.2.0"

@@ -455,26 +455,6 @@
     semver "^7.3.5"
     web3 "1.3.6"
 
-"@celo/react-celo@4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@celo/react-celo/-/react-celo-4.1.0.tgz#aad204b2cbb105f1b0e99bceef7cd94c79828bb8"
-  integrity sha512-pbujx43lNSkTObXXstT783dMfjaUVaWoAKIkWWcV5cKxZRaLvrgQILau8fN+Am5doMI9Ejtzc6Al3dlsMUsRTw==
-  dependencies:
-    "@celo/wallet-base" "^2.0.0"
-    "@celo/wallet-ledger" "^2.0.0"
-    "@celo/wallet-local" "^2.0.0"
-    "@celo/wallet-remote" "^2.0.0"
-    "@celo/wallet-walletconnect-v1" "4.1.0"
-    "@coinbase/wallet-sdk" "^3.2.0"
-    "@ethersproject/providers" "^5.5.2"
-    "@ledgerhq/hw-transport-webusb" "^5.43.0"
-    eventemitter3 "^4.0.7"
-    isomorphic-fetch "^3.0.0"
-    qrcode "^1.5.0"
-    react-device-detect "^2.1.2"
-    react-helmet "^6.1.0"
-    react-modal "^3.14.4"
-
 "@celo/react-celo@4.2.1":
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/@celo/react-celo/-/react-celo-4.2.1.tgz#a6bc474369507d42cae42c2e28f5b4f313448d19"
@@ -530,7 +510,7 @@
     web3-eth-abi "1.3.6"
     web3-utils "1.3.6"
 
-"@celo/wallet-base@2.0.0", "@celo/wallet-base@^2.0.0":
+"@celo/wallet-base@2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@celo/wallet-base/-/wallet-base-2.0.0.tgz#c3926af9fe618792eadb5e89b594cafcd7e8f158"
   integrity sha512-P/w1sd+VVqzCxOHzS9jUBSKfke/49GuaaNhsxD8xFX3Rr2/ryGE3ZgzoS3LQbQx2X3WqwRUGhelt7fGgTguBJg==
@@ -560,22 +540,6 @@
     eth-lib "^0.2.8"
     ethereumjs-util "^5.2.0"
 
-"@celo/wallet-ledger@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@celo/wallet-ledger/-/wallet-ledger-2.0.0.tgz#ed436c6bdabfb6462f1fffb1901ad51f16bec26d"
-  integrity sha512-DKKYgF1DhfSCqlfXWst4q7oonw/Wqtu/mYbL2GSRAhbZQoAwy0vhlHGAYYBuFZNSEfTYUbuhl4sODRPu0d16bQ==
-  dependencies:
-    "@celo/connect" "2.0.0"
-    "@celo/utils" "2.0.0"
-    "@celo/wallet-base" "2.0.0"
-    "@celo/wallet-remote" "2.0.0"
-    "@ledgerhq/hw-app-eth" "~5.11.0"
-    "@ledgerhq/hw-transport" "~5.11.0"
-    "@types/ethereumjs-util" "^5.2.0"
-    debug "^4.1.1"
-    eth-lib "^0.2.8"
-    ethereumjs-util "^5.2.0"
-
 "@celo/wallet-ledger@^2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@celo/wallet-ledger/-/wallet-ledger-2.2.0.tgz#d6f219787dab97346922bc4eb84973145d691124"
@@ -592,7 +556,7 @@
     eth-lib "^0.2.8"
     ethereumjs-util "^5.2.0"
 
-"@celo/wallet-local@2.0.0", "@celo/wallet-local@^2.0.0":
+"@celo/wallet-local@2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@celo/wallet-local/-/wallet-local-2.0.0.tgz#8f27f2fcc94a3be4f92f25d79e0b01b8cccfca9f"
   integrity sha512-jN7uQr7FEC3YLqo3yqVAG5FRVBRxs18bKxPEjh0dkVTt6gEhMdwTKAHUI7crOti+NoupJbFbOK81AHNlqyklfg==
@@ -616,19 +580,6 @@
     eth-lib "^0.2.8"
     ethereumjs-util "^5.2.0"
 
-"@celo/wallet-remote@2.0.0", "@celo/wallet-remote@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@celo/wallet-remote/-/wallet-remote-2.0.0.tgz#c0f4cb1d64061a6c2aceec73fc8185160b3b5767"
-  integrity sha512-TzDuq7q865TXLlAxGVep6CrVA6o41y3WxhPxHdfrkjEiodNPq/lvmJ+/OMsB1b43BGs3jnkAzUy/rD17b6bEJw==
-  dependencies:
-    "@celo/connect" "2.0.0"
-    "@celo/utils" "2.0.0"
-    "@celo/wallet-base" "2.0.0"
-    "@types/debug" "^4.1.5"
-    "@types/ethereumjs-util" "^5.2.0"
-    eth-lib "^0.2.8"
-    ethereumjs-util "^5.2.0"
-
 "@celo/wallet-remote@2.2.0", "@celo/wallet-remote@^2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@celo/wallet-remote/-/wallet-remote-2.2.0.tgz#38b3572aa4e55bdc6a7443eeb342d1e78d90116e"
@@ -641,16 +592,6 @@
     "@types/ethereumjs-util" "^5.2.0"
     eth-lib "^0.2.8"
     ethereumjs-util "^5.2.0"
-
-"@celo/wallet-walletconnect-v1@4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@celo/wallet-walletconnect-v1/-/wallet-walletconnect-v1-4.1.0.tgz#2498103dac7e4cfd19e8b199dbd1068e7e51eb08"
-  integrity sha512-RZOqyUigLGsPFqtW93orERyt7LInrc4/eXbCl9RVFGQ7DUUU2BvG+kHxJ2zukNK+NspcEBv9JF2/IOHVvHYNeQ==
-  dependencies:
-    "@walletconnect/client-v1" "npm:@walletconnect/client@1.6.6"
-    "@walletconnect/types-v1" "npm:@walletconnect/types@1.6.6"
-    "@walletconnect/utils-v1" "npm:@walletconnect/utils@1.6.6"
-    debug "^4.3.3"
 
 "@celo/wallet-walletconnect-v1@4.2.1":
   version "4.2.1"
@@ -2003,7 +1944,7 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
-"@walletconnect/browser-utils@^1.6.6", "@walletconnect/browser-utils@^1.8.0":
+"@walletconnect/browser-utils@^1.8.0":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@walletconnect/browser-utils/-/browser-utils-1.8.0.tgz#33c10e777aa6be86c713095b5206d63d32df0951"
   integrity sha512-Wcqqx+wjxIo9fv6eBUFHPsW1y/bGWWRboni5dfD8PtOmrihrEpOCmvRJe4rfl7xgJW8Ea9UqKEaq0bIRLHlK4A==
@@ -2013,16 +1954,6 @@
     "@walletconnect/window-getters" "1.0.0"
     "@walletconnect/window-metadata" "1.0.0"
     detect-browser "5.2.0"
-
-"@walletconnect/client-v1@npm:@walletconnect/client@1.6.6":
-  version "1.6.6"
-  resolved "https://registry.yarnpkg.com/@walletconnect/client/-/client-1.6.6.tgz#ec64575b245bfce25cc0d9150a3c2e919a8a2632"
-  integrity sha512-DDOrxagSmXCciIEr16hTf4gWZ7PG7GXribYTfOOsjtODLtPEODEEYj/AsmEALjh3ZBG4bN35Vj0F/ZA1D+90GQ==
-  dependencies:
-    "@walletconnect/core" "^1.6.6"
-    "@walletconnect/iso-crypto" "^1.6.6"
-    "@walletconnect/types" "^1.6.6"
-    "@walletconnect/utils" "^1.6.6"
 
 "@walletconnect/client@1.8.0":
   version "1.8.0"
@@ -2034,7 +1965,7 @@
     "@walletconnect/types" "^1.8.0"
     "@walletconnect/utils" "^1.8.0"
 
-"@walletconnect/core@^1.6.6", "@walletconnect/core@^1.8.0":
+"@walletconnect/core@^1.8.0":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-1.8.0.tgz#6b2748b90c999d9d6a70e52e26a8d5e8bfeaa81e"
   integrity sha512-aFTHvEEbXcZ8XdWBw6rpQDte41Rxwnuk3SgTD8/iKGSRTni50gI9S3YEzMj05jozSiOBxQci4pJDMVhIUMtarw==
@@ -2054,7 +1985,7 @@
     aes-js "^3.1.2"
     hash.js "^1.1.7"
 
-"@walletconnect/encoding@^1.0.0", "@walletconnect/encoding@^1.0.1":
+"@walletconnect/encoding@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@walletconnect/encoding/-/encoding-1.0.1.tgz#93c18ce9478c3d5283dbb88c41eb2864b575269a"
   integrity sha512-8opL2rs6N6E3tJfsqwS82aZQDL3gmupWUgmvuZ3CGU7z/InZs3R9jkzH8wmYtpbq0sFK3WkJkQRZFFk4BkrmFA==
@@ -2067,7 +1998,7 @@
   resolved "https://registry.yarnpkg.com/@walletconnect/environment/-/environment-1.0.0.tgz#c4545869fa9c389ec88c364e1a5f8178e8ab5034"
   integrity sha512-4BwqyWy6KpSvkocSaV7WR3BlZfrxLbJSLkg+j7Gl6pTDE+U55lLhJvQaMuDVazXYxcjBsG09k7UlH7cGiUI5vQ==
 
-"@walletconnect/iso-crypto@^1.6.6", "@walletconnect/iso-crypto@^1.8.0":
+"@walletconnect/iso-crypto@^1.8.0":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@walletconnect/iso-crypto/-/iso-crypto-1.8.0.tgz#44ddf337c4f02837c062dbe33fa7ab36789df451"
   integrity sha512-pWy19KCyitpfXb70hA73r9FcvklS+FvO9QUIttp3c2mfW8frxgYeRXfxLRCIQTkaYueRKvdqPjbyhPLam508XQ==
@@ -2083,7 +2014,7 @@
   dependencies:
     keyvaluestorage-interface "^1.0.0"
 
-"@walletconnect/jsonrpc-utils@^1.0.0", "@walletconnect/jsonrpc-utils@^1.0.3":
+"@walletconnect/jsonrpc-utils@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@walletconnect/jsonrpc-utils/-/jsonrpc-utils-1.0.3.tgz#5bd49865eef0eae48e8b45a06731dc18691cf8c7"
   integrity sha512-3yb49bPk16MNLk6uIIHPSHQCpD6UAo1OMOx1rM8cW/MPEAYAzrSW5hkhG7NEUwX9SokRIgnZK3QuQkiyNzBMhQ==
@@ -2114,30 +2045,12 @@
     "@walletconnect/utils" "^1.8.0"
     ws "7.5.3"
 
-"@walletconnect/types-v1@npm:@walletconnect/types@1.6.6":
-  version "1.6.6"
-  resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-1.6.6.tgz#8d644e2a390e494e40424c60272e91b4820bf0d4"
-  integrity sha512-op77cxexOmQQN36XB1sYouNTlBRV0Rup/2NYK8A1ffdwXa3a6HLHHdhBM7I/I9BVmRXoZ4+XoOnPKGGrYtlS3g==
-
-"@walletconnect/types@1.8.0", "@walletconnect/types@^1.6.6", "@walletconnect/types@^1.8.0":
+"@walletconnect/types@1.8.0", "@walletconnect/types@^1.8.0":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-1.8.0.tgz#3f5e85b2d6b149337f727ab8a71b8471d8d9a195"
   integrity sha512-Cn+3I0V0vT9ghMuzh1KzZvCkiAxTq+1TR2eSqw5E5AVWfmCtECFkVZBP6uUJZ8YjwLqXheI+rnjqPy7sVM4Fyg==
 
-"@walletconnect/utils-v1@npm:@walletconnect/utils@1.6.6":
-  version "1.6.6"
-  resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-1.6.6.tgz#e8e49a5f2c35e4a5f9153b09ad076655f38d8c96"
-  integrity sha512-s2X/cVXiMDSEoWV6i7HPMbP1obXlzP7KLMrBo9OMabiJKnQEh6HSZ39WLswB2PHnl8Hp1Sr4BdRvhM5kCcYWRw==
-  dependencies:
-    "@walletconnect/browser-utils" "^1.6.6"
-    "@walletconnect/encoding" "^1.0.0"
-    "@walletconnect/jsonrpc-utils" "^1.0.0"
-    "@walletconnect/types" "^1.6.6"
-    bn.js "4.11.8"
-    js-sha3 "0.8.0"
-    query-string "6.13.5"
-
-"@walletconnect/utils@1.8.0", "@walletconnect/utils@^1.6.6", "@walletconnect/utils@^1.8.0":
+"@walletconnect/utils@1.8.0", "@walletconnect/utils@^1.8.0":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-1.8.0.tgz#2591a197c1fa7429941fe428876088fda6632060"
   integrity sha512-zExzp8Mj1YiAIBfKNm5u622oNw44WOESzo6hj+Q3apSMIb0Jph9X3GDIdbZmvVZsNPxWDL7uodKgZcCInZv2vA==
