@@ -12,16 +12,8 @@ import StakingABI from './abi/Staking.json';
 import TreasuryABI from './abi/TreasuryABI.json';
 import type { BaseProvider } from '@ethersproject/providers';
 
-export const getContracts = async (provider: BaseProvider) => {
-    // do not request the network, if information exists
-    let chainId = provider.network?.chainId;
-
-    if (!chainId) {
-        const _network = await provider?.getNetwork();
-
-        chainId = _network?.chainId;
-    }
-    const contractAddresses = ContractAddresses.get(chainId)!;
+export const getContracts = (provider: BaseProvider, networkId: number) => {
+    const contractAddresses = ContractAddresses.get(networkId)!;
 
     const {
         Ambassadors,

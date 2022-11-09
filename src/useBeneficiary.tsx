@@ -39,7 +39,7 @@ export const useBeneficiary = (communityAddress: string) => {
     const [claimCooldown, setClaimCooldown] = useState(0);
     const [contract, setContract] = useState<Contract | null>(null);
     const [fundsRemainingDays, setFundsRemainingDays] = useState<number>(0);
-    const { connection, provider, address, subgraph } = React.useContext(ImpactProviderContext);
+    const { connection, provider, address, subgraph, networkId } = React.useContext(ImpactProviderContext);
     const executeTransaction = internalUseTransaction();
     let refreshInterval: NodeJS.Timeout;
     let timeoutInterval: NodeJS.Timeout;
@@ -48,7 +48,7 @@ export const useBeneficiary = (communityAddress: string) => {
         if (!_contract || !address) {
             return;
         }
-        const { cusd } = await getContracts(provider);
+        const { cusd } = getContracts(provider, networkId);
         const [communityBalance, beneficiaryGraph, communityGraph] = await Promise.all([
             cusd.balanceOf(_contract.address),
             subgraph.getBeneficiaryData(address, '{ claimed, state }'),
@@ -133,7 +133,7 @@ export const useBeneficiary = (communityAddress: string) => {
         const response = await executeTransaction(tx);
 
         updateClaimData(contract);
-        updateCUSDBalance(provider, address);
+        updateCUSDBalance(provider, networkId, address);
         const _cooldown = await contract.claimCooldown(address);
         let _currentBlockNumber = await provider.getBlockNumber();
         const estimate = async () => {

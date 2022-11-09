@@ -5,7 +5,7 @@ import { tokenDecimals, txFeeCELOThreshold, txFeeCStableThreshold } from './conf
 import { useContext } from 'react';
 
 export const internalUseTransaction = () => {
-    const { connection, address, provider } = useContext(ImpactProviderContext);
+    const { connection, address, provider, networkId } = useContext(ImpactProviderContext);
 
     const executeTransaction = async (tx: { data?: string; from?: string; to?: string }) => {
         // executeTransaction defaults to cStables then CELO to pay fees, on this order of preference
@@ -15,7 +15,7 @@ export const internalUseTransaction = () => {
             throw new Error('no valid address connected');
         }
 
-        const { cusd, ceur, celo } = await getContracts(provider);
+        const { cusd, ceur, celo } = getContracts(provider, networkId);
 
         // default gas price
         let gasPrice = '500000000';

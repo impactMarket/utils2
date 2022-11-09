@@ -9,7 +9,7 @@ import { updatePACTBalance } from './usePACTBalance';
 import React, { useEffect } from 'react';
 
 export const useStaking = () => {
-    const { connection, address, provider } = React.useContext(ImpactProviderContext);
+    const { connection, address, provider, networkId } = React.useContext(ImpactProviderContext);
     const { setBalance } = React.useContext(PACTBalanceContext);
     const { staking, setStaking } = React.useContext(StakingContext);
     const executeTransaction = internalUseTransaction();
@@ -24,10 +24,10 @@ export const useStaking = () => {
         }
         setStaking(s => ({ ...s, initialised: false }));
 
-        const { donationMiner, staking, spact } = await getContracts(provider);
+        const { donationMiner, staking, spact } = getContracts(provider, networkId);
         const [updatedPACTBalance, stakedAmount, allocated, apr, unstakeCooldown, totalAmount, spactbalance] =
             await Promise.all([
-                updatePACTBalance(provider, address),
+                updatePACTBalance(provider, networkId, address),
                 staking.stakeholderAmount(address),
                 getAllocatedRewards(donationMiner, address),
                 donationMiner.apr(address),
@@ -91,7 +91,7 @@ export const useStaking = () => {
             return;
         }
         const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-        const { staking } = await getContracts(provider);
+        const { staking } = getContracts(provider, networkId);
 
         const tx = await staking.populateTransaction.stake(address, amount);
         const response = await executeTransaction(tx);
@@ -111,7 +111,7 @@ export const useStaking = () => {
             return;
         }
         const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-        const { pact, staking } = await getContracts(provider);
+        const { pact, staking } = getContracts(provider, networkId);
 
         const PACTAllowance = await pact.allowance(address, staking.address);
         const pactAllowance = toNumber(PACTAllowance);
@@ -134,7 +134,7 @@ export const useStaking = () => {
         if (!connection || !address) {
             return;
         }
-        const { donationMiner } = await getContracts(provider);
+        const { donationMiner } = getContracts(provider, networkId);
         const tx = await donationMiner.populateTransaction.stakeRewards();
         const response = await executeTransaction(tx);
 
@@ -153,7 +153,7 @@ export const useStaking = () => {
             return;
         }
         const amount = toToken(value, { EXPONENTIAL_AT: 29 });
-        const { staking } = await getContracts(provider);
+        const { staking } = getContracts(provider, networkId);
         const tx = await staking.populateTransaction.unstake(amount);
         const response = await executeTransaction(tx);
 
@@ -170,7 +170,7 @@ export const useStaking = () => {
         if (!connection || !address) {
             return;
         }
-        const { staking } = await getContracts(provider);
+        const { staking } = getContracts(provider, networkId);
         const tx = await staking.populateTransaction.claim();
         const response = await executeTransaction(tx);
 
@@ -187,7 +187,7 @@ export const useStaking = () => {
         if (!connection || !address) {
             return;
         }
-        const { staking } = await getContracts(provider);
+        const { staking } = getContracts(provider, networkId);
         const _stakeholder = await staking.stakeholder(address);
         const blockNumber = await provider.getBlockNumber();
 
@@ -216,7 +216,7 @@ export const useStaking = () => {
             if (!connection) {
                 return;
             }
-            const { donationMiner, staking, spact } = await getContracts(provider);
+            const { donationMiner, staking, spact } = getContracts(provider, networkId);
             const [unstakeCooldown, totalAmount] = await Promise.all([
                 staking.cooldown(),
                 staking.currentTotalAmount()

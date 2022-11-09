@@ -1,26 +1,26 @@
-export const ContractAddresses = new Map<
-    number,
-    {
-        Ambassadors: string;
-        cUSD: string;
-        cEUR: string;
-        CELO: string;
-        DonationMiner: string;
-        CommunityAdmin: string;
-        PACTDelegate: string;
-        PACTDelegator: string;
-        PACTToken: string;
-        SPACTToken: string;
-        MerkleDistributor: string;
-        Treasury: string;
-        ImpactLabs: string;
-        ImpactMarketCouncil: string;
-        IDO: string;
-        Staking: string;
-    }
->([
+import { networksId } from './config';
+
+type Contracts = {
+    Ambassadors: string;
+    cUSD: string;
+    cEUR: string;
+    CELO: string;
+    DonationMiner: string;
+    CommunityAdmin: string;
+    PACTDelegate: string;
+    PACTDelegator: string;
+    PACTToken: string;
+    SPACTToken: string;
+    MerkleDistributor: string;
+    Treasury: string;
+    ImpactLabs: string;
+    ImpactMarketCouncil: string;
+    IDO: string;
+    Staking: string;
+};
+export const ContractAddresses = new Map<number, Contracts>([
     [
-        44787,
+        networksId.CeloAlfajores,
         {
             Ambassadors: '0xF7f1675e5A6fa5D2dd4F3b534a59B5B6Ef866221',
             CELO: '0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9',
@@ -41,7 +41,7 @@ export const ContractAddresses = new Map<
         }
     ],
     [
-        42220,
+        networksId.CeloMainnet,
         {
             Ambassadors: '0x25f58d8C2522dC7E0C53cF8163C837De2415Ba51',
             CELO: '0x471EcE3750Da237f93B8E339c536989b8978a438',

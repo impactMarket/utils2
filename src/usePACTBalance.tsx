@@ -4,8 +4,8 @@ import { toNumber } from './toNumber';
 import React, { useEffect } from 'react';
 import type { BaseProvider } from '@ethersproject/providers';
 
-export const updatePACTBalance = async (provider: BaseProvider, address: string) => {
-    const { pact } = await getContracts(provider);
+export const updatePACTBalance = async (provider: BaseProvider, networkId: number, address: string) => {
+    const { pact } = getContracts(provider, networkId);
 
     if (!address || !pact?.provider) {
         return 0;
@@ -23,12 +23,12 @@ export const updatePACTBalance = async (provider: BaseProvider, address: string)
 };
 
 export const usePACTBalance = () => {
-    const { provider, address } = React.useContext(ImpactProviderContext);
+    const { provider, address, networkId } = React.useContext(ImpactProviderContext);
     const { balance, setBalance } = React.useContext(PACTBalanceContext);
 
     useEffect(() => {
         if (address) {
-            updatePACTBalance(provider, address).then(b => setBalance(b));
+            updatePACTBalance(provider, networkId, address).then(b => setBalance(b));
         }
     }, [address]);
 

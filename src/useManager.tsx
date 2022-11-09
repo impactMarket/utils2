@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';
 import type { CeloTxReceipt } from '@celo/connect';
 
 export const useManager = (communityAddress: string) => {
-    const { connection, address, provider, subgraph } = React.useContext(ImpactProviderContext);
+    const { connection, address, provider, subgraph, networkId } = React.useContext(ImpactProviderContext);
     const [isReady, setIsReady] = useState(false);
     const [nextRequestFundsAvailability, setNextRequestFundsAvailability] = useState(new Date(0));
     const [fundsRemainingDays, setFundsRemainingDays] = useState<number>(0);
@@ -173,7 +173,7 @@ export const useManager = (communityAddress: string) => {
             if (!connection || !address) {
                 return;
             }
-            const { cusd, communityAdmin } = await getContracts(provider);
+            const { cusd, communityAdmin } = getContracts(provider, networkId);
             const _communityContract = communityContract(communityAddress, provider);
             const [_currentBlockNumber, baseInterval, lastFundRequest, communityBalance, communityGraph] =
                 await Promise.all([

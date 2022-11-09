@@ -3,6 +3,7 @@ import * as contracts from '../src/contracts';
 import { ImpactProviderContext } from '../src/ImpactProvider';
 import { act, render } from '@testing-library/react';
 import { internalUseTransaction } from '../src/internalUseTransaction';
+import { networksId } from '../src/config';
 import { toToken } from '../src/toToken';
 
 function TestComponent() {
@@ -18,7 +19,7 @@ function TestComponent() {
 }
 
 describe('internalUseTransaction hook runs correctly', () => {
-    let getContractsMock: jest.SpyInstance<any>;
+    let getContractsMock: jest.SpyInstance<any, any>;
 
     beforeAll(() => {
         getContractsMock = jest.spyOn(contracts, 'getContracts');
@@ -38,13 +39,14 @@ describe('internalUseTransaction hook runs correctly', () => {
             sendTransaction: jest.fn(() => Promise.resolve({ waitReceipt: jest.fn(() => Promise.resolve(true)) }))
         };
 
-        getContractsMock.mockReturnValue(Promise.resolve({ celo: celoMock, ceur: ceurMock, cusd: cusdMock } as any));
+        getContractsMock.mockReturnValue({ celo: celoMock, ceur: ceurMock, cusd: cusdMock });
 
         const { getByText } = render(
             <ImpactProviderContext.Provider
                 value={{
                     address: '0xabc',
                     connection: connectionMock as any,
+                    networkId: networksId.CeloAlfajores,
                     provider: jest.fn() as any,
                     subgraph: jest.fn() as any,
                     ubiManagementSubgraph: jest.fn() as any
@@ -79,13 +81,14 @@ describe('internalUseTransaction hook runs correctly', () => {
             sendTransaction: jest.fn(() => Promise.resolve({ waitReceipt: jest.fn(() => Promise.resolve(true)) }))
         };
 
-        getContractsMock.mockReturnValue(Promise.resolve({ celo: celoMock, ceur: ceurMock, cusd: cusdMock } as any));
+        getContractsMock.mockReturnValue({ celo: celoMock, ceur: ceurMock, cusd: cusdMock });
 
         const { getByText } = render(
             <ImpactProviderContext.Provider
                 value={{
                     address: '0xabc',
                     connection: connectionMock as any,
+                    networkId: networksId.CeloAlfajores,
                     provider: jest.fn() as any,
                     subgraph: jest.fn() as any,
                     ubiManagementSubgraph: jest.fn() as any

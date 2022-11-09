@@ -4,14 +4,14 @@ import { getLastEpochsDonations, updateEpochData, updateUserContributionData } f
 import React, { useEffect } from 'react';
 import type { BaseProvider } from '@ethersproject/providers';
 
-export const updateEpoch = async (provider: BaseProvider, address: string) => {
+export const updateEpoch = async (provider: BaseProvider, networkId: number, address: string) => {
     if (!address) {
         return;
     }
-    const { donationMiner } = await getContracts(provider);
+    const { donationMiner } = getContracts(provider, networkId);
     const [epochData, userContributionData, donations] = await Promise.all([
-        updateEpochData(provider),
-        updateUserContributionData(provider, address),
+        updateEpochData(provider, donationMiner),
+        updateUserContributionData(provider, donationMiner, address),
         getLastEpochsDonations(donationMiner, address)
     ]);
 
@@ -23,12 +23,12 @@ export const updateEpoch = async (provider: BaseProvider, address: string) => {
 };
 
 export const useEpoch = () => {
-    const { provider, address } = React.useContext(ImpactProviderContext);
+    const { provider, address, networkId } = React.useContext(ImpactProviderContext);
     const { epoch, setEpoch } = React.useContext(EpochContext);
 
     useEffect(() => {
         if (address) {
-            updateEpoch(provider, address).then(epochData => {
+            updateEpoch(provider, networkId, address).then(epochData => {
                 setEpoch(epoch => ({
                     ...epoch,
                     ...epochData,
