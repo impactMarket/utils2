@@ -20,7 +20,7 @@ export interface AirdropRecurring extends Contract {
  * @returns {any} Claim function and details
  */
 export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
-    const { provider, address, connection } = React.useContext(ImpactProviderContext);
+    const { provider, address, connection, networkId } = React.useContext(ImpactProviderContext);
     const [amountClaimed, setAmountClaimed] = useState(0);
     const [nextClaim, setNextClaim] = useState(new Date());
     const [isReady, setIsReady] = useState(false);
@@ -43,7 +43,7 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
 
             // reload state
             setIsReady(false);
-            updatePACTBalance(provider, address);
+            updatePACTBalance(provider, networkId, address);
             _reloadingClaimStatus(address).then(() => setIsReady(true));
 
             return response;
