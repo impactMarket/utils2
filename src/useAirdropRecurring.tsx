@@ -23,6 +23,7 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
     const { provider, address, connection } = React.useContext(ImpactProviderContext);
     const [amountClaimed, setAmountClaimed] = useState(0);
     const [nextClaim, setNextClaim] = useState(new Date());
+    const [isReady, setIsReady] = useState(false);
     const airdropper = new Contract(airdropSmartContractAddress, AirdropRecurringABI, provider) as AirdropRecurring;
     const executeTransaction = internalUseTransaction();
 
@@ -40,8 +41,10 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
             const tx = await airdropper.populateTransaction.claim(address, proofs);
             const response = await executeTransaction(tx);
 
+            // reload state
+            setIsReady(false);
             updatePACTBalance(provider, address);
-            _reloadingClaimStatus(address);
+            _reloadingClaimStatus(address).then(() => setIsReady(true));
 
             return response;
         } catch (error) {
@@ -71,11 +74,11 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
             if (!address) {
                 return;
             }
-            _reloadingClaimStatus(address);
+            _reloadingClaimStatus(address).then(() => setIsReady(true));
         };
 
         load();
     }, [address]);
 
-    return { amountClaimed, claim, nextClaim };
+    return { amountClaimed, claim, isReady, nextClaim };
 };
