@@ -1,6 +1,6 @@
 {
     "name": "@impact-market/utils",
-    "version": "3.0.7",
+    "version": "3.1.0",
     "description": "impactMarket utils",
     "repository": {
         "type": "git",
@@ -44,8 +44,8 @@
     "devDependencies": {
         "@apollo/client": "3.6.9",
         "@babel/core": "7.18.10",
-        "@celo/contractkit": "2.2.0",
-        "@celo/react-celo": "4.2.1",
+        "@celo/contractkit": "2.0.0",
+        "@celo/react-celo": "4.0.1",
         "@ethersproject/abi": "5.7.0",
         "@ethersproject/abstract-signer": "5.7.0",
         "@ethersproject/bytes": "5.7.0",
@@ -83,8 +83,8 @@
     },
     "peerDependencies": {
         "@apollo/client": "^3.6.9",
-        "@celo/contractkit": "2.2.0",
-        "@celo/react-celo": "4.2.1",
+        "@celo/contractkit": "2.0.0",
+        "@celo/react-celo": "4.0.1'",
         "@ethersproject/abi": "5.7.0",
         "@ethersproject/abstract-signer": "5.7.0",
         "@ethersproject/bytes": "5.7.0",
@@ -98,9 +98,9 @@
     },
     "resolutions": {
         "@celo/contractkit": "2.0.0",
-        "@celo/react-celo": "4.2.1"
+        "@celo/react-celo": "4.0.1"
     },
     "dependencies": {
-        "@celo/connect": "2.2.0"
+        "@celo/connect": "2.0.0"
     }
 }

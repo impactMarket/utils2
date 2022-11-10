@@ -13,8 +13,8 @@
         "react": "18.2.0",
         "react-dom": "18.2.0",
         "@impact-market/utils": "link:..",
-        "@celo/contractkit": "2.2.0",
-        "@celo/react-celo": "4.2.1"
+        "@celo/contractkit": "2.0.0",
+        "@celo/react-celo": "4.0.1"
     },
     "devDependencies": {
         "@types/node": "18.8.5",
@@ -25,7 +25,7 @@
         "typescript": "4.8.4"
     },
     "resolutions": {
-        "@celo/contractkit": "2.2.0",
-        "@celo/react-celo": "4.2.1"
+        "@celo/contractkit": "2.0.0",
+        "@celo/react-celo": "4.0.1"
     }
 }
