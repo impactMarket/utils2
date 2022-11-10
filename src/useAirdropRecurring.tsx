@@ -13,6 +13,8 @@ import type { BigNumber } from 'bignumber.js';
 export interface AirdropRecurring extends Contract {
     beneficiaries(address: string): Promise<{ claimedAmount: BigNumber; lastClaimTime: BigNumber }>;
     cooldown(): Promise<BigNumber>;
+    totalAmount(): Promise<BigNumber>;
+    trancheAmount(): Promise<BigNumber>;
 }
 
 /**
@@ -22,6 +24,8 @@ export interface AirdropRecurring extends Contract {
 export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
     const { provider, address, connection, networkId } = React.useContext(ImpactProviderContext);
     const [amountClaimed, setAmountClaimed] = useState(0);
+    const [totalAmount, setTotalAmount] = useState(0);
+    const [trancheAmount, setTrancheAmount] = useState(0);
     const [nextClaim, setNextClaim] = useState(new Date());
     const [isReady, setIsReady] = useState(false);
     const airdropper = new Contract(airdropSmartContractAddress, AirdropRecurringABI, provider) as AirdropRecurring;
@@ -70,15 +74,23 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
     };
 
     useEffect(() => {
-        const load = () => {
+        const load = async () => {
             if (!address) {
                 return;
             }
-            _reloadingClaimStatus(address).then(() => setIsReady(true));
+            const [, total, tranche] = await Promise.all([
+                _reloadingClaimStatus(address),
+                airdropper.totalAmount(),
+                airdropper.trancheAmount()
+            ]);
+
+            setTotalAmount(toNumber(total));
+            setTrancheAmount(toNumber(tranche));
+            setIsReady(true)
         };
 
         load();
     }, [address]);
 
-    return { amountClaimed, claim, isReady, nextClaim };
+    return { amountClaimed, claim, isReady, nextClaim, totalAmount, trancheAmount };
 };
