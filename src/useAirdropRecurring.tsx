@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { ImpactProviderContext } from './ImpactProvider';
+import { ImpactProviderContext, PACTBalanceContext } from './ImpactProvider';
 import { internalUseTransaction } from './internalUseTransaction';
 import { toNumber } from './toNumber';
 import { updatePACTBalance } from './usePACTBalance';
@@ -23,6 +23,7 @@ export interface AirdropRecurring extends Contract {
  */
 export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
     const { provider, address, connection, networkId } = React.useContext(ImpactProviderContext);
+    const { setBalance: setPACTBalance } = React.useContext(PACTBalanceContext);
     const [amountClaimed, setAmountClaimed] = useState(0);
     const [totalAmount, setTotalAmount] = useState(0);
     const [trancheAmount, setTrancheAmount] = useState(0);
@@ -47,8 +48,8 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
 
             // reload state
             setIsReady(false);
-            updatePACTBalance(provider, networkId, address);
-            _reloadingClaimStatus(address).then(() => setIsReady(true));
+            updatePACTBalance(provider, networkId, address).then(setPACTBalance);
+            _reloadingClaimStatus(address);
 
             return response;
         } catch (error) {
