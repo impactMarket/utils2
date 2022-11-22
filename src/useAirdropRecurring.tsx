@@ -27,7 +27,7 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
     const [amountClaimed, setAmountClaimed] = useState(0);
     const [totalAmount, setTotalAmount] = useState(0);
     const [trancheAmount, setTrancheAmount] = useState(0);
-    const [nextClaim, setNextClaim] = useState(new Date());
+    const [nextClaim, setNextClaim] = useState(new Date(0));
     const [isReady, setIsReady] = useState(false);
     const airdropper = new Contract(airdropSmartContractAddress, AirdropRecurringABI, provider) as AirdropRecurring;
     const executeTransaction = internalUseTransaction();
@@ -48,8 +48,12 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
 
             // reload state
             setIsReady(false);
-            updatePACTBalance(provider, networkId, address).then(setPACTBalance);
-            _reloadingClaimStatus(address).then(() => setIsReady(true));
+            Promise.all([updatePACTBalance(provider, networkId, address), _reloadingClaimStatus(address)]).then(
+                ([newBalance]) => {
+                    setPACTBalance(newBalance);
+                    setIsReady(true);
+                }
+            );
 
             return response;
         } catch (error) {
@@ -71,7 +75,9 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
         ]);
 
         setAmountClaimed(toNumber(claimedAmount));
-        setNextClaim(new Date((lastClaimTime.toNumber() + cooldown.toNumber()) * 1000));
+        if (lastClaimTime.toNumber() !== 0) {
+            setNextClaim(new Date((lastClaimTime.toNumber() + cooldown.toNumber()) * 1000));
+        }
     };
 
     useEffect(() => {
@@ -87,7 +93,7 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
 
             setTotalAmount(toNumber(total));
             setTrancheAmount(toNumber(tranche));
-            setIsReady(true)
+            setIsReady(true);
         };
 
         load();
