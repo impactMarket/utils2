@@ -49,7 +49,7 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
             // reload state
             setIsReady(false);
             updatePACTBalance(provider, networkId, address).then(setPACTBalance);
-            _reloadingClaimStatus(address);
+            _reloadingClaimStatus(address).then(() => setIsReady(true));
 
             return response;
         } catch (error) {
