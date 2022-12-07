@@ -98,7 +98,7 @@ export const useImpactMarketCouncil = () => {
             proposalDescription
         } = community;
         const signatures = [
-            'addCommunity(address[],address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,address)'
+            'addCommunity(address,address[],address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)'
         ];
 
         const calldatas = [
