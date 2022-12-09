@@ -3,7 +3,7 @@ import { frequencyToText } from '@impact-market/utils/frequencyToText';
 import { toToken } from '@impact-market/utils/toToken';
 import { useImpactMarketCouncil } from '@impact-market/utils/useImpactMarketCouncil';
 import React, { useEffect, useState } from 'react';
-import { impactMarket } from '../../services/impactMarket';
+import { impactMarket } from '../../../services/impactMarket';
 
 const Community = (props: any) => {
     const { id, name, description, contract, requestByAddress, ambassadorAddress } = props;

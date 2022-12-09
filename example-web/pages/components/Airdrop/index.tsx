@@ -3,7 +3,7 @@ import { useAirdropRecurring } from '@impact-market/utils/useAirdropRecurring';
 import WalletConnection from '../WalletConnection';
 
 const Airdrop = () => {
-    const { claim, amountClaimed, nextClaim } = useAirdropRecurring('0xEb0b7fE19c764224e4a6572CC0EA80074489896E');
+    const { claim, amountClaimed, nextClaim, isReady, totalAmount, trancheAmount } = useAirdropRecurring('0xEb0b7fE19c764224e4a6572CC0EA80074489896E');
 
     console.log('1');
     const handleClaim = () =>
@@ -15,6 +15,9 @@ const Airdrop = () => {
     return (
         <WalletConnection title="Claim">
             <div>Amount claimed {amountClaimed}</div>
+            <div>totalAmount {totalAmount}</div>
+            <div>trancheAmount {trancheAmount}</div>
+            <div>isReady {isReady}</div>
             <div>Next claim {nextClaim.toString()}</div>
             <button onClick={handleClaim}>claim</button>
         </WalletConnection>
