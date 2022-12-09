@@ -1,5 +1,6 @@
-import { ApolloClient, InMemoryCache, NormalizedCacheObject, gql } from '@apollo/client';
+import { ApolloCache, ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject, concat, gql } from '@apollo/client';
 import { Connection } from '@celo/connect';
+import { RetryLink } from '@apollo/client/link/retry';
 import {
     networksId,
     subgraphCeloAlfajores,
@@ -8,12 +9,32 @@ import {
     ubiManagementSubgraphCeloMainnet
 } from './config';
 
+const defaultRetryOptions: RetryLink.Options = {
+    attempts: {
+        max: 15,
+        retryIf: (error, _operation) => !!error
+    },
+    delay: {
+        initial: 1000,
+        jitter: true,
+        max: Infinity
+    }
+};
+
 class ImpactMarketSubgraph {
     private client: ApolloClient<NormalizedCacheObject>;
-    constructor(networkId = networksId.CeloAlfajores) {
-        this.client = new ApolloClient({
-            cache: new InMemoryCache(),
+    constructor(
+        networkId = networksId.CeloAlfajores,
+        options?: { retry?: RetryLink.Options; cache?: ApolloCache<NormalizedCacheObject> }
+    ) {
+        const retry = new RetryLink(options?.retry || defaultRetryOptions);
+        const http = new HttpLink({
             uri: networkId === networksId.CeloAlfajores ? subgraphCeloAlfajores : subgraphCeloMainnet
+        });
+
+        this.client = new ApolloClient({
+            cache: options?.cache || new InMemoryCache(),
+            link: concat(http, retry)
         });
     }
 
@@ -83,13 +104,23 @@ class ImpactMarketSubgraph {
 class ImpactMarketUBIManagementSubgraph {
     private client: ApolloClient<NormalizedCacheObject>;
     private connection: Connection;
-    constructor(connection: Connection, networkId = networksId.CeloAlfajores) {
-        this.client = new ApolloClient({
-            cache: new InMemoryCache(),
+
+    constructor(
+        connection: Connection,
+        networkId = networksId.CeloAlfajores,
+        options?: { retry?: RetryLink.Options; cache?: ApolloCache<NormalizedCacheObject> }
+    ) {
+        const retry = new RetryLink(options?.retry || defaultRetryOptions);
+        const http = new HttpLink({
             uri:
                 networkId === networksId.CeloAlfajores
                     ? ubiManagementSubgraphCeloAlfajores
                     : ubiManagementSubgraphCeloMainnet
+        });
+
+        this.client = new ApolloClient({
+            cache: options?.cache || new InMemoryCache(),
+            link: concat(http, retry)
         });
         this.connection = connection;
     }

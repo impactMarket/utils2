@@ -1,6 +1,9 @@
+import { ApolloCache } from '@apollo/client/cache/core/cache';
 import { BaseProvider, JsonRpcProvider } from '@ethersproject/providers';
 import { Connection } from '@celo/connect';
 import { ImpactMarketSubgraph, ImpactMarketUBIManagementSubgraph } from './subgraphs';
+import { NormalizedCacheObject } from '@apollo/client/cache/inmemory/types';
+import { RetryLink } from '@apollo/client/link/retry/retryLink';
 import React, { useState } from 'react';
 
 export type EpochType = {
@@ -142,6 +145,10 @@ type ProviderProps = {
     connection: Connection;
     jsonRpc: string;
     networkId: number;
+    apolloClientOptions?: {
+        retry?: RetryLink.Options;
+        cache?: ApolloCache<NormalizedCacheObject>;
+    };
 };
 
 const CUSDBalanceProvider = React.memo((props: { children?: any }) => {
@@ -225,7 +232,7 @@ const StakingProvider = React.memo((props: { children?: any }) => {
 });
 
 export const ImpactProvider = (props: ProviderProps) => {
-    const { children, address, jsonRpc, connection, networkId } = props;
+    const { children, address, jsonRpc, connection, networkId, apolloClientOptions } = props;
 
     return (
         <ImpactProviderContext.Provider
@@ -234,8 +241,8 @@ export const ImpactProvider = (props: ProviderProps) => {
                 connection,
                 networkId,
                 provider: new JsonRpcProvider(jsonRpc),
-                subgraph: new ImpactMarketSubgraph(networkId),
-                ubiManagementSubgraph: new ImpactMarketUBIManagementSubgraph(connection, networkId)
+                subgraph: new ImpactMarketSubgraph(networkId, apolloClientOptions),
+                ubiManagementSubgraph: new ImpactMarketUBIManagementSubgraph(connection, networkId, apolloClientOptions)
             }}
         >
             <StakingProvider>
