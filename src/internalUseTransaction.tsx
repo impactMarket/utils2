@@ -54,7 +54,10 @@ export const internalUseTransaction = () => {
             // ignore if calculation fails
             try {
                 gasPrice = await connection.gasPrice(txFeeInCStable);
-            } catch (_) {}
+            } catch (_) {
+                // increase 10x the default gas price
+                gasPrice = '5000000000';
+            }
 
             // gas estimation is a little glitchy
             // the gas limit must be padded to increase tx success rate
@@ -70,6 +73,10 @@ export const internalUseTransaction = () => {
             enoughBalanceForTxFee = new BigNumber((await celo.balanceOf(address)).toString())
                 .dividedBy(tokenDecimals)
                 .gte(txFeeCELOThreshold);
+
+            try {
+                gasPrice = await connection.gasPrice(celo.address);
+            } catch (_) {}
 
             if (!enoughBalanceForTxFee) {
                 throw new Error('NOT_ENOUGH_FUNDS: not enough funds to submit a transaction.');
