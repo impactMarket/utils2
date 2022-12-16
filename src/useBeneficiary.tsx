@@ -178,7 +178,6 @@ export const useBeneficiary = (communityAddress: string) => {
         }
     };
 
-
     useEffect(() => {
         // Refresh beneficiary time for next claim
         const refreshClaimCooldown = async (_address: string, _contract: Contract) => {

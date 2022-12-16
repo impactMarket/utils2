@@ -37,7 +37,9 @@ export async function circulatingSupply(provider: BaseProvider, chainId: number)
     return circulatingSupply.dividedBy(decimals).toNumber();
 }
 
-export async function getPACTTradingMetrics(provider: BaseProvider, chainId: number): Promise<{
+export async function getPACTTradingMetrics(
+    chainId: number
+): Promise<{
     priceUSD: string;
     dailyVolumeUSD: string;
     totalLiquidityUSD: string;
@@ -99,8 +101,8 @@ export async function getPACTTradingMetrics(provider: BaseProvider, chainId: num
     };
 }
 
-export async function hasPACTVotingPower(provider: BaseProvider, networkId: number, address: string) {
-    const { pact: pactContract, delegate } = getContracts(provider, networkId);
+export async function hasPACTVotingPower(provider: BaseProvider, chainId: number, address: string) {
+    const { pact: pactContract, delegate } = getContracts(provider, chainId);
 
     if (
         address === null ||
@@ -126,9 +128,7 @@ export async function hasPACTVotingPower(provider: BaseProvider, networkId: numb
     }
 }
 
-export async function getPACTTVL(provider: BaseProvider): Promise<string> {
-    const { chainId } = await provider.getNetwork();
-
+export async function getPACTTVL(provider: BaseProvider, chainId: number): Promise<string> {
     // if not on mainnet
     if (chainId !== 42220) {
         return '--';
@@ -164,8 +164,7 @@ export async function getPACTTVL(provider: BaseProvider): Promise<string> {
     }
 }
 
-export async function getUBILiquidity(provider: BaseProvider): Promise<number> {
-    const { chainId } = await provider.getNetwork();
+export async function getUBILiquidity(provider: BaseProvider, chainId: number): Promise<number> {
     const contractAddresses = ContractAddresses.get(chainId)!;
 
     const { cUSD, Treasury } = contractAddresses;
