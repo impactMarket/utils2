@@ -13,8 +13,7 @@ const client = new ApolloClient({
     uri: 'https://api.thegraph.com/subgraphs/name/ubeswap/ubeswap'
 });
 
-export async function circulatingSupply(provider: BaseProvider) {
-    const { chainId } = await provider.getNetwork();
+export async function circulatingSupply(provider: BaseProvider, chainId: number) {
     const contractAddresses = ContractAddresses.get(chainId)!;
 
     const { PACTDelegator, PACTToken, DonationMiner, MerkleDistributor, ImpactLabs, IDO } = contractAddresses;
@@ -38,15 +37,13 @@ export async function circulatingSupply(provider: BaseProvider) {
     return circulatingSupply.dividedBy(decimals).toNumber();
 }
 
-export async function getPACTTradingMetrics(provider: BaseProvider): Promise<{
+export async function getPACTTradingMetrics(provider: BaseProvider, chainId: number): Promise<{
     priceUSD: string;
     dailyVolumeUSD: string;
     totalLiquidityUSD: string;
     tokenHolders: number;
     transfers: number;
 }> {
-    const { chainId } = await provider.getNetwork();
-
     // if not on mainnet
     if (chainId !== 42220) {
         return {

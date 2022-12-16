@@ -9,7 +9,23 @@ import { updateCUSDBalance } from './useCUSDBalance';
 import React, { useEffect, useState } from 'react';
 import type { Contract } from '@ethersproject/contracts';
 
-const refreshIntervalInMs = 300000;
+// prevent re-render when loading
+const useBlockNumber = () => {
+    const [blockNumber, setBlockNumber] = useState(0);
+    const { connection } = React.useContext(ImpactProviderContext);
+
+    useEffect(() => {
+        const updateBlockNumber = async () => {
+            const blockNumber = await connection.getBlockNumber();
+
+            setBlockNumber(blockNumber);
+        };
+
+        updateBlockNumber();
+    }, [connection]);
+
+    return blockNumber;
+};
 
 /**
  * useBeneficiary hook
@@ -40,9 +56,8 @@ export const useBeneficiary = (communityAddress: string) => {
     const [contract, setContract] = useState<Contract | null>(null);
     const [fundsRemainingDays, setFundsRemainingDays] = useState<number>(0);
     const { connection, provider, address, subgraph, networkId } = React.useContext(ImpactProviderContext);
+    const currentBlockNumber = useBlockNumber();
     const executeTransaction = internalUseTransaction();
-    let refreshInterval: NodeJS.Timeout;
-    let timeoutInterval: NodeJS.Timeout;
 
     const updateClaimData = async (_contract: Contract) => {
         if (!_contract || !address) {
@@ -135,91 +150,55 @@ export const useBeneficiary = (communityAddress: string) => {
         updateClaimData(contract);
         updateCUSDBalance(provider, networkId, address);
         const _cooldown = await contract.claimCooldown(address);
-        let _currentBlockNumber = await provider.getBlockNumber();
-        const estimate = async () => {
-            _currentBlockNumber = await provider.getBlockNumber();
+        const _currentBlockNumber = await provider.getBlockNumber();
 
-            return estimateBlockTime(_currentBlockNumber, _cooldown.toNumber());
-        };
-
-        setClaimCooldown((await estimate()).getTime());
+        // TODO: maybe we can use previous block from state
+        setClaimCooldown(estimateBlockTime(_currentBlockNumber, _cooldown.toNumber(), 10000).getTime());
         setIsClaimable(false);
 
         return response;
     };
 
-    // two intervals are needed
-    // one to refresh the end date (updating according to remaining blocks)
-    // and the other to countdown until end date and refresh the claimable status
-
-    useEffect(() => {
-        if (claimCooldown !== 0 && timeoutInterval === undefined) {
-            const end = claimCooldown;
-            const now = new Date().getTime();
-
-            if (end > now && end - now < refreshIntervalInMs) {
-                timeoutInterval = setTimeout(() => {
-                    setIsClaimable(true);
-                    if (timeoutInterval) {
-                        clearTimeout(timeoutInterval);
-                    }
-                    if (refreshInterval) {
-                        clearInterval(refreshInterval);
-                    }
-                }, end - now - 1000);
-            }
+    /**
+     * Refetch beneficiary cooldown data.
+     * @throws {Error} "No connection"
+     * @returns {Promise<void>} void
+     */
+    const refetch = async () => {
+        if (!contract || !connection || !address) {
+            throw new Error('No connection');
         }
+        const _cooldown = await contract.claimCooldown(address);
+        const _currentBlockNumber = await provider.getBlockNumber();
 
-        return () => {
-            clearTimeout(timeoutInterval);
-        };
-    }, [claimCooldown]);
+        if (_cooldown.toNumber() > currentBlockNumber) {
+            setClaimCooldown(estimateBlockTime(_currentBlockNumber, _cooldown.toNumber()).getTime());
+        } else {
+            setIsClaimable(true);
+        }
+    };
+
 
     useEffect(() => {
         // Refresh beneficiary time for next claim
         const refreshClaimCooldown = async (_address: string, _contract: Contract) => {
             const _cooldown = await _contract.claimCooldown(_address);
-            let _currentBlockNumber = await provider.getBlockNumber();
 
-            if (_cooldown.toNumber() > _currentBlockNumber) {
-                const estimate = async () => {
-                    _currentBlockNumber = await provider.getBlockNumber();
-
-                    return _cooldown.toNumber() > _currentBlockNumber
-                        ? estimateBlockTime(_currentBlockNumber, _cooldown.toNumber())
-                        : new Date(0);
-                };
-
-                if (refreshInterval) {
-                    clearInterval(refreshInterval);
-                }
-                refreshInterval = setInterval(() => {
-                    estimate().then(d => {
-                        if (d.getTime() === 0 && refreshInterval) {
-                            clearInterval(refreshInterval);
-                        } else {
-                            setClaimCooldown(d.getTime());
-                        }
-                    });
-                }, refreshIntervalInMs);
-                setClaimCooldown((await estimate()).getTime());
+            if (_cooldown.toNumber() > currentBlockNumber) {
+                setClaimCooldown(estimateBlockTime(currentBlockNumber, _cooldown.toNumber(), 5000).getTime());
             } else {
                 setIsClaimable(true);
             }
         };
 
         // make sure it's valid!
-        if (address && connection && provider && communityAddress) {
+        if (address && connection && provider && communityAddress && currentBlockNumber !== 0) {
             const contract_ = communityContract(communityAddress, provider);
 
             setContract(contract_);
             refreshClaimCooldown(address, contract_).then(() => updateClaimData(contract_));
         }
+    }, [currentBlockNumber]);
 
-        return () => {
-            clearInterval(refreshInterval);
-        };
-    }, []);
-
-    return { beneficiary, claim, claimCooldown, community, fundsRemainingDays, isClaimable, isReady };
+    return { beneficiary, claim, claimCooldown, community, fundsRemainingDays, isClaimable, isReady, refetch };
 };

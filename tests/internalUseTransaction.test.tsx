@@ -46,6 +46,7 @@ describe('internalUseTransaction hook runs correctly', () => {
                 value={{
                     address: '0xabc',
                     connection: connectionMock as any,
+                    defaultFeeCurrency: 'cUSD',
                     networkId: networksId.CeloAlfajores,
                     provider: jest.fn() as any,
                     subgraph: jest.fn() as any,
@@ -88,6 +89,7 @@ describe('internalUseTransaction hook runs correctly', () => {
                 value={{
                     address: '0xabc',
                     connection: connectionMock as any,
+                    defaultFeeCurrency: 'CELO',
                     networkId: networksId.CeloAlfajores,
                     provider: jest.fn() as any,
                     subgraph: jest.fn() as any,
@@ -104,7 +106,7 @@ describe('internalUseTransaction hook runs correctly', () => {
 
         expect(getContractsMock).toBeCalledTimes(1);
         await act(async () => await Promise.resolve());
-        expect(connectionMock.gasPrice).toBeCalledTimes(0);
+        expect(connectionMock.gasPrice).toBeCalledTimes(1);
         expect(connectionMock.estimateGas).toBeCalledTimes(0);
         expect(connectionMock.sendTransaction).toBeCalledTimes(1);
     });
