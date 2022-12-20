@@ -37,9 +37,7 @@ export async function circulatingSupply(provider: BaseProvider, chainId: number)
     return circulatingSupply.dividedBy(decimals).toNumber();
 }
 
-export async function getPACTTradingMetrics(
-    chainId: number
-): Promise<{
+export async function getPACTTradingMetrics(chainId: number): Promise<{
     priceUSD: string;
     dailyVolumeUSD: string;
     totalLiquidityUSD: string;
