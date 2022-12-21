@@ -64,16 +64,18 @@ const initialRewards: RewardsType = {
 };
 
 const intialProviderData: {
-    connection: Connection;
-    provider: BaseProvider;
     address: string | null;
+    connection: Connection;
+    defaultFeeCurrency: 'cUSD' | 'CELO';
     networkId: number;
+    provider: BaseProvider;
     subgraph: ImpactMarketSubgraph;
     ubiManagementSubgraph: ImpactMarketUBIManagementSubgraph;
 } = {
     // mandatory, value here doesn't matter
     address: null,
     connection: null as any,
+    defaultFeeCurrency: 'cUSD',
     networkId: null as any,
     provider: null as any,
     subgraph: null as any,
@@ -145,6 +147,7 @@ type ProviderProps = {
     connection: Connection;
     jsonRpc: string;
     networkId: number;
+    defaultFeeCurrency?: 'cUSD' | 'CELO';
     apolloClientOptions?: {
         retry?: RetryLink.Options;
         cache?: ApolloCache<NormalizedCacheObject>;
@@ -232,13 +235,22 @@ const StakingProvider = React.memo((props: { children?: any }) => {
 });
 
 export const ImpactProvider = (props: ProviderProps) => {
-    const { children, address, jsonRpc, connection, networkId, apolloClientOptions } = props;
+    const {
+        children,
+        address,
+        jsonRpc,
+        connection,
+        networkId,
+        apolloClientOptions,
+        defaultFeeCurrency = 'cUSD'
+    } = props;
 
     return (
         <ImpactProviderContext.Provider
             value={{
                 address,
                 connection,
+                defaultFeeCurrency,
                 networkId,
                 provider: new JsonRpcProvider(jsonRpc),
                 subgraph: new ImpactMarketSubgraph(networkId, apolloClientOptions),

@@ -10,7 +10,7 @@ const Beneficiary = () => {
         claim,
         community,
         fundsRemainingDays
-    } = useBeneficiary('0xbd6ab0e04ad0ac42cfba93a3cd84a107644b0378');
+    } = useBeneficiary('0x13d9d460Bf4bbEE7c3ab53a29c5f23AeC64F8CB6');
 
     if(!isReady) {
         return <div>Loading</div>;

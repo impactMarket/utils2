@@ -38,29 +38,20 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
      * @returns {ethers.ContractReceipt} tx response object
      */
     const claim = async (proofs: string[]) => {
-        try {
-            if (!address || !connection) {
-                return;
-            }
-
-            const tx = await airdropper.populateTransaction.claim(address, proofs);
-            const response = await executeTransaction(tx);
-
-            // reload state
-            setIsReady(false);
-            Promise.all([updatePACTBalance(provider, networkId, address), _reloadingClaimStatus(address)]).then(
-                ([newBalance]) => {
-                    setPACTBalance(newBalance);
-                    setIsReady(true);
-                }
-            );
-
-            return response;
-        } catch (error) {
-            console.log('Error claim: \n', error);
-
-            return { status: false };
+        if (!address || !connection) {
+            throw new Error('No wallet connected');
         }
+
+        const tx = await airdropper.populateTransaction.claim(address, proofs);
+        const response = await executeTransaction(tx);
+
+        // reload state
+        setIsReady(false);
+        Promise.all([updatePACTBalance(provider, networkId, address), _reloadingClaimStatus(address)])
+            .then(([newBalance]) => setPACTBalance(newBalance))
+            .finally(() => setIsReady(true));
+
+        return response;
     };
 
     /**

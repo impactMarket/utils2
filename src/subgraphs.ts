@@ -1,4 +1,4 @@
-import { ApolloCache, ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject, concat, gql } from '@apollo/client';
+import { ApolloCache, ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject, from, gql } from '@apollo/client';
 import { Connection } from '@celo/connect';
 import { RetryLink } from '@apollo/client/link/retry';
 import {
@@ -34,7 +34,7 @@ class ImpactMarketSubgraph {
 
         this.client = new ApolloClient({
             cache: options?.cache || new InMemoryCache(),
-            link: concat(http, retry)
+            link: from([retry, http])
         });
     }
 
@@ -120,7 +120,7 @@ class ImpactMarketUBIManagementSubgraph {
 
         this.client = new ApolloClient({
             cache: options?.cache || new InMemoryCache(),
-            link: concat(http, retry)
+            link: from([retry, http])
         });
         this.connection = connection;
     }

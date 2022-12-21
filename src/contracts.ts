@@ -5,6 +5,7 @@ import BaseERC20ABI from './abi/BaseERC20.json';
 import CommunityAdminABI from './abi/CommunityAdminABI.json';
 import DonationMinerABI from './abi/DonationMiner.json';
 import ImpactMarketCouncilABI from './abi/ImpactMarketCouncil.json';
+import LearnAndEarnABI from './abi/LearnAndEarnABI.json';
 import MerkleDistributorABI from './abi/MerkleDistributor.json';
 import PACTDelegateABI from './abi/PACTDelegate.json';
 import PACTTokenABI from './abi/PACTToken.json';
@@ -12,12 +13,22 @@ import StakingABI from './abi/Staking.json';
 import TreasuryABI from './abi/TreasuryABI.json';
 import type { BaseProvider } from '@ethersproject/providers';
 
+export interface ILearnAndEarn extends Contract {
+    claimRewardForLevels(
+        beneficiary: string,
+        levelIds: number[],
+        rewardAmounts: number[],
+        signatures: string[]
+    ): Promise<void>;
+}
+
 export const getContracts = (provider: BaseProvider, networkId: number) => {
     const contractAddresses = ContractAddresses.get(networkId)!;
 
     const {
         Ambassadors,
         CommunityAdmin,
+        LearnAndEarn,
         cUSD,
         cEUR,
         CELO,
@@ -42,6 +53,7 @@ export const getContracts = (provider: BaseProvider, networkId: number) => {
         delegator: PACTDelegator || '',
         donationMiner: DonationMiner || '',
         impactMarketCouncil: ImpactMarketCouncil || '',
+        learnAndEarn: LearnAndEarn || '',
         merkleDistributor: MerkleDistributor || '',
         pactToken: PACTToken || '',
         spactToken: SPACTToken || '',
@@ -71,6 +83,8 @@ export const getContracts = (provider: BaseProvider, networkId: number) => {
 
     const impactMarketCouncil = new Contract(addresses.impactMarketCouncil, ImpactMarketCouncilABI, provider);
 
+    const learnAndEarn = new Contract(addresses.learnAndEarn, LearnAndEarnABI, provider) as ILearnAndEarn;
+
     const treasury = new Contract(addresses.treasury, TreasuryABI, provider);
 
     const communityAdmin = new Contract(addresses.communityAdmin, CommunityAdminABI, provider);
@@ -85,6 +99,7 @@ export const getContracts = (provider: BaseProvider, networkId: number) => {
         delegate,
         donationMiner,
         impactMarketCouncil,
+        learnAndEarn,
         merkleDistributor,
         pact,
         spact,
