@@ -81,7 +81,7 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { impactMarketCouncil } = getContracts(provider, networkId);
+        const { impactMarketCouncil, communityAdmin } = getContracts(provider, networkId);
         const {
             tokenAddress,
             baseInterval,
@@ -133,6 +133,7 @@ export const useImpactMarketCouncil = () => {
         ];
 
         const tx = await impactMarketCouncil.populateTransaction.propose(
+            [communityAdmin.address],
             signatures,
             calldatas,
             JSON.stringify({
@@ -156,13 +157,14 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { impactMarketCouncil } = getContracts(provider, networkId);
+        const { impactMarketCouncil, communityAdmin } = getContracts(provider, networkId);
         const { communityAddress, proposalTitle, proposalDescription } = community;
         const signatures = ['removeCommunity(address)'];
 
         const calldatas = [defaultAbiCoder.encode(['address'], [communityAddress])];
 
         const tx = await impactMarketCouncil.populateTransaction.propose(
+            [communityAdmin.address],
             signatures,
             calldatas,
             JSON.stringify({
@@ -216,7 +218,7 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { impactMarketCouncil } = getContracts(provider, networkId);
+        const { impactMarketCouncil, communityAdmin } = getContracts(provider, networkId);
         const {
             communityAddress,
             baseInterval,
@@ -246,6 +248,7 @@ export const useImpactMarketCouncil = () => {
         ];
 
         const tx = await impactMarketCouncil.populateTransaction.propose(
+            [communityAdmin.address],
             signatures,
             calldatas,
             JSON.stringify({
@@ -363,7 +366,7 @@ export const useImpactMarketCouncil = () => {
         if (!connection || !address) {
             return;
         }
-        const { impactMarketCouncil } = getContracts(provider, networkId);
+        const { impactMarketCouncil, communityAdmin } = getContracts(provider, networkId);
 
         const signatures: string[] = [];
         const calldatas: string[] = [];
@@ -380,6 +383,7 @@ export const useImpactMarketCouncil = () => {
         }
 
         const tx = await impactMarketCouncil.populateTransaction.propose(
+            [communityAdmin.address],
             signatures,
             calldatas,
             JSON.stringify({
