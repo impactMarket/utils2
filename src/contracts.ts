@@ -14,6 +14,7 @@ import TreasuryABI from './abi/TreasuryABI.json';
 import type { BaseProvider } from '@ethersproject/providers';
 
 export interface ILearnAndEarn extends Contract {
+    fundLevel(levelId: number, amount: number): Promise<void>;
     claimRewardForLevels(
         beneficiary: string,
         levelIds: number[],

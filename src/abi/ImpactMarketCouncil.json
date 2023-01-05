@@ -613,6 +613,11 @@
     {
       "inputs": [
         {
+          "internalType": "address[]",
+          "name": "_targets",
+          "type": "address[]"
+        },
+        {
           "internalType": "string[]",
           "name": "_signatures",
           "type": "string[]"

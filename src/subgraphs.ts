@@ -15,7 +15,7 @@ const defaultRetryOptions: RetryLink.Options = {
         retryIf: (error, _operation) => !!error
     },
     delay: {
-        initial: 1000,
+        initial: 7000,
         jitter: true,
         max: Infinity
     }

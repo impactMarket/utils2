@@ -12,17 +12,18 @@ import type { Contract } from '@ethersproject/contracts';
 // prevent re-render when loading
 const useBlockNumber = () => {
     const [blockNumber, setBlockNumber] = useState(0);
-    const { connection } = React.useContext(ImpactProviderContext);
+    // TODO: during mobile app development, we need to use the provider instead of connection
+    const { provider } = React.useContext(ImpactProviderContext);
 
     useEffect(() => {
         const updateBlockNumber = async () => {
-            const blockNumber = await connection.getBlockNumber();
+            const blockNumber = await provider.getBlockNumber();
 
             setBlockNumber(blockNumber);
         };
 
         updateBlockNumber();
-    }, [connection]);
+    }, [provider]);
 
     return blockNumber;
 };
