@@ -193,7 +193,7 @@ export const useLearnAndEarn = () => {
         const tx = await learnAndEarn.populateTransaction.claimRewardForLevels(
             beneficiary,
             levelIds,
-            rewardAmounts.map((r) => toToken(r)),
+            rewardAmounts.map(r => toToken(r)),
             signatures
         );
         const response = await executeTransaction(tx);
