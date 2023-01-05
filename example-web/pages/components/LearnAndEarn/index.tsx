@@ -1,6 +1,10 @@
 import React from 'react';
 import { useLearnAndEarn } from '@impact-market/utils/useLearnAndEarn';
 import WalletConnection from '../WalletConnection';
+import { defaultAbiCoder } from '@ethersproject/abi';
+import { Wallet } from '@ethersproject/wallet';
+import { arrayify } from '@ethersproject/bytes';
+import { keccak256 } from '@ethersproject/keccak256';
 
 const AddLevel = () => {
     const { addLevel } = useLearnAndEarn();
@@ -104,10 +108,21 @@ const FundLevel = () => {
 const LearnAndEarn = () => {
     const { claimRewardForLevels } = useLearnAndEarn();
 
+    async function signParams(): Promise<string> {
+        const wallet = new Wallet('----');
+		const encoded = defaultAbiCoder.encode(
+			["address", "uint256", "uint256"],
+			['0x7110b4df915cb92f53bc01cc9ab15f51e5dbb52f', 11, '175000000000000000000']
+		);
+		const hash = keccak256(encoded);
+
+		return wallet.signMessage(arrayify(hash));
+	}
+
     const handleClaim = async (event: any) => {
         // change values at will. Test purposes only
-        const signature = 'xpto';
-        await claimRewardForLevels('0x7110b4Df915cb92F53Bc01cC9Ab15F51e5DBb52F', [12], [35], [signature]);
+        const signature = await signParams();
+        await claimRewardForLevels('0x7110b4Df915cb92F53Bc01cC9Ab15F51e5DBb52F', [11], [175], [signature]);
         event.preventDefault();
     };
 
