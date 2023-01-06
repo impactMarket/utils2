@@ -97,6 +97,7 @@
         "react": "^17.0.2"
     },
     "dependencies": {
+        "@caskprotocol/sdk": "^1.5.3",
         "@celo/connect": "2.3.0"
     }
 }

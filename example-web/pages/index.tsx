@@ -13,6 +13,7 @@ import { ImpactProvider } from '@impact-market/utils/ImpactProvider';
 import Signatures from './components/Signatures';
 import Airdrop from './components/Airdrop';
 import LearnAndEarn from './components/LearnAndEarn';
+import CaskFi from './components/CaskFi';
 
 const components = [
     { label: 'Get wallets balance', component: WalletsBalance },
@@ -24,12 +25,13 @@ const components = [
     { label: 'ImpactMarketCouncil', component: ImpactMarketCouncil },
     { label: 'Signatures', component: Signatures },
     { label: 'Airdrop', component: Airdrop },
-    { label: 'LearnAndEarn', component: LearnAndEarn }
+    { label: 'LearnAndEarn', component: LearnAndEarn },
+    { label: 'CaskFi', component: CaskFi }
 ];
 
 const options = components.map(({ label }) => label);
 
-const initialOption = options[9];
+const initialOption = options[10];
 
 const network = Alfajores;
 
