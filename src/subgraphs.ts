@@ -101,6 +101,7 @@ class ImpactMarketSubgraph {
         incrementInterval?: number;
         beneficiaries?: number;
         state?: number;
+        maxBeneficiaries?: number;
     }> {
         const result = await this.client.query({
             query: gql`

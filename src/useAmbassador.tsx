@@ -5,7 +5,7 @@ import React from 'react';
 import type { CeloTxReceipt } from '@celo/connect';
 
 export const useAmbassador = () => {
-    const { connection, address, provider } = React.useContext(ImpactProviderContext);
+    const { connection, address, provider, subgraph } = React.useContext(ImpactProviderContext);
     const executeTransaction = internalUseTransaction();
 
     /**
@@ -111,9 +111,12 @@ export const useAmbassador = () => {
         if (!connection || !address) {
             throw new Error('No connection');
         }
-        const max = await communityContract(communityAddress, provider).maxBeneficiaries();
+        const max = await subgraph.getCommunityData(
+            communityAddress,
+            '{ maxBeneficiaries }'
+        );
 
-        return max.toNumber();
+        return max.maxBeneficiaries!;
     };
 
     /**
