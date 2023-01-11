@@ -1,6 +1,6 @@
 {
     "name": "@impact-market/utils",
-    "version": "3.2.4",
+    "version": "3.2.5",
     "description": "impactMarket utils",
     "repository": {
         "type": "git",
@@ -28,8 +28,8 @@
         "ethers-wrapper"
     ],
     "scripts": {
-        "build": "rm *.js *.js.map *.d.ts.map *.d.ts && tsc",
         "build:clean": "rm *.js *.js.map *.d.ts.map *.d.ts",
+        "build": "yarn build:clean && tsc",
         "start": "tsc -w",
         "test": "jest",
         "coverage": "jest --coverage --coverageReporters=html",
