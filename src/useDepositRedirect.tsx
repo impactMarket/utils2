@@ -8,7 +8,7 @@ import { toToken } from './toToken';
 import BaseERC20ABI from './abi/BaseERC20.json';
 import React, { useEffect } from 'react';
 
-type UserDeposit = (UserDepositAsset & { availableInterest: number });
+type UserDeposit = UserDepositAsset & { availableInterest: number };
 
 export const useDepositRedirect = () => {
     const { provider, address, connection, networkId, subgraph } = React.useContext(ImpactProviderContext);
@@ -33,7 +33,7 @@ export const useDepositRedirect = () => {
         const response = await executeTransaction(tx);
 
         return response;
-    }
+    };
 
     /**
      * Deposit token
@@ -107,19 +107,19 @@ export const useDepositRedirect = () => {
             if (!address || !connection) {
                 throw new Error('No wallet connected');
             }
-    
+
             const { depositRedirect } = getContracts(provider, networkId);
-            
+
             const rawUserDeposits = await subgraph.getUserDeposits(address);
             const userDeposits_: UserDeposit[] = [];
 
             for (let index = 0; index < rawUserDeposits.length; index++) {
                 const { asset, deposited } = rawUserDeposits[index];
                 const availableInterest = await depositRedirect.interest(address, asset, toToken(deposited));
-            
+
                 userDeposits_.push({
                     ...rawUserDeposits[index],
-                    availableInterest: toNumber(availableInterest.toString()),
+                    availableInterest: toNumber(availableInterest.toString())
                 });
             }
 

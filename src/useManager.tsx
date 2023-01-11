@@ -183,7 +183,10 @@ export const useManager = (communityAddress: string) => {
                     _communityContract.baseInterval(),
                     _communityContract.lastFundRequest(),
                     cusd.balanceOf(communityAddress),
-                    subgraph.getCommunityData(communityAddress, '{ baseInterval, claimAmount, beneficiaries, maxBeneficiaries }')
+                    subgraph.getCommunityData(
+                        communityAddress,
+                        '{ baseInterval, claimAmount, beneficiaries, maxBeneficiaries }'
+                    )
                 ]);
 
             if (parseInt(lastFundRequest, 10) === 0) {

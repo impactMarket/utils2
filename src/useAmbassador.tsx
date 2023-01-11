@@ -111,10 +111,7 @@ export const useAmbassador = () => {
         if (!connection || !address) {
             throw new Error('No connection');
         }
-        const max = await subgraph.getCommunityData(
-            communityAddress,
-            '{ maxBeneficiaries }'
-        );
+        const max = await subgraph.getCommunityData(communityAddress, '{ maxBeneficiaries }');
 
         return max.maxBeneficiaries!;
     };
