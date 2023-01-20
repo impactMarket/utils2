@@ -4,7 +4,7 @@ import WalletsBalance from './components/WalletsBalance';
 import DaoBreakdown from './components/DaoBreakdown';
 import DaoHooks from './components/DaoHooks';
 import { Alfajores, useCelo, useProviderOrSigner } from '@celo/react-celo';
-import { JsonRpcProvider } from '@ethersproject/providers';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import PACTMetrics from './components/PACTMetrics';
 import Community from './components/Community';
 import Staking from './components/Staking';
@@ -35,7 +35,7 @@ const initialOption = options[9];
 
 const network = Alfajores;
 
-const provider = new JsonRpcProvider(network.rpcUrl);
+const provider = new StaticJsonRpcProvider(network.rpcUrl);
 function App() {
     const signer = useProviderOrSigner();
     // const provider = useProvider();

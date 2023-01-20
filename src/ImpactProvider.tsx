@@ -1,5 +1,5 @@
 import { ApolloCache } from '@apollo/client/cache/core/cache';
-import { BaseProvider, JsonRpcProvider } from '@ethersproject/providers';
+import { BaseProvider, StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Connection } from '@celo/connect';
 import { ImpactMarketSubgraph, ImpactMarketUBIManagementSubgraph } from './subgraphs';
 import { NormalizedCacheObject } from '@apollo/client/cache/inmemory/types';
@@ -252,7 +252,7 @@ export const ImpactProvider = (props: ProviderProps) => {
                 connection,
                 defaultFeeCurrency,
                 networkId,
-                provider: new JsonRpcProvider(jsonRpc),
+                provider: new StaticJsonRpcProvider(jsonRpc),
                 subgraph: new ImpactMarketSubgraph(networkId, apolloClientOptions),
                 ubiManagementSubgraph: new ImpactMarketUBIManagementSubgraph(connection, networkId, apolloClientOptions)
             }}
