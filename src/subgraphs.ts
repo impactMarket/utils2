@@ -9,6 +9,18 @@ import {
     ubiManagementSubgraphCeloMainnet
 } from './config';
 
+type UserDepositAsset = {
+    asset: string;
+    deposited: string;
+    interest: string;
+};
+
+type DepositRedirectToken = {
+    id: string;
+    deposited: string;
+    interest: string;
+};
+
 const defaultRetryOptions: RetryLink.Options = {
     attempts: {
         max: 15,
@@ -89,6 +101,7 @@ class ImpactMarketSubgraph {
         incrementInterval?: number;
         beneficiaries?: number;
         state?: number;
+        maxBeneficiaries?: number;
     }> {
         const result = await this.client.query({
             query: gql`
@@ -99,6 +112,40 @@ class ImpactMarketSubgraph {
         });
 
         return result.data.communityEntity;
+    }
+
+    async getDepositRedirectTokens(): Promise<DepositRedirectToken[]> {
+        const result = await this.client.query({
+            query: gql`
+                {
+                    depositRedirectTokens(where: { active: true }) {
+                        id
+                        deposited
+                        interest
+                    }
+                }
+            `
+        });
+
+        return result.data.depositRedirectTokens;
+    }
+
+    async getUserDeposits(depositorAddress: string): Promise<UserDepositAsset[]> {
+        const result = await this.client.query({
+            query: gql`
+                {
+                    depositor(id: "${depositorAddress.toLowerCase()}") {
+                        assets {
+                            asset
+                            deposited
+                            interest
+                        }
+                    }
+                }
+                `
+        });
+
+        return result.data.depositor?.assets || [];
     }
 }
 class ImpactMarketUBIManagementSubgraph {
@@ -204,4 +251,4 @@ class ImpactMarketUBIManagementSubgraph {
     }
 }
 
-export { ImpactMarketSubgraph, ImpactMarketUBIManagementSubgraph };
+export { ImpactMarketSubgraph, ImpactMarketUBIManagementSubgraph, UserDepositAsset };

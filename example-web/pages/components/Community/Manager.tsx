@@ -3,7 +3,7 @@ import { useManager } from '@impact-market/utils/useManager';
 
 const Beneficiary = () => {
     const [beneficiaryAddress, setBeneficiaryAddress] = React.useState('');
-    const { addBeneficiary, canRequestFunds, requestFunds, nextRequestFundsAvailability, canUsersBeBeneficiaries } =
+    const { addBeneficiary, canRequestFunds, community, requestFunds, nextRequestFundsAvailability, canUsersBeBeneficiaries } =
         useManager('0x13d9d460Bf4bbEE7c3ab53a29c5f23AeC64F8CB6');
 
     const handleAddBeneficiary = () => {
@@ -35,6 +35,8 @@ const Beneficiary = () => {
     return (
         <>
             <h2>Manager</h2>
+            <h3>community</h3>
+            <pre>{JSON.stringify(community)}</pre>
             <h3>add beneficiary</h3>
             <AddBeneficiaryComponent />
             <h3>request funds</h3>

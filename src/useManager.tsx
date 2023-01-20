@@ -17,8 +17,10 @@ export const useManager = (communityAddress: string) => {
     const [canRequestFunds, setCanRequestFunds] = useState(false);
     const [community, setCommunity] = useState<{
         hasFunds: boolean;
+        maxBeneficiaries: number;
     }>({
-        hasFunds: false
+        hasFunds: false,
+        maxBeneficiaries: 0
     });
     const executeTransaction = internalUseTransaction();
 
@@ -181,7 +183,10 @@ export const useManager = (communityAddress: string) => {
                     _communityContract.baseInterval(),
                     _communityContract.lastFundRequest(),
                     cusd.balanceOf(communityAddress),
-                    subgraph.getCommunityData(communityAddress, '{ baseInterval, claimAmount, beneficiaries }')
+                    subgraph.getCommunityData(
+                        communityAddress,
+                        '{ baseInterval, claimAmount, beneficiaries, maxBeneficiaries }'
+                    )
                 ]);
 
             if (parseInt(lastFundRequest, 10) === 0) {
@@ -207,7 +212,8 @@ export const useManager = (communityAddress: string) => {
             );
             setCommunity(c => ({
                 ...c,
-                hasFunds: toNumber(communityBalance) > parseFloat(communityGraph.claimAmount!)
+                hasFunds: toNumber(communityBalance) > parseFloat(communityGraph.claimAmount!),
+                maxBeneficiaries: communityGraph.maxBeneficiaries!
             }));
             setIsReady(true);
         };

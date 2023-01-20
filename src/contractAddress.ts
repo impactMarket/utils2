@@ -8,6 +8,7 @@ type Contracts = {
     DonationMiner: string;
     CommunityAdmin: string;
     LearnAndEarn: string;
+    DepositRedirect: string;
     PACTDelegate: string;
     PACTDelegator: string;
     PACTToken: string;
@@ -26,6 +27,7 @@ export const ContractAddresses = new Map<number, Contracts>([
             Ambassadors: '0xF7f1675e5A6fa5D2dd4F3b534a59B5B6Ef866221',
             CELO: '0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9',
             CommunityAdmin: '0x1c33D75bcE52132c7a0e220c1C338B9db7cf3f3A',
+            DepositRedirect: '0x11cB7F0E3a3A06Fe07173c33657CD1c599f7a783',
             DonationMiner: '0x09Cdc8f50994F63103bc165B139631A6ad18EF49',
             IDO: '0x0000000000000000000000000000000000000000',
             ImpactLabs: '0x60c631E7FB4224ad3C0E4BdA0610Dd10CE77756b',
@@ -48,6 +50,7 @@ export const ContractAddresses = new Map<number, Contracts>([
             Ambassadors: '0x25f58d8C2522dC7E0C53cF8163C837De2415Ba51',
             CELO: '0x471EcE3750Da237f93B8E339c536989b8978a438',
             CommunityAdmin: '0xd61c407c3A00dFD8C355973f7a14c55ebaFDf6F9',
+            DepositRedirect: '.........',
             DonationMiner: '0x1C51657af2ceBA3D5492bA0c5A17E562F7ba6593',
             IDO: '0xBbA4ED9462ABDb4010Bb12881895fb1E77284B6b',
             ImpactLabs: '0x767DA1d208DDA5bc517dcd4ba2A83591D68A5535',

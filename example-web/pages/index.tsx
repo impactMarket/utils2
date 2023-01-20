@@ -12,6 +12,7 @@ import ImpactMarketCouncil from './components/ImpactMarketCouncil';
 import { ImpactProvider } from '@impact-market/utils/ImpactProvider';
 import Signatures from './components/Signatures';
 import Airdrop from './components/Airdrop';
+import DepositRedirect from './components/DepositRedirect';
 import LearnAndEarn from './components/LearnAndEarn';
 
 const components = [
@@ -24,6 +25,7 @@ const components = [
     { label: 'ImpactMarketCouncil', component: ImpactMarketCouncil },
     { label: 'Signatures', component: Signatures },
     { label: 'Airdrop', component: Airdrop },
+    { label: 'DepositRedirect', component: DepositRedirect },
     { label: 'LearnAndEarn', component: LearnAndEarn }
 ];
 

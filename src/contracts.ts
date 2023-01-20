@@ -2,7 +2,9 @@ import { Contract } from '@ethersproject/contracts';
 import { ContractAddresses } from './contractAddress';
 import AmbassadorsABI from './abi/Ambassadors.json';
 import BaseERC20ABI from './abi/BaseERC20.json';
+import BigNumber from 'bignumber.js';
 import CommunityAdminABI from './abi/CommunityAdminABI.json';
+import DepositRedirectABI from './abi/DepositRedirectABI.json';
 import DonationMinerABI from './abi/DonationMiner.json';
 import ImpactMarketCouncilABI from './abi/ImpactMarketCouncil.json';
 import LearnAndEarnABI from './abi/LearnAndEarnABI.json';
@@ -22,6 +24,18 @@ export interface ILearnAndEarn extends Contract {
         signatures: string[]
     ): Promise<void>;
 }
+export interface IDepositRedirect extends Contract {
+    tokenListLength(): Promise<BigNumber>;
+    tokenListAt(index: number): Promise<string>;
+    tokenDepositor(
+        tokenAddress: string,
+        depositorAddress: string
+    ): Promise<{ amount: BigNumber; scaledBalance: BigNumber }>;
+    deposit(tokenAddress: string, amount: string): Promise<void>;
+    withdraw(tokenAddress: string, amount: string): Promise<void>;
+    donateInterest(depositorAddress: string, tokenAddress: string, amount: string): Promise<void>;
+    interest(depositorAddress: string, tokenAddress: string, amount: string): Promise<any>;
+}
 
 export const getContracts = (provider: BaseProvider, networkId: number) => {
     const contractAddresses = ContractAddresses.get(networkId)!;
@@ -30,6 +44,7 @@ export const getContracts = (provider: BaseProvider, networkId: number) => {
         Ambassadors,
         CommunityAdmin,
         LearnAndEarn,
+        DepositRedirect,
         cUSD,
         cEUR,
         CELO,
@@ -52,6 +67,7 @@ export const getContracts = (provider: BaseProvider, networkId: number) => {
         cusd: cUSD || '',
         delegate: PACTDelegate || '',
         delegator: PACTDelegator || '',
+        depositRedirect: DepositRedirect || '',
         donationMiner: DonationMiner || '',
         impactMarketCouncil: ImpactMarketCouncil || '',
         learnAndEarn: LearnAndEarn || '',
@@ -86,6 +102,8 @@ export const getContracts = (provider: BaseProvider, networkId: number) => {
 
     const learnAndEarn = new Contract(addresses.learnAndEarn, LearnAndEarnABI, provider) as ILearnAndEarn;
 
+    const depositRedirect = new Contract(addresses.depositRedirect, DepositRedirectABI, provider) as IDepositRedirect;
+
     const treasury = new Contract(addresses.treasury, TreasuryABI, provider);
 
     const communityAdmin = new Contract(addresses.communityAdmin, CommunityAdminABI, provider);
@@ -98,6 +116,7 @@ export const getContracts = (provider: BaseProvider, networkId: number) => {
         communityAdmin,
         cusd,
         delegate,
+        depositRedirect,
         donationMiner,
         impactMarketCouncil,
         learnAndEarn,
