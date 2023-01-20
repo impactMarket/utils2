@@ -17,6 +17,32 @@ export const useDepositRedirect = () => {
     const [isReady, setIsReady] = React.useState(false);
 
     /**
+     * Private method to fetch user deposits
+     * @returns {Promise<UserDeposit[]>} void
+     */
+    const _fetchUserDeposits = async () => {
+        if (!address || !connection) {
+            throw new Error('No wallet connected');
+        }
+
+        const { depositRedirect } = getContracts(provider, networkId);
+        const rawUserDeposits = await subgraph.getUserDeposits(address);
+        const userDeposits_: UserDeposit[] = [];
+
+        for (let index = 0; index < rawUserDeposits.length; index++) {
+            const { asset, deposited } = rawUserDeposits[index];
+            const availableInterest = await depositRedirect.interest(address, asset, toToken(deposited));
+
+            userDeposits_.push({
+                ...rawUserDeposits[index],
+                availableInterest: toNumber(availableInterest.toString())
+            });
+        }
+
+        return userDeposits_;
+    };
+
+    /**
      * Approve token for deposit
      * @param {string} token token to approve
      * @param {string} amount amount to approve
@@ -75,17 +101,27 @@ export const useDepositRedirect = () => {
      * Donate interest token
      * @param {string} depositor user who's donating interest
      * @param {string} token token interest to be donated
-     * @param {string} amount amount of interest to be donate
      * @returns {Promise<CeloTxReceipt>} tx details
      */
-    const donateInterest = async (depositor: string, token: string, amount: string) => {
+    const donateInterest = async (depositor: string, token: string) => {
         if (!address || !connection) {
             throw new Error('No wallet connected');
         }
 
         const { depositRedirect } = getContracts(provider, networkId);
-        const tx = await depositRedirect.populateTransaction.donateInterest(depositor, token, toToken(amount));
+        const { amount } = await depositRedirect.tokenDepositor(token, depositor);
+        const tx = await depositRedirect.populateTransaction.donateInterest(depositor, token, amount);
         const response = await executeTransaction(tx);
+
+        setIsReady(false);
+        setTimeout(
+            () =>
+                _fetchUserDeposits().then(d => {
+                    setUserDeposits(d);
+                    setIsReady(true);
+                }),
+            1000
+        );
 
         return response;
     };
@@ -104,26 +140,7 @@ export const useDepositRedirect = () => {
 
     useEffect(() => {
         const load = async () => {
-            if (!address || !connection) {
-                throw new Error('No wallet connected');
-            }
-
-            const { depositRedirect } = getContracts(provider, networkId);
-
-            const rawUserDeposits = await subgraph.getUserDeposits(address);
-            const userDeposits_: UserDeposit[] = [];
-
-            for (let index = 0; index < rawUserDeposits.length; index++) {
-                const { asset, deposited } = rawUserDeposits[index];
-                const availableInterest = await depositRedirect.interest(address, asset, toToken(deposited));
-
-                userDeposits_.push({
-                    ...rawUserDeposits[index],
-                    availableInterest: toNumber(availableInterest.toString())
-                });
-            }
-
-            setUserDeposits(userDeposits_);
+            setUserDeposits(await _fetchUserDeposits());
             setIsReady(true);
         };
 

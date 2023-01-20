@@ -1,9 +1,11 @@
 import React from 'react';
 import WalletConnection from '../WalletConnection';
 import { useDepositRedirect } from '@impact-market/utils/useDepositRedirect';
+import { useCelo } from '@celo/react-celo';
 
 function DepositRedirect() {
-    const { approve, deposit, userDeposits } = useDepositRedirect();
+    const { address } = useCelo();
+    const { approve, deposit, userDeposits, donateInterest } = useDepositRedirect();
     const [amount, setAmount] = React.useState('');
 
     const handleDeposit = async () => {
@@ -12,12 +14,17 @@ function DepositRedirect() {
         await deposit(token, amount);
     };
 
+    const handleDonateInterest = async (token: string) => {
+        await donateInterest(address!, token)
+    }
+
     return (
         <>
             <h3>Details</h3>
+            <p>Click on list item to redirect interest</p>
             <ul>
                 {userDeposits.map(({ asset, deposited, interest, availableInterest }) => (
-                    <li key={asset}>
+                    <li key={asset} onClick={() => handleDonateInterest(asset)}>
                         Asset: {asset} | Deposited: {deposited} | Interest Donated: {interest} | Available Interest: {availableInterest}
                     </li>
                 ))}
