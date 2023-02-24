@@ -37,19 +37,16 @@ export const internalUseTransaction = () => {
         };
         const txResponse = await connection.sendTransaction(txParams);
 
-        // TODO: short lived debug, to be removed
-        console.log({ tx, txParams });
-
         try {
             if (typeof document !== 'undefined') {
                 // I'm on the web!
-                import('@sentry/nextjs').then((SentryNextJS) => {
-                    SentryNextJS.addBreadcrumb({
-                        category: 'blockchain',
-                        level: 'info',
-                        message: JSON.stringify({ tx, txParams })
-                    });
-                });
+                // import('@sentry/nextjs').then((SentryNextJS) => {
+                //     SentryNextJS.addBreadcrumb({
+                //         category: 'blockchain',
+                //         level: 'info',
+                //         message: JSON.stringify({ tx, txParams })
+                //     });
+                // });
             } else {
                 // import('@sentry/react-native').then((SentryReactNative) => SentryReactNative.addBreadcrumb({
                 //     category: 'blockchain',
