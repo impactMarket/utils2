@@ -50,7 +50,7 @@ export const ContractAddresses = new Map<number, Contracts>([
             Ambassadors: '0x25f58d8C2522dC7E0C53cF8163C837De2415Ba51',
             CELO: '0x471EcE3750Da237f93B8E339c536989b8978a438',
             CommunityAdmin: '0xd61c407c3A00dFD8C355973f7a14c55ebaFDf6F9',
-            DepositRedirect: '.........',
+            DepositRedirect: '0x0A547bdE3FB47Bd59A78B0A285dB07C3Fce8b8B6',
             DonationMiner: '0x1C51657af2ceBA3D5492bA0c5A17E562F7ba6593',
             IDO: '0xBbA4ED9462ABDb4010Bb12881895fb1E77284B6b',
             ImpactLabs: '0x767DA1d208DDA5bc517dcd4ba2A83591D68A5535',

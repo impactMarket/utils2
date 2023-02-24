@@ -3,12 +3,12 @@ import { ImpactProviderContext } from './ImpactProvider';
 import { UserDepositAsset } from './subgraphs';
 import { getContracts } from './contracts';
 import { internalUseTransaction } from './internalUseTransaction';
-import { toNumber } from './toNumber';
+import { toBigNumber } from './toNumber';
 import { toToken } from './toToken';
 import BaseERC20ABI from './abi/BaseERC20.json';
 import React, { useEffect } from 'react';
 
-type UserDeposit = UserDepositAsset & { availableInterest: number };
+type UserDeposit = UserDepositAsset & { availableInterest: string };
 
 export const useDepositRedirect = () => {
     const { provider, address, connection, networkId, subgraph } = React.useContext(ImpactProviderContext);
@@ -35,7 +35,7 @@ export const useDepositRedirect = () => {
 
             userDeposits_.push({
                 ...rawUserDeposits[index],
-                availableInterest: toNumber(availableInterest.toString())
+                availableInterest: toBigNumber(availableInterest.toString())
             });
         }
 
