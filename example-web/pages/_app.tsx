@@ -1,16 +1,17 @@
 import '@celo/react-celo/lib/styles.css';
 import type { AppProps } from 'next/app';
-import { Alfajores, CeloProvider, SupportedProviders } from '@celo/react-celo';
+import { Alfajores, CeloProvider, Mainnet, SupportedProviders } from '@celo/react-celo';
 
 function MyApp({ Component, pageProps }: AppProps) {
     return (
         <CeloProvider
-            defaultNetwork={Alfajores.name}
+            defaultNetwork={Mainnet.name}
             dapp={{
                 name: 'My awesome dApp',
                 description: 'My awesome description',
                 url: 'https://example.com',
-                icon: ''
+                icon: '',
+                walletConnectProjectId: 'e14be5c27cfd796596686bdc6876e836'
             }}
             connectModal={{
                 providersOptions: {

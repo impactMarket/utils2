@@ -3,7 +3,7 @@ import Intro from './components/Intro';
 import WalletsBalance from './components/WalletsBalance';
 import DaoBreakdown from './components/DaoBreakdown';
 import DaoHooks from './components/DaoHooks';
-import { Alfajores, useCelo, useProviderOrSigner } from '@celo/react-celo';
+import { Alfajores, Mainnet, useCelo, useProviderOrSigner } from '@celo/react-celo';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import PACTMetrics from './components/PACTMetrics';
 import Community from './components/Community';
@@ -33,7 +33,7 @@ const options = components.map(({ label }) => label);
 
 const initialOption = options[9];
 
-const network = Alfajores;
+const network = Mainnet;
 
 const provider = new StaticJsonRpcProvider(network.rpcUrl);
 function App() {
