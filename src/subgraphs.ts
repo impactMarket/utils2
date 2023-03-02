@@ -1,5 +1,5 @@
 import { ApolloCache, ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject, from, gql } from '@apollo/client';
-import { Connection } from '@celo/connect';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { RetryLink } from '@apollo/client/link/retry';
 import {
     networksId,
@@ -150,10 +150,10 @@ class ImpactMarketSubgraph {
 }
 class ImpactMarketUBIManagementSubgraph {
     private client: ApolloClient<NormalizedCacheObject>;
-    private connection: Connection;
+    private provider: JsonRpcProvider;
 
     constructor(
-        connection: Connection,
+        provider: JsonRpcProvider,
         networkId = networksId.CeloAlfajores,
         options?: { retry?: RetryLink.Options; cache?: ApolloCache<NormalizedCacheObject> }
     ) {
@@ -169,7 +169,7 @@ class ImpactMarketUBIManagementSubgraph {
             cache: options?.cache || new InMemoryCache(),
             link: from([retry, http])
         });
-        this.connection = connection;
+        this.provider = provider;
     }
 
     async getProposals(
@@ -192,7 +192,7 @@ class ImpactMarketUBIManagementSubgraph {
             status: 'canceled' | 'executed' | 'ready' | 'defeated' | 'expired' | 'active';
         }[]
     > {
-        const blockNumber = await this.connection.getBlockNumber();
+        const blockNumber = await this.provider.getBlockNumber();
         const result = await this.client.query({
             query: gql`
                 {

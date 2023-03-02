@@ -11,7 +11,7 @@ import React, { useEffect } from 'react';
 type UserDeposit = UserDepositAsset & { availableInterest: number };
 
 export const useDepositRedirect = () => {
-    const { provider, address, connection, networkId, subgraph } = React.useContext(ImpactProviderContext);
+    const { provider, address, signer, networkId, subgraph } = React.useContext(ImpactProviderContext);
     const executeTransaction = internalUseTransaction();
     const [userDeposits, setUserDeposits] = React.useState<UserDeposit[]>([]);
     const [isReady, setIsReady] = React.useState(false);
@@ -21,7 +21,7 @@ export const useDepositRedirect = () => {
      * @returns {Promise<UserDeposit[]>} void
      */
     const _fetchUserDeposits = async () => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -49,7 +49,7 @@ export const useDepositRedirect = () => {
      * @returns {Promise<CeloTxReceipt>} tx details
      */
     const approve = async (token: string, amount: string) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -68,7 +68,7 @@ export const useDepositRedirect = () => {
      * @returns {Promise<CeloTxReceipt>} tx details
      */
     const deposit = async (token: string, amount: string) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -86,7 +86,7 @@ export const useDepositRedirect = () => {
      * @returns {Promise<CeloTxReceipt>} tx details
      */
     const withdraw = async (token: string, amount: string) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -104,7 +104,7 @@ export const useDepositRedirect = () => {
      * @returns {Promise<CeloTxReceipt>} tx details
      */
     const donateInterest = async (depositor: string, token: string) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -131,8 +131,8 @@ export const useDepositRedirect = () => {
      * @returns {Promise<DepositRedirectToken[]>} list of tokens that can be deposited
      */
     const listTokens = () => {
-        if (!connection) {
-            throw new Error('No connection');
+        if (!signer) {
+            throw new Error('No signer');
         }
 
         return subgraph.getDepositRedirectTokens();

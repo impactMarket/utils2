@@ -56,7 +56,7 @@ export const useBeneficiary = (communityAddress: string) => {
     const [claimCooldown, setClaimCooldown] = useState(0);
     const [contract, setContract] = useState<Contract | null>(null);
     const [fundsRemainingDays, setFundsRemainingDays] = useState<number>(0);
-    const { connection, provider, address, subgraph, networkId } = React.useContext(ImpactProviderContext);
+    const { signer, provider, address, subgraph, networkId } = React.useContext(ImpactProviderContext);
     const currentBlockNumber = useBlockNumber();
     const executeTransaction = internalUseTransaction();
 
@@ -142,7 +142,7 @@ export const useBeneficiary = (communityAddress: string) => {
      * ```
      */
     const claim = async () => {
-        if (!contract || !connection || !address) {
+        if (!contract || !signer || !address) {
             throw new Error('No connection');
         }
         const tx = await contract.populateTransaction.claim();
@@ -166,7 +166,7 @@ export const useBeneficiary = (communityAddress: string) => {
      * @returns {Promise<void>} void
      */
     const refetch = async () => {
-        if (!contract || !connection || !address) {
+        if (!contract || !signer || !address) {
             throw new Error('No connection');
         }
         const _cooldown = await contract.claimCooldown(address);
@@ -192,7 +192,7 @@ export const useBeneficiary = (communityAddress: string) => {
         };
 
         // make sure it's valid!
-        if (address && connection && provider && communityAddress && currentBlockNumber !== 0) {
+        if (address && signer && provider && communityAddress && currentBlockNumber !== 0) {
             const contract_ = communityContract(communityAddress, provider);
 
             setContract(contract_);
