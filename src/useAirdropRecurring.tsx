@@ -22,7 +22,7 @@ export interface AirdropRecurring extends Contract {
  * @returns {any} Claim function and details
  */
 export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
-    const { provider, address, connection, networkId } = React.useContext(ImpactProviderContext);
+    const { provider, address, signer, networkId } = React.useContext(ImpactProviderContext);
     const { setBalance: setPACTBalance } = React.useContext(PACTBalanceContext);
     const [amountClaimed, setAmountClaimed] = useState(0);
     const [totalAmount, setTotalAmount] = useState(0);
@@ -67,7 +67,7 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
      * @returns {ethers.ContractReceipt} tx response object
      */
     const claim = async (proofs: string[]) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 

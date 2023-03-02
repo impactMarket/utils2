@@ -32,7 +32,7 @@ export const updateRewards = async (provider: BaseProvider, networkId: number, a
 };
 
 export const useRewards = () => {
-    const { connection, provider, address, networkId } = React.useContext(ImpactProviderContext);
+    const { signer, provider, address, networkId } = React.useContext(ImpactProviderContext);
     const { setBalance } = React.useContext(PACTBalanceContext);
     const { rewards, setRewards } = React.useContext(RewardsContext);
     const executeTransaction = internalUseTransaction();
@@ -42,8 +42,8 @@ export const useRewards = () => {
      * @returns {ethers.TransactionReceipt} transaction response object
      */
     const claim = async () => {
-        if (!connection || !address) {
-            throw new Error('No connection');
+        if (!signer || !address) {
+            throw new Error('No signer');
         }
         try {
             const { donationMiner } = getContracts(provider, networkId);

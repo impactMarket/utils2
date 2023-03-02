@@ -9,7 +9,7 @@ import { updatePACTBalance } from './usePACTBalance';
 import React, { useEffect } from 'react';
 
 export const useStaking = () => {
-    const { connection, address, provider, networkId } = React.useContext(ImpactProviderContext);
+    const { signer, address, provider, networkId } = React.useContext(ImpactProviderContext);
     const { setBalance } = React.useContext(PACTBalanceContext);
     const { staking, setStaking } = React.useContext(StakingContext);
     const executeTransaction = internalUseTransaction();
@@ -87,7 +87,7 @@ export const useStaking = () => {
      * ```
      */
     const stake = async (value: string | number) => {
-        if (!connection || !address) {
+        if (!signer || !address) {
             return;
         }
         const amount = toToken(value, { EXPONENTIAL_AT: 29 });
@@ -107,7 +107,7 @@ export const useStaking = () => {
      * @returns {ethers.ContractReceipt} transaction response object
      */
     const approve = async (value: string | number) => {
-        if (!connection || !address) {
+        if (!signer || !address) {
             return;
         }
         const amount = toToken(value, { EXPONENTIAL_AT: 29 });
@@ -131,7 +131,7 @@ export const useStaking = () => {
      * @returns {ethers.ContractReceipt} transaction response object
      */
     const stakeRewards = async () => {
-        if (!connection || !address) {
+        if (!signer || !address) {
             return;
         }
         const { donationMiner } = getContracts(provider, networkId);
@@ -149,7 +149,7 @@ export const useStaking = () => {
      * @returns {ethers.ContractReceipt} transaction response object
      */
     const unstake = async (value: string | number) => {
-        if (!connection || !address) {
+        if (!signer || !address) {
             return;
         }
         const amount = toToken(value, { EXPONENTIAL_AT: 29 });
@@ -167,7 +167,7 @@ export const useStaking = () => {
      * @returns {ethers.ContractReceipt} transaction response object
      */
     const claim = async () => {
-        if (!connection || !address) {
+        if (!signer || !address) {
             return;
         }
         const { staking } = getContracts(provider, networkId);
@@ -184,7 +184,7 @@ export const useStaking = () => {
      * @returns {any} user unstake details
      */
     const unstakingUserInfo = async () => {
-        if (!connection || !address) {
+        if (!signer || !address) {
             return;
         }
         const { staking } = getContracts(provider, networkId);
@@ -213,7 +213,7 @@ export const useStaking = () => {
     // Get stakeholder amount
     useEffect(() => {
         const getStakeholderAmount = async () => {
-            if (!connection) {
+            if (!signer) {
                 return;
             }
             const { donationMiner, staking, spact } = getContracts(provider, networkId);

@@ -1,7 +1,7 @@
 import { Interface } from '@ethersproject/abi';
-import type { CeloTxReceipt } from '@celo/connect';
+import { TransactionReceipt } from '@ethersproject/providers';
 
-export const filterEvent = (event: string, eventName: string, txResponse: CeloTxReceipt) => {
+export const filterEvent = (event: string, eventName: string, txResponse: TransactionReceipt) => {
     if (txResponse.logs === undefined) {
         throw new Error('no events');
     }

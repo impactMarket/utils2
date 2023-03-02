@@ -2,7 +2,6 @@ import { ContractAddresses } from './contractAddress';
 import { ImpactProviderContext } from './ImpactProvider';
 import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
 import { Web3Provider } from '@ethersproject/providers';
-import { hashMessage } from '@ethersproject/hash';
 import { hexlify } from '@ethersproject/bytes';
 import { networksId } from './config';
 import { toUtf8Bytes } from '@ethersproject/strings';
@@ -35,7 +34,7 @@ type SignatureOptions = {
 };
 
 export const useSignatures = () => {
-    const { connection, address, networkId } = React.useContext(ImpactProviderContext);
+    const { signer, networkId } = React.useContext(ImpactProviderContext);
 
     /**
      * Signs a given message.
@@ -45,17 +44,21 @@ export const useSignatures = () => {
      * @deprecated use `signTyped` instead
      */
     const signMessage = (message: string): Promise<string> => {
-        const connectionProvider = connection.web3.currentProvider as unknown as {
-            existingProvider: { isDesktop: boolean; _metamask?: unknown };
-        };
+        // const connectionProvider = signer.web3.currentProvider as unknown as {
+        //     existingProvider: { isDesktop: boolean; _metamask?: unknown };
+        // };
 
-        // it is not yet clear why, but metamask is not working with hexlify/toUtf8Bytes
+        // // it is not yet clear why, but metamask is not working with hexlify/toUtf8Bytes
 
-        if (connectionProvider.existingProvider.isDesktop || connectionProvider.existingProvider._metamask) {
-            return connection.sign(hashMessage(message), address!);
+        // if (connectionProvider.existingProvider.isDesktop || connectionProvider.existingProvider._metamask) {
+        //     return signer.signMessage(hashMessage(message));
+        // }
+
+        if (!signer) {
+            throw new Error('no valid signer connected');
         }
 
-        return connection.sign(hexlify(toUtf8Bytes(message)), address!);
+        return signer.signMessage(hexlify(toUtf8Bytes(message)));
     };
 
     /**
@@ -71,8 +74,8 @@ export const useSignatures = () => {
             options?.verifyingContract || ContractAddresses.get(networkId || networksId.CeloMainnet)!.PACTDelegator;
         const version = options?.version || '1';
 
-        const provider = new Web3Provider(connection.web3.currentProvider as any);
-        const signer = provider.getSigner();
+        const provider = new Web3Provider(signer!.provider! as any);
+        const pSigner = provider.getSigner();
 
         const domain: TypedDataDomain = {
             chainId: networkId,
@@ -91,7 +94,7 @@ export const useSignatures = () => {
             message
         };
 
-        return signer._signTypedData(domain, types, value);
+        return pSigner!._signTypedData(domain, types, value);
     };
 
     return { signMessage, signTypedData };

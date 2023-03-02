@@ -3,7 +3,7 @@ import { getContracts } from './contracts';
 import { useContext } from 'react';
 
 export const internalUseTransaction = () => {
-    const { connection, address, provider, networkId, defaultFeeCurrency } = useContext(ImpactProviderContext);
+    const { signer, address, provider, networkId, defaultFeeCurrency } = useContext(ImpactProviderContext);
 
     const executeTransaction = async (tx: { data?: string; from?: string; to?: string }) => {
         // TODO: improve gas price validation
@@ -27,14 +27,17 @@ export const internalUseTransaction = () => {
             };
         }
 
-        const txParams = {
+        if (!signer) {
+            throw new Error('no valid signer connected');
+        }
+
+        const txResponse = await signer.sendTransaction({
             data: tx.data,
             from: tx.from || address,
-            gasPrice,
+            // gasPrice,
             to: tx.to,
             ...feeTxParams
-        };
-        const txResponse = await connection.sendTransaction(txParams);
+        });
 
         try {
             if (typeof document !== 'undefined') {
@@ -55,7 +58,7 @@ export const internalUseTransaction = () => {
             }
         } catch (_) {}
 
-        return await txResponse.waitReceipt();
+        return await txResponse.wait();
     };
 
     return executeTransaction;

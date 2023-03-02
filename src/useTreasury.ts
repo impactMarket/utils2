@@ -10,15 +10,15 @@ type TokenArgs = {
 };
 
 export const useTreasury = () => {
-    const { connection, address, provider, networkId } = React.useContext(ImpactProviderContext);
+    const { signer, address, provider, networkId } = React.useContext(ImpactProviderContext);
 
     /**
      * Get list of available community tokens
      * @returns {Promise<{}[]>} array with name(symbol) and address of the available tokens
      */
     const getTokenList = async (): Promise<TokenArgs[]> => {
-        if (!connection || !address) {
-            throw new Error('No connection');
+        if (!signer || !address) {
+            throw new Error('No signer');
         }
 
         let token: TokenArgs;

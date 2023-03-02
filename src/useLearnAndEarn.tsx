@@ -9,7 +9,7 @@ import ImpactMarketCouncilABI from './abi/ImpactMarketCouncil.json';
 import React from 'react';
 
 export const useLearnAndEarn = () => {
-    const { provider, address, connection, networkId } = React.useContext(ImpactProviderContext);
+    const { provider, address, signer, networkId } = React.useContext(ImpactProviderContext);
     const executeTransaction = internalUseTransaction();
 
     /**
@@ -19,7 +19,7 @@ export const useLearnAndEarn = () => {
      * @returns {Promise<number>} proposal id
      */
     const addLevel = async (levelId: number, token: string) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -49,7 +49,7 @@ export const useLearnAndEarn = () => {
      * @returns {Promise<number>} proposal id
      */
     const pauseLevel = async (levelId: number) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -79,7 +79,7 @@ export const useLearnAndEarn = () => {
      * @returns {Promise<number>} proposal id
      */
     const unpauseLevel = async (levelId: number) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -110,7 +110,7 @@ export const useLearnAndEarn = () => {
      * @returns {Promise<number>} proposal id
      */
     const cancelLevel = async (levelId: number, fundRecipient: string) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -141,7 +141,7 @@ export const useLearnAndEarn = () => {
      * @returns {Promise<CeloTxReceipt>} tx response object
      */
     const fundLevel = async (levelId: number, amount: string) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -159,7 +159,7 @@ export const useLearnAndEarn = () => {
      * @returns {Promise<CeloTxReceipt>} tx response object
      */
     const approveToken = async (token: string, amount: string) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -185,7 +185,7 @@ export const useLearnAndEarn = () => {
         rewardAmounts: number[],
         signatures: string[]
     ) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 

@@ -1,10 +1,10 @@
 import React from 'react';
 import WalletConnection from '../WalletConnection';
 import { useDepositRedirect } from '@impact-market/utils/useDepositRedirect';
-import { useCelo } from '@celo/react-celo';
+import { ImpactMarketContext } from '../../../context';
 
 function DepositRedirect() {
-    const { address } = useCelo();
+    const { address } = React.useContext(ImpactMarketContext);
     const { approve, deposit, userDeposits, donateInterest } = useDepositRedirect();
     const [amount, setAmount] = React.useState('');
 
