@@ -31,7 +31,8 @@ export const useDepositRedirect = () => {
 
         for (let index = 0; index < rawUserDeposits.length; index++) {
             const { asset, deposited } = rawUserDeposits[index];
-            const availableInterest = await depositRedirect.interest(address, asset, toToken(deposited));
+            const availableInterest =
+                deposited === '0' ? '0' : await depositRedirect.interest(address, asset, toToken(deposited));
 
             userDeposits_.push({
                 ...rawUserDeposits[index],
