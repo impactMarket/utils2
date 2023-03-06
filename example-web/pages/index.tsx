@@ -34,22 +34,18 @@ const initialOption = options[9];
 
 function App() {
     const { address } = useAccount();
-    const { data: signer, isLoading } = useSigner();
+    const { data: signer } = useSigner();
     const { chain } = useNetwork();
     const [selectedOption, setSelectedOption] = useState<string>(initialOption);
 
     const Component = components.find(({ label }) => label === selectedOption)?.component;
 
-    if (!chain || isLoading) {
-        return null;
-    }
-
     return (
         <ImpactProvider
-            jsonRpc={chain.rpcUrls.public.http[0]}
+            jsonRpc={chain?.rpcUrls.public.http[0] ||  'https://alfajores-forno.celo-testnet.org'}
             signer={signer ?? null}
             address={address ?? null}
-            networkId={chain.id}
+            networkId={chain?.id || 44787}
             defaultFeeCurrency='CELO'
         >
             <Intro handleChange={setSelectedOption} initialOption={initialOption} options={options} />
