@@ -146,7 +146,7 @@ export const useDepositRedirect = () => {
         };
 
         load();
-    }, []);
+    }, [address]);
 
     return { approve, deposit, donateInterest, isReady, listTokens, userDeposits, withdraw };
 };
