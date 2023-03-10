@@ -28,13 +28,33 @@ export const internalUseTransaction = () => {
             };
         }
 
-        const txResponse = await connection.sendTransaction({
+        const txParams = {
             data: tx.data,
             from: tx.from || address,
             gasPrice,
             to: tx.to,
             ...feeTxParams
-        });
+        };
+        const txResponse = await connection.sendTransaction(txParams);
+
+        try {
+            if (typeof document !== 'undefined') {
+                // I'm on the web!
+                // import('@sentry/nextjs').then((SentryNextJS) => {
+                //     SentryNextJS.addBreadcrumb({
+                //         category: 'blockchain',
+                //         level: 'info',
+                //         message: JSON.stringify({ tx, txParams })
+                //     });
+                // });
+            } else {
+                // import('@sentry/react-native').then((SentryReactNative) => SentryReactNative.addBreadcrumb({
+                //     category: 'blockchain',
+                //     level: 'info',
+                //     message: JSON.stringify({ tx, txParams })
+                // }));
+            }
+        } catch (_) {}
 
         return await txResponse.waitReceipt();
     };

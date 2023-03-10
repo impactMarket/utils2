@@ -1,6 +1,6 @@
 {
     "name": "@impact-market/utils",
-    "version": "3.3.2",
+    "version": "3.3.3",
     "description": "impactMarket utils",
     "repository": {
         "type": "git",
@@ -44,14 +44,16 @@
     "devDependencies": {
         "@apollo/client": "3.6.9",
         "@babel/core": "7.18.10",
-        "@celo/contractkit": "2.3.0",
+        "@celo/contractkit": "3.2.0",
         "@celo/react-celo": "4.2.1",
         "@ethersproject/abi": "5.7.0",
         "@ethersproject/abstract-signer": "5.7.0",
         "@ethersproject/bytes": "5.7.0",
         "@ethersproject/contracts": "5.7.0",
-        "@ethersproject/providers": "5.7.1",
+        "@ethersproject/providers": "5.7.2",
         "@ethersproject/strings": "5.7.0",
+        "@sentry/nextjs": "7.37.2",
+        "@sentry/react-native": "4.14.0",
         "@testing-library/react": "12.1.5",
         "@testing-library/user-event": "14.4.2",
         "@types/chai": "4.3.1",
@@ -83,20 +85,22 @@
     },
     "peerDependencies": {
         "@apollo/client": "^3.6.9",
-        "@celo/contractkit": "2.3.0",
+        "@celo/contractkit": "3.2.0",
         "@celo/react-celo": "4.2.1",
         "@ethersproject/abi": "5.7.0",
         "@ethersproject/abstract-signer": "5.7.0",
         "@ethersproject/bytes": "5.7.0",
         "@ethersproject/contracts": "5.7.0",
-        "@ethersproject/providers": "5.7.1",
+        "@ethersproject/providers": "5.7.2",
         "@ethersproject/strings": "5.7.0",
         "axios": "^0.27.2",
         "bignumber.js": "^9.0.2",
         "graphql": "^16.5.0",
-        "react": "^17.0.2"
+        "react": "^17.0.2",
+        "@sentry/nextjs": "^7.37.2",
+        "@sentry/react-native": "^4.14.0"
     },
     "dependencies": {
-        "@celo/connect": "2.3.0"
+        "@celo/connect": "3.2.0"
     }
 }
