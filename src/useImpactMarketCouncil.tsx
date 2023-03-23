@@ -1,9 +1,9 @@
 import { BigNumber } from 'bignumber.js';
 import { ImpactProviderContext } from './ImpactProvider';
-import { Interface, defaultAbiCoder } from '@ethersproject/abi';
+import { defaultAbiCoder } from '@ethersproject/abi';
+import { filterEvent } from './filterEvent';
 import { getContracts } from './contracts';
 import { internalUseTransaction } from './internalUseTransaction';
-import ImpactMarketCouncilABI from './abi/ImpactMarketCouncil.json';
 import React, { useEffect, useState } from 'react';
 
 type BaseProposalArgs = {
@@ -142,10 +142,13 @@ export const useImpactMarketCouncil = () => {
             })
         );
         const response = await executeTransaction(tx);
-        const ifaceCouncil = new Interface(ImpactMarketCouncilABI);
+        const received = filterEvent(
+            'event ProposalCreated(uint256 id, address proposer, address[] targets, string[] signatures, bytes[] calldatas, uint256 endBlock, string description)',
+            'ProposalCreated',
+            response
+        );
 
-        // TODO: filter out events
-        return parseInt(ifaceCouncil.parseLog(response.logs[0]).args![0].toString(), 10);
+        return parseInt(received.args![0].toString(), 10);
     };
 
     /**
@@ -173,9 +176,13 @@ export const useImpactMarketCouncil = () => {
             })
         );
         const response = await executeTransaction(tx);
-        const ifaceCouncil = new Interface(ImpactMarketCouncilABI);
+        const received = filterEvent(
+            'event ProposalCreated(uint256 id, address proposer, address[] targets, string[] signatures, bytes[] calldatas, uint256 endBlock, string description)',
+            'ProposalCreated',
+            response
+        );
 
-        return parseInt(ifaceCouncil.parseLog(response.logs[0]).args![0].toString(), 10);
+        return parseInt(received.args![0].toString(), 10);
     };
 
     /**
@@ -204,9 +211,13 @@ export const useImpactMarketCouncil = () => {
             })
         );
         const response = await executeTransaction(tx);
-        const ifaceCouncil = new Interface(ImpactMarketCouncilABI);
+        const received = filterEvent(
+            'event ProposalCreated(uint256 id, address proposer, address[] targets, string[] signatures, bytes[] calldatas, uint256 endBlock, string description)',
+            'ProposalCreated',
+            response
+        );
 
-        return parseInt(ifaceCouncil.parseLog(response.logs[0]).args![0].toString(), 10);
+        return parseInt(received.args![0].toString(), 10);
     };
 
     /**
@@ -257,9 +268,13 @@ export const useImpactMarketCouncil = () => {
             })
         );
         const response = await executeTransaction(tx);
-        const ifaceCouncil = new Interface(ImpactMarketCouncilABI);
+        const received = filterEvent(
+            'event ProposalCreated(uint256 id, address proposer, address[] targets, string[] signatures, bytes[] calldatas, uint256 endBlock, string description)',
+            'ProposalCreated',
+            response
+        );
 
-        return parseInt(ifaceCouncil.parseLog(response.logs[0]).args![0].toString(), 10);
+        return parseInt(received.args![0].toString(), 10);
     };
 
     /**
@@ -392,10 +407,13 @@ export const useImpactMarketCouncil = () => {
             })
         );
         const response = await executeTransaction(tx);
-        const ifaceCouncil = new Interface(ImpactMarketCouncilABI);
+        const received = filterEvent(
+            'event ProposalCreated(uint256 id, address proposer, address[] targets, string[] signatures, bytes[] calldatas, uint256 endBlock, string description)',
+            'ProposalCreated',
+            response
+        );
 
-        // TODO: filter out events
-        return parseInt(ifaceCouncil.parseLog(response.logs[0]).args![0].toString(), 10);
+        return parseInt(received.args![0].toString(), 10);
     };
 
     return {
