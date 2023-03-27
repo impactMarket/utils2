@@ -14,6 +14,7 @@ type Contracts = {
     PACTToken: string;
     SPACTToken: string;
     MerkleDistributor: string;
+    MicroCredit: string;
     Treasury: string;
     ImpactLabs: string;
     ImpactMarketCouncil: string;
@@ -34,6 +35,7 @@ export const ContractAddresses = new Map<number, Contracts>([
             ImpactMarketCouncil: '0x8b32bd23638A2AbDB5D1eA504D2A56c0488AEDDa',
             LearnAndEarn: '0x959eFf854990948B5F5d46986cd8C5B906741114',
             MerkleDistributor: '0xcbB604155ba079499AC638211d4aa0E10711f718',
+            MicroCredit: '0x17566573AFb68D2bFA2A94B83598E375DF9cF44E',
             PACTDelegate: '0xf266997E9feDd2dF6B8B8CaA710c148643b38C3b',
             PACTDelegator: '0x5c27e2600a3eDEF53DE0Ec32F01efCF145419eDF',
             PACTToken: '0x73A2De6A8370108D43c3C80430C84c30df323eD2',
@@ -57,6 +59,7 @@ export const ContractAddresses = new Map<number, Contracts>([
             ImpactMarketCouncil: '0xF2CA11DA5c3668DD48774f3Ce8ac09aFDc24aF3E',
             LearnAndEarn: '0x496F7De1420ad52659e257C7Aa3f79a995274dbc',
             MerkleDistributor: '0xd2b20e06C19e7b7E7E385b0F1386Cdde8C6dCd2B',
+            MicroCredit: '',
             PACTDelegate: '0xAeEd98C1c5C268C3E23672166Ea0Bde908C90624',
             PACTDelegator: '0x8f8BB984e652Cb8D0aa7C9D6712Ec2020EB1BAb4',
             PACTToken: '0x46c9757C5497c5B1f2eb73aE79b6B67D119B0B58',
