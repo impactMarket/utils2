@@ -14,6 +14,7 @@ import Signatures from './components/Signatures';
 import Airdrop from './components/Airdrop';
 import DepositRedirect from './components/DepositRedirect';
 import LearnAndEarn from './components/LearnAndEarn';
+import MicroCredit from './components/MicroCredit';
 
 const components = [
     { label: 'Get wallets balance', component: WalletsBalance },
@@ -26,7 +27,8 @@ const components = [
     { label: 'Signatures', component: Signatures },
     { label: 'Airdrop', component: Airdrop },
     { label: 'DepositRedirect', component: DepositRedirect },
-    { label: 'LearnAndEarn', component: LearnAndEarn }
+    { label: 'LearnAndEarn', component: LearnAndEarn },
+    { label: 'MicroCredit', component: MicroCredit }
 ];
 
 const options = components.map(({ label }) => label);

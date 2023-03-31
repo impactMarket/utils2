@@ -9,6 +9,7 @@ import DonationMinerABI from './abi/DonationMiner.json';
 import ImpactMarketCouncilABI from './abi/ImpactMarketCouncil.json';
 import LearnAndEarnABI from './abi/LearnAndEarnABI.json';
 import MerkleDistributorABI from './abi/MerkleDistributor.json';
+import MicroCreditABI from './abi/MicroCreditABI.json';
 import PACTDelegateABI from './abi/PACTDelegate.json';
 import PACTTokenABI from './abi/PACTToken.json';
 import StakingABI from './abi/Staking.json';
@@ -37,6 +38,13 @@ export interface IDepositRedirect extends Contract {
     interest(depositorAddress: string, tokenAddress: string, amount: string): Promise<any>;
 }
 
+export interface IMicroCredit extends Contract {
+    approve(loanId: string, amount: string): Promise<void>;
+    userLoans(userAddress: string, loanId: string): Promise<void>;
+    claimLoan(loanId: string): Promise<void>;
+    repayLoan(loanId: string, amount: string): Promise<void>;
+}
+
 export const getContracts = (provider: BaseProvider, networkId: number) => {
     const contractAddresses = ContractAddresses.get(networkId)!;
 
@@ -53,6 +61,7 @@ export const getContracts = (provider: BaseProvider, networkId: number) => {
         PACTToken,
         SPACTToken,
         DonationMiner,
+        MicroCredit,
         MerkleDistributor,
         Staking,
         ImpactMarketCouncil,
@@ -72,6 +81,7 @@ export const getContracts = (provider: BaseProvider, networkId: number) => {
         impactMarketCouncil: ImpactMarketCouncil || '',
         learnAndEarn: LearnAndEarn || '',
         merkleDistributor: MerkleDistributor || '',
+        microCredit: MicroCredit || '',
         pactToken: PACTToken || '',
         spactToken: SPACTToken || '',
         staking: Staking || '',
@@ -81,6 +91,8 @@ export const getContracts = (provider: BaseProvider, networkId: number) => {
     const ambassadors = new Contract(addresses.ambassadors, AmbassadorsABI, provider);
 
     const merkleDistributor = new Contract(addresses.merkleDistributor, MerkleDistributorABI, provider);
+
+    const microCredit = new Contract(addresses.microCredit, MicroCreditABI, provider);
 
     const donationMiner = new Contract(addresses.donationMiner, DonationMinerABI, provider);
 
@@ -121,6 +133,7 @@ export const getContracts = (provider: BaseProvider, networkId: number) => {
         impactMarketCouncil,
         learnAndEarn,
         merkleDistributor,
+        microCredit,
         pact,
         spact,
         staking,

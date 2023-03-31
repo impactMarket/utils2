@@ -1,0 +1,52 @@
+[
+    {
+        "type": "function",
+        "stateMutability": "nonpayable",
+        "outputs": [],
+        "name": "claimLoan",
+        "inputs": [{ "type": "uint256", "name": "_loanId", "internalType": "uint256" }]
+    },
+
+    {
+        "type": "function",
+        "stateMutability": "nonpayable",
+        "outputs": [],
+        "name": "repayLoan",
+        "inputs": [
+            { "type": "uint256", "name": "_loanId", "internalType": "uint256" },
+            { "type": "uint256", "name": "_repaymentAmount", "internalType": "uint256" }
+        ]
+    },
+    {
+        "type": "function",
+        "stateMutability": "view",
+        "outputs": [
+            { "type": "uint256", "name": "amountBorrowed", "internalType": "uint256" },
+            { "type": "uint256", "name": "period", "internalType": "uint256" },
+            { "type": "uint256", "name": "dailyInterest", "internalType": "uint256" },
+            { "type": "uint256", "name": "claimDeadline", "internalType": "uint256" },
+            { "type": "uint256", "name": "startDate", "internalType": "uint256" },
+            { "type": "uint256", "name": "currentDebt", "internalType": "uint256" },
+            { "type": "uint256", "name": "lastComputedDebt", "internalType": "uint256" },
+            { "type": "uint256", "name": "amountRepayed", "internalType": "uint256" },
+            { "type": "uint256", "name": "repaymentsLength", "internalType": "uint256" },
+            { "type": "uint256", "name": "lastComputedDate", "internalType": "uint256" }
+        ],
+        "name": "userLoans",
+        "inputs": [
+            { "type": "address", "name": "_userAddress", "internalType": "address" },
+            { "type": "uint256", "name": "_loanId", "internalType": "uint256" }
+        ]
+    },
+    {
+        "type": "function",
+        "stateMutability": "view",
+        "outputs": [
+            { "type": "uint256", "name": "userId", "internalType": "uint256" },
+            { "type": "address", "name": "movedTo", "internalType": "address" },
+            { "type": "uint256", "name": "loansLength", "internalType": "uint256" }
+        ],
+        "name": "walletMetadata",
+        "inputs": [{ "type": "address", "name": "_userAddress", "internalType": "address" }]
+    }
+]
