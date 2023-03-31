@@ -11,6 +11,7 @@ export * from './useManager';
 export * from './useEpoch';
 export * from './useRewards';
 export * from './useMerkleDistributor';
+export * from './useMicroCredit';
 export * from './useAmbassador';
 export * from './useImpactMarketCouncil';
 export * from './useStaking';

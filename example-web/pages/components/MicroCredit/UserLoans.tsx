@@ -1,34 +1,33 @@
-import React, { useState } from 'react';
 import { useCelo } from '@celo/react-celo';
 import { useMicroCredit } from '@impact-market/utils/useMicroCredit';
+import React, { useState } from 'react';
 
 const UserLoans = () => {
-    const { userLoans, claimLoan, approve, repayLoan } = useMicroCredit();
+    const { userLoans, claimLoan, approve, repayLoan, getActiveLoanId, loan } = useMicroCredit();
     const { address } = useCelo();
-    const [credit, setCredit] = useState({
-        amountBorrowed: 0,
-        amountRepayed: 0,
-        currentDebt: 0,
-        dailyInterest: 0,
-        period: 0
-    });
     const [amount, setAmount] = useState('0');
 
     const checkLoan = async () => {
-        const res = await userLoans((address ?? '').toString(), '0');
+        const loanId = await getActiveLoanId((address ?? '').toString());
+        await userLoans((address ?? '').toString(), loanId.toString());
+    };
 
-        if (res) setCredit(res);
+    const checkWalletMetadata = async () => {
+        const res = await getActiveLoanId((address ?? '').toString());
+        console.log(res);
     };
 
     const handleRepayment = async () => {
         const token = '0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1';
-        const loanId = '0';
+        const loanId = await getActiveLoanId((address ?? '').toString());
 
-        const approval = await approve(token, amount);
-        console.log(approval);
+        await approve(token, amount);
+        await repayLoan(loanId.toString(), amount);
+    };
 
-        const repay = await repayLoan(loanId, amount);
-        console.log(repay);
+    const claim = async () => {
+        const loanId = await getActiveLoanId((address ?? '').toString());
+        await claimLoan(loanId.toString());
     };
 
     return (
@@ -36,14 +35,18 @@ const UserLoans = () => {
             <div>
                 <button onClick={checkLoan}>Check Loan</button>
             </div>
+            <br />
+            <div>
+                <button onClick={checkWalletMetadata}>Wallet Metadata</button>
+            </div>
 
             <br />
 
             <div>
-                <button onClick={async () => await claimLoan('0')}>ClaimLoan</button>
+                <button onClick={claim}>ClaimLoan</button>
             </div>
             <div>
-                {Object.entries(credit).map(([key, value]) => (
+                {Object.entries(loan).map(([key, value]) => (
                     <p>{`${key}: ${value}`}</p>
                 ))}
             </div>

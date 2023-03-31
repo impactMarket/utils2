@@ -5,11 +5,36 @@ import { internalUseTransaction } from './internalUseTransaction';
 import { toNumber } from './toNumber';
 import { toToken } from './toToken';
 import BaseERC20ABI from './abi/BaseERC20.json';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
+interface Loan {
+    amountBorrowed: number;
+    amountRepayed: number;
+    currentDebt: number;
+    dailyInterest: number;
+    lastComputedDate: string;
+    lastComputedDebt: number;
+    period: number;
+    repaymentsLength: string;
+    startDate: number;
+}
 
 export const useMicroCredit = () => {
     const { provider, address, connection, networkId } = React.useContext(ImpactProviderContext);
     const executeTransaction = internalUseTransaction();
+    const [loan, setLoan] = useState<Loan>({
+        amountBorrowed: 0,
+        amountRepayed: 0,
+        currentDebt: 0,
+        dailyInterest: 0,
+        lastComputedDate: '0',
+        lastComputedDebt: 0,
+        period: 0,
+        repaymentsLength: '0',
+        startDate: 0
+    });
+
+    const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
     /**
      * Approve amount to repay loan
@@ -45,8 +70,53 @@ export const useMicroCredit = () => {
         const tx = await microCredit.populateTransaction.repayLoan(loanId, toToken(repaymentAmount));
         const response = await executeTransaction(tx);
 
+        await userLoans(address, loanId.toString());
+
         return response;
     };
+
+    const updateLoan = (data: Loan, loanId: string) => {
+        const {
+            amountBorrowed,
+            amountRepayed,
+            currentDebt,
+            dailyInterest,
+            lastComputedDate,
+            lastComputedDebt,
+            period,
+            repaymentsLength,
+            startDate
+        } = data;
+
+        const formattedData = {
+            amountBorrowed: toNumber(amountBorrowed.toString()),
+            amountRepayed: toNumber(amountRepayed.toString()),
+            currentDebt: toNumber(currentDebt.toString()),
+            dailyInterest: toNumber(dailyInterest.toString()),
+            lastComputedDate: lastComputedDate.toString(),
+            lastComputedDebt: toNumber(lastComputedDebt.toString()),
+            loanId: loanId.toString(),
+            period: toNumber(period.toString()),
+            repaymentsLength: repaymentsLength.toString(),
+            startDate: +startDate.toString()
+        };
+
+        setLoan(formattedData);
+    };
+
+    useEffect(() => {
+        const loadLoanData = async () => {
+            if (!connection || !address) {
+                return;
+            }
+
+            const loanId = await getActiveLoanId(address);
+
+            await userLoans(address, loanId.toString()).then(() => setIsLoaded(true));
+        };
+
+        loadLoanData();
+    }, []);
 
     /**
      * User Loans
@@ -63,29 +133,9 @@ export const useMicroCredit = () => {
 
         const response = await microCredit.userLoans(userAddress, loanId);
 
-        const {
-            amountBorrowed,
-            amountRepayed,
-            currentDebt,
-            dailyInterest,
-            lastComputedDate,
-            lastComputedDebt,
-            period,
-            repaymentsLength,
-            startDate
-        } = response;
+        updateLoan(response, loanId);
 
-        return {
-            amountBorrowed: toNumber(amountBorrowed.toString()),
-            amountRepayed: toNumber(amountRepayed.toString()),
-            currentDebt: toNumber(currentDebt.toString()),
-            dailyInterest: toNumber(dailyInterest.toString()),
-            lastComputedDebt: lastComputedDebt.toString(),
-            lastRepaymentDate: lastComputedDate.toString(),
-            period: toNumber(period.toString()),
-            repaymentsLength: toNumber(repaymentsLength.toString()),
-            startDate: startDate.toString()
-        };
+        return response;
     };
 
     /**
@@ -102,8 +152,27 @@ export const useMicroCredit = () => {
         const tx = await microCredit.populateTransaction.claimLoan(loanId);
         const response = await executeTransaction(tx);
 
+        await userLoans(address, loanId.toString());
+
         return response;
     };
 
-    return { approve, claimLoan, repayLoan, userLoans };
+    /**
+     * Get users latest (active) loan Id
+     * @param {string} userAddress Address of the user
+     * @returns {Promise<CeloTxReceipt>} tx details
+     */
+    const getActiveLoanId = async (userAddress: string) => {
+        if (!address || !connection) {
+            throw new Error('No wallet connected');
+        }
+
+        const { microCredit } = getContracts(provider, networkId);
+        const response = await microCredit.walletMetadata(userAddress);
+        const { loansLength } = response;
+
+        return +loansLength.toString() - 1;
+    };
+
+    return { approve, claimLoan, getActiveLoanId, isLoaded, loan, repayLoan, userLoans };
 };
