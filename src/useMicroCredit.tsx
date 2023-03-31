@@ -34,7 +34,7 @@ export const useMicroCredit = () => {
         startDate: 0
     });
 
-    const [isLoaded, setIsLoaded] = useState<boolean>(false);
+    const [isReady, setIsReady] = useState<boolean>(false);
 
     /**
      * Approve amount to repay loan
@@ -61,7 +61,7 @@ export const useMicroCredit = () => {
      * @param {string} repaymentAmount amount to repay
      * @returns {Promise<CeloTxReceipt>} tx details
      */
-    const repayLoan = async (loanId: string, repaymentAmount: string) => {
+    const repayLoan = async (loanId: number, repaymentAmount: string) => {
         if (!address || !connection) {
             throw new Error('No wallet connected');
         }
@@ -70,12 +70,12 @@ export const useMicroCredit = () => {
         const tx = await microCredit.populateTransaction.repayLoan(loanId, toToken(repaymentAmount));
         const response = await executeTransaction(tx);
 
-        await userLoans(address, loanId.toString());
+        await userLoans(address, loanId);
 
         return response;
     };
 
-    const updateLoan = (data: Loan, loanId: string) => {
+    const updateLoan = (data: Loan) => {
         const {
             amountBorrowed,
             amountRepayed,
@@ -95,7 +95,6 @@ export const useMicroCredit = () => {
             dailyInterest: toNumber(dailyInterest.toString()),
             lastComputedDate: lastComputedDate.toString(),
             lastComputedDebt: toNumber(lastComputedDebt.toString()),
-            loanId: loanId.toString(),
             period: toNumber(period.toString()),
             repaymentsLength: repaymentsLength.toString(),
             startDate: +startDate.toString()
@@ -112,7 +111,7 @@ export const useMicroCredit = () => {
 
             const loanId = await getActiveLoanId(address);
 
-            await userLoans(address, loanId.toString()).then(() => setIsLoaded(true));
+            await userLoans(address, loanId).then(() => setIsReady(true));
         };
 
         loadLoanData();
@@ -121,10 +120,10 @@ export const useMicroCredit = () => {
     /**
      * User Loans
      * @param {string} userAddress Address of the user receiving the loan
-     * @param {string} loanId id of the loan
+     * @param {number} loanId id of the loan
      * @returns {Promise<CeloTxReceipt>} tx details
      */
-    const userLoans = async (userAddress: string, loanId: string) => {
+    const userLoans = async (userAddress: string, loanId: number) => {
         if (!address || !connection) {
             throw new Error('No wallet connected');
         }
@@ -133,17 +132,17 @@ export const useMicroCredit = () => {
 
         const response = await microCredit.userLoans(userAddress, loanId);
 
-        updateLoan(response, loanId);
+        updateLoan(response);
 
         return response;
     };
 
     /**
      * Claim Loan
-     * @param {string} loanId id of the loan being claimed
+     * @param {number} loanId id of the loan being claimed
      * @returns {Promise<CeloTxReceipt>} tx details
      */
-    const claimLoan = async (loanId: string) => {
+    const claimLoan = async (loanId: number) => {
         if (!address || !connection) {
             throw new Error('No wallet connected');
         }
@@ -152,7 +151,7 @@ export const useMicroCredit = () => {
         const tx = await microCredit.populateTransaction.claimLoan(loanId);
         const response = await executeTransaction(tx);
 
-        await userLoans(address, loanId.toString());
+        await userLoans(address, loanId);
 
         return response;
     };
@@ -171,8 +170,8 @@ export const useMicroCredit = () => {
         const response = await microCredit.walletMetadata(userAddress);
         const { loansLength } = response;
 
-        return +loansLength.toString() - 1;
+        return loansLength.toNumber() - 1;
     };
 
-    return { approve, claimLoan, getActiveLoanId, isLoaded, loan, repayLoan, userLoans };
+    return { approve, claimLoan, getActiveLoanId, isReady, loan, repayLoan, userLoans };
 };
