@@ -59,7 +59,7 @@ export const ContractAddresses = new Map<number, Contracts>([
             ImpactMarketCouncil: '0xF2CA11DA5c3668DD48774f3Ce8ac09aFDc24aF3E',
             LearnAndEarn: '0x496F7De1420ad52659e257C7Aa3f79a995274dbc',
             MerkleDistributor: '0xd2b20e06C19e7b7E7E385b0F1386Cdde8C6dCd2B',
-            MicroCredit: '',
+            MicroCredit: '0xEa4D67c757a6f50974E7fd7B5b1cc7e7910b80Bb',
             PACTDelegate: '0xAeEd98C1c5C268C3E23672166Ea0Bde908C90624',
             PACTDelegator: '0x8f8BB984e652Cb8D0aa7C9D6712Ec2020EB1BAb4',
             PACTToken: '0x46c9757C5497c5B1f2eb73aE79b6B67D119B0B58',
