@@ -4,13 +4,12 @@ import { useBeneficiary } from '@impact-market/utils/useBeneficiary';
 const Beneficiary = () => {
     const {
         beneficiary,
-        claimCooldown,
-        isClaimable,
         isReady,
-        claim,
-        community,
-        fundsRemainingDays
+        claim
     } = useBeneficiary('0x13d9d460Bf4bbEE7c3ab53a29c5f23AeC64F8CB6');
+    const { claimCooldown, isClaimable, community, fundsRemainingDays } = beneficiary;
+
+    console.log('reload useBeneficiary');
 
     if(!isReady) {
         return <div>Loading</div>;

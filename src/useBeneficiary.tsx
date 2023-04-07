@@ -6,7 +6,7 @@ import { getContracts } from './contracts';
 import { internalUseTransaction } from './internalUseTransaction';
 import { toNumber } from './toNumber';
 import { updateCUSDBalance } from './useCUSDBalance';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Contract } from '@ethersproject/contracts';
 
 // prevent re-render when loading
@@ -35,38 +35,49 @@ const useBlockNumber = () => {
  * @returns {object} hook
  */
 export const useBeneficiary = (communityAddress: string) => {
-    const [isReady, setIsReady] = useState(false);
-    const [isClaimable, setIsClaimable] = useState(false);
-    const [beneficiary, setBeneficiary] = useState<{
-        claimedAmount: number;
-    }>({
-        claimedAmount: 0
-    });
-    const [community, setCommunity] = useState<{
-        claimAmount: number;
-        hasFunds: boolean;
-        locked: boolean;
-        maxClaim: number;
-    }>({
-        claimAmount: 0,
-        hasFunds: false,
-        locked: false,
-        maxClaim: 0
-    });
-    const [claimCooldown, setClaimCooldown] = useState(0);
-    const [contract, setContract] = useState<Contract | null>(null);
-    const [fundsRemainingDays, setFundsRemainingDays] = useState<number>(0);
     const { connection, provider, address, subgraph, networkId } = React.useContext(ImpactProviderContext);
     const currentBlockNumber = useBlockNumber();
+    console.log({ currentBlockNumber});
     const executeTransaction = internalUseTransaction();
+    const [isReady, setIsReady] = useState(false);
+    const [beneficiary, setBeneficiary] = useState<{
+        claimedAmount: number;
+        locked: boolean;
+        claimCooldown: number;
+        community: {
+            claimAmount: number;
+            hasFunds: boolean;
+            locked: boolean;
+            maxClaim: number;
+        };
+        contract: Contract | null;
+        fundsRemainingDays: number;
+        isClaimable: boolean;
+    }>({
+        claimCooldown: 0,
+        claimedAmount: 0,
+        community: {
+            claimAmount: 0,
+            hasFunds: false,
+            locked: false,
+            maxClaim: 0
+        },
+        contract: null,
+        fundsRemainingDays: 0,
+        isClaimable: false,
+        locked: false
+    });
 
     const updateClaimData = async (_contract: Contract) => {
-        if (!_contract || !address) {
+        if (!address) {
             return;
         }
+        // eslint-disable-next-line prefer-const
+        let { claimedAmount, locked, community, claimCooldown, isClaimable } = beneficiary;
         const { cusd } = getContracts(provider, networkId);
-        const [communityBalance, beneficiaryGraph, communityGraph] = await Promise.all([
+        const [communityBalance, cooldown, beneficiaryGraph, communityGraph] = await Promise.all([
             cusd.balanceOf(_contract.address),
+            _contract.claimCooldown(address),
             subgraph.getBeneficiaryData(address, '{ claimed, state }'),
             subgraph.getCommunityData(
                 _contract.address,
@@ -76,51 +87,45 @@ export const useBeneficiary = (communityAddress: string) => {
 
         // if not beneficiary, prevent method from throwing error
         if (beneficiaryGraph === null) {
-            setBeneficiary(b => ({
-                ...b,
-                claimedAmount: 0,
-                locked: false
-            }));
-            setCommunity(c => ({
-                ...c,
-                claimAmount: 0,
-                hasFunds: false,
-                locked: false,
-                maxClaim: 0
-            }));
+            // do nothing
         } else if (community.maxClaim === 0) {
-            setBeneficiary(b => ({
-                ...b,
-                claimedAmount: parseInt(beneficiaryGraph.claimed!, 10),
-                locked: beneficiaryGraph.state === 2
-            }));
-            setCommunity(c => ({
-                ...c,
+            claimedAmount = parseInt(beneficiaryGraph.claimed!, 10);
+            locked = beneficiaryGraph.state === 2;
+            community = {
+                ...community,
                 claimAmount: parseFloat(communityGraph.claimAmount!),
                 hasFunds: toNumber(communityBalance) > parseFloat(communityGraph.claimAmount!),
                 locked: communityGraph.state === 2,
                 maxClaim: parseFloat(communityGraph.maxClaim!)
-            }));
+            };
         } else {
-            setBeneficiary(b => ({
-                ...b,
-                claimedAmount: parseInt(beneficiaryGraph.claimed!, 10),
-                locked: beneficiaryGraph.state === 2
-            }));
-            setCommunity(c => ({
-                ...c,
+            claimedAmount = parseInt(beneficiaryGraph.claimed!, 10);
+            locked = beneficiaryGraph.state === 2;
+            community = {
+                ...community,
                 hasFunds: toNumber(communityBalance) > parseFloat(communityGraph.claimAmount!),
                 locked: communityGraph.state === 2
-            }));
+            };
         }
-        setFundsRemainingDays(
-            estimateRemainingFundsInDays({
+        if (cooldown.toNumber() > currentBlockNumber) {
+            claimCooldown = estimateBlockTime(currentBlockNumber, cooldown.toNumber(), 5000).getTime();
+        } else {
+            isClaimable = true;
+        }
+        setBeneficiary({
+            claimCooldown,
+            claimedAmount,
+            community,
+            contract: _contract,
+            fundsRemainingDays: estimateRemainingFundsInDays({
                 baseInterval: communityGraph.baseInterval!,
                 beneficiaries: communityGraph.beneficiaries!,
                 claimAmount: parseFloat(communityGraph.claimAmount!),
                 fundsOnContract: toNumber(communityBalance)
-            })
-        );
+            }),
+            isClaimable,
+            locked
+        });
         setIsReady(true);
     };
 
@@ -142,6 +147,8 @@ export const useBeneficiary = (communityAddress: string) => {
      * ```
      */
     const claim = async () => {
+        const { contract } = beneficiary;
+
         if (!contract || !connection || !address) {
             throw new Error('No connection');
         }
@@ -150,12 +157,6 @@ export const useBeneficiary = (communityAddress: string) => {
 
         updateClaimData(contract);
         updateCUSDBalance(provider, networkId, address);
-        const _cooldown = await contract.claimCooldown(address);
-        const _currentBlockNumber = await provider.getBlockNumber();
-
-        // TODO: maybe we can use previous block from state
-        setClaimCooldown(estimateBlockTime(_currentBlockNumber, _cooldown.toNumber(), 10000).getTime());
-        setIsClaimable(false);
 
         return response;
     };
@@ -165,40 +166,25 @@ export const useBeneficiary = (communityAddress: string) => {
      * @throws {Error} "No connection"
      * @returns {Promise<void>} void
      */
-    const refetch = async () => {
+    const refetch = useCallback(() => {
+        const { contract } = beneficiary;
+
         if (!contract || !connection || !address) {
             throw new Error('No connection');
         }
-        const _cooldown = await contract.claimCooldown(address);
-        const _currentBlockNumber = await provider.getBlockNumber();
-
-        if (_cooldown.toNumber() > currentBlockNumber) {
-            setClaimCooldown(estimateBlockTime(_currentBlockNumber, _cooldown.toNumber()).getTime());
-        } else {
-            setIsClaimable(true);
-        }
-    };
+        updateClaimData(contract);
+    }, [isReady]);
 
     useEffect(() => {
-        // Refresh beneficiary time for next claim
-        const refreshClaimCooldown = async (_address: string, _contract: Contract) => {
-            const _cooldown = await _contract.claimCooldown(_address);
-
-            if (_cooldown.toNumber() > currentBlockNumber) {
-                setClaimCooldown(estimateBlockTime(currentBlockNumber, _cooldown.toNumber(), 5000).getTime());
-            } else {
-                setIsClaimable(true);
-            }
-        };
-
+        console.log('reload inside');
         // make sure it's valid!
         if (address && connection && provider && communityAddress && currentBlockNumber !== 0) {
             const contract_ = communityContract(communityAddress, provider);
 
-            setContract(contract_);
-            refreshClaimCooldown(address, contract_).then(() => updateClaimData(contract_));
+
+            updateClaimData(contract_);
         }
     }, [currentBlockNumber]);
 
-    return { beneficiary, claim, claimCooldown, community, fundsRemainingDays, isClaimable, isReady, refetch };
+    return useMemo(() => ({ beneficiary, claim, isReady, refetch }), [isReady, beneficiary.isClaimable]);
 };
