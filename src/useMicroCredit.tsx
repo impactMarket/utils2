@@ -14,7 +14,7 @@ interface Loan {
     dailyInterest: number;
     lastComputedDate: string;
     lastComputedDebt: number;
-    period: number;
+    period: string;
     repaymentsLength: string;
     startDate: number;
 }
@@ -29,7 +29,7 @@ export const useMicroCredit = () => {
         dailyInterest: 0,
         lastComputedDate: '0',
         lastComputedDebt: 0,
-        period: 0,
+        period: '0',
         repaymentsLength: '0',
         startDate: 0
     });
@@ -95,7 +95,7 @@ export const useMicroCredit = () => {
             dailyInterest: toNumber(dailyInterest.toString()),
             lastComputedDate: lastComputedDate.toString(),
             lastComputedDebt: toNumber(lastComputedDebt.toString()),
-            period: toNumber(period.toString()),
+            period: period.toString(),
             repaymentsLength: repaymentsLength.toString(),
             startDate: +startDate.toString()
         };
