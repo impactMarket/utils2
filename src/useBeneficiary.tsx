@@ -72,9 +72,13 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
                 if (contract && address) {
                     const cooldown = await contract.claimCooldown(address);
                     const currentBlockNumber = await provider.getBlockNumber();
-    
+
                     if (cooldown.toNumber() > currentBlockNumber) {
-                        const estimatedTime = estimateBlockTime(currentBlockNumber, cooldown.toNumber(), 5000).getTime();
+                        const estimatedTime = estimateBlockTime(
+                            currentBlockNumber,
+                            cooldown.toNumber(),
+                            5000
+                        ).getTime();
 
                         if (estimatedTime !== claimCooldown) {
                             setBeneficiary(b => ({
@@ -90,7 +94,6 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
             }, syncClockInterval);
         } else {
             updateIntervalRef.current = setTimeout(() => {
-                
                 updateClaimData(contract!);
             }, claimCooldown - new Date().getTime());
         }
@@ -105,17 +108,18 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
         let claimCooldown = 0;
         let isClaimable = false;
         const { cusd } = getContracts(provider, networkId);
-        const [communityBalance, cooldown, claimedAmounts, beneficiaryGraph, communityGraph, currentBlockNumber] = await Promise.all([
-            cusd.balanceOf(_contract.address),
-            _contract.claimCooldown(address),
-            _contract.beneficiaryClaimedAmounts(address),
-            subgraph.getBeneficiaryData(address, '{ state }'),
-            subgraph.getCommunityData(
-                _contract.address,
-                '{ baseInterval, claimAmount, maxClaim, beneficiaries, state }'
-            ),
-            provider.getBlockNumber()
-        ]);
+        const [communityBalance, cooldown, claimedAmounts, beneficiaryGraph, communityGraph, currentBlockNumber] =
+            await Promise.all([
+                cusd.balanceOf(_contract.address),
+                _contract.claimCooldown(address),
+                _contract.beneficiaryClaimedAmounts(address),
+                subgraph.getBeneficiaryData(address, '{ state }'),
+                subgraph.getCommunityData(
+                    _contract.address,
+                    '{ baseInterval, claimAmount, maxClaim, beneficiaries, state }'
+                ),
+                provider.getBlockNumber()
+            ]);
 
         claimedAmount = toNumber(claimedAmounts[0]);
         // if not beneficiary, prevent method from throwing error
