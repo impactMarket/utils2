@@ -40,7 +40,7 @@ type UseBeneficiary = {
 export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
     const { connection, provider, address, subgraph, networkId } = React.useContext(ImpactProviderContext);
     const updateIntervalRef = useRef<NodeJS.Timer>();
-    const syncClockInterval = 300000;
+    const syncClockInterval = 120000;
 
     const executeTransaction = internalUseTransaction();
     const [isReady, setIsReady] = useState(false);
@@ -58,7 +58,7 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
         locked: false
     });
 
-    const startUpdateInterval = (timeout: number) => {
+    const startUpdateInterval = (claimCooldown: number, contract: Contract) => {
         const now = new Date().getTime() / 1000;
 
         // Cancel any existing interval
@@ -67,19 +67,16 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
         }
 
         // Start a new interval
-        if (now + syncClockInterval < timeout) {
+        if (now + syncClockInterval < claimCooldown) {
             updateIntervalRef.current = setInterval(async () => {
-                if (beneficiary.contract && address && isReady) {
-                    const { claimCooldown, contract } = beneficiary;
-                    const cooldown = contract.claimCooldown(address);
+                if (contract && address) {
+                    const cooldown = await contract.claimCooldown(address);
                     const currentBlockNumber = await provider.getBlockNumber();
     
                     if (cooldown.toNumber() > currentBlockNumber) {
                         const estimatedTime = estimateBlockTime(currentBlockNumber, cooldown.toNumber(), 5000).getTime();
 
-                        if (now + syncClockInterval > estimatedTime) {
-                            startUpdateInterval(estimatedTime);
-                        } else if (estimatedTime !== claimCooldown) {
+                        if (estimatedTime !== claimCooldown) {
                             setBeneficiary(b => ({
                                 ...b,
                                 claimCooldown: estimatedTime
@@ -93,10 +90,9 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
             }, syncClockInterval);
         } else {
             updateIntervalRef.current = setTimeout(() => {
-                const { contract } = beneficiary;
                 
                 updateClaimData(contract!);
-            }, timeout);
+            }, claimCooldown - new Date().getTime());
         }
     };
 
@@ -105,12 +101,15 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
             return;
         }
         // eslint-disable-next-line prefer-const
-        let { claimedAmount, locked, community, claimCooldown, isClaimable } = beneficiary;
+        let { claimedAmount, locked, community } = beneficiary;
+        let claimCooldown = 0;
+        let isClaimable = false;
         const { cusd } = getContracts(provider, networkId);
-        const [communityBalance, cooldown, beneficiaryGraph, communityGraph, currentBlockNumber] = await Promise.all([
+        const [communityBalance, cooldown, claimedAmounts, beneficiaryGraph, communityGraph, currentBlockNumber] = await Promise.all([
             cusd.balanceOf(_contract.address),
             _contract.claimCooldown(address),
-            subgraph.getBeneficiaryData(address, '{ claimed, state }'),
+            _contract.beneficiaryClaimedAmounts(address),
+            subgraph.getBeneficiaryData(address, '{ state }'),
             subgraph.getCommunityData(
                 _contract.address,
                 '{ baseInterval, claimAmount, maxClaim, beneficiaries, state }'
@@ -118,10 +117,10 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
             provider.getBlockNumber()
         ]);
 
+        claimedAmount = toNumber(claimedAmounts[0]);
         // if not beneficiary, prevent method from throwing error
         if (beneficiaryGraph) {
             if (community.maxClaim === 0) {
-                claimedAmount = parseFloat(beneficiaryGraph.claimed!);
                 locked = beneficiaryGraph.state === 2;
                 community = {
                     ...community,
@@ -131,7 +130,6 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
                     maxClaim: parseFloat(communityGraph.maxClaim!)
                 };
             } else {
-                claimedAmount = parseFloat(beneficiaryGraph.claimed!);
                 locked = beneficiaryGraph.state === 2;
                 community = {
                     ...community,
@@ -145,7 +143,7 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
             isClaimable = false;
 
             // Start the interval
-            startUpdateInterval(claimCooldown);
+            startUpdateInterval(claimCooldown, _contract);
         } else {
             isClaimable = true;
         }
@@ -221,5 +219,5 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
         }
     }, []);
 
-    return useMemo(() => ({ beneficiary, claim, isReady, refetch }), [isReady, beneficiary.claimCooldown]);
+    return useMemo(() => ({ beneficiary, claim, isReady, refetch }), [isReady, beneficiary]);
 };

@@ -319,5 +319,24 @@
     ],
     "stateMutability": "view",
     "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_beneficiaryAddress",
+        "type": "address"
+      }
+    ],
+    "name": "beneficiaryClaimedAmounts",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "claimedAmounts",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   }
 ]
