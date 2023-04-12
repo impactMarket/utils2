@@ -66,7 +66,7 @@ const initialRewards: RewardsType = {
 const intialProviderData: {
     address: string | null;
     connection: Connection;
-    defaultFeeCurrency: 'cUSD' | 'CELO';
+    defaultFeeCurrency?: string;
     networkId: number;
     provider: BaseProvider;
     subgraph: ImpactMarketSubgraph;
@@ -75,7 +75,6 @@ const intialProviderData: {
     // mandatory, value here doesn't matter
     address: null,
     connection: null as any,
-    defaultFeeCurrency: 'cUSD',
     networkId: null as any,
     provider: null as any,
     subgraph: null as any,
@@ -147,7 +146,7 @@ type ProviderProps = {
     connection: Connection;
     jsonRpc: string;
     networkId: number;
-    defaultFeeCurrency?: 'cUSD' | 'CELO';
+    defaultFeeCurrency?: string;
     apolloClientOptions?: {
         retry?: RetryLink.Options;
         cache?: ApolloCache<NormalizedCacheObject>;
@@ -242,7 +241,7 @@ export const ImpactProvider = (props: ProviderProps) => {
         connection,
         networkId,
         apolloClientOptions,
-        defaultFeeCurrency = 'cUSD'
+        defaultFeeCurrency
     } = props;
 
     return (

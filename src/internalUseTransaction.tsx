@@ -13,18 +13,17 @@ export const internalUseTransaction = () => {
             throw new Error('no valid address connected');
         }
 
-        const { cusd, celo } = getContracts(provider, networkId);
+        const { celo } = getContracts(provider, networkId);
 
         // default gas price
         let gasPrice = '5000000000';
         let feeTxParams = {};
-        const feesInAsset = { CELO: celo, cUSD: cusd };
 
-        if (defaultFeeCurrency !== 'CELO') {
+        if (defaultFeeCurrency && defaultFeeCurrency.toLowerCase() !== celo.address.toLowerCase()) {
             gasPrice = '15000000000';
             // extra needed tx params
             feeTxParams = {
-                feeCurrency: feesInAsset[defaultFeeCurrency].address
+                feeCurrency: defaultFeeCurrency
             };
         }
 
