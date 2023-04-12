@@ -9,7 +9,7 @@ const UserLoans = () => {
 
     const checkLoan = async () => {
         const loanId = await getActiveLoanId((address ?? '').toString());
-        await userLoans((address ?? '').toString(), loanId.toString());
+        await userLoans((address ?? '').toString(), loanId);
     };
 
     const checkWalletMetadata = async () => {
@@ -22,12 +22,12 @@ const UserLoans = () => {
         const loanId = await getActiveLoanId((address ?? '').toString());
 
         await approve(token, amount);
-        await repayLoan(loanId.toString(), amount);
+        await repayLoan(loanId, amount);
     };
 
     const claim = async () => {
         const loanId = await getActiveLoanId((address ?? '').toString());
-        await claimLoan(loanId.toString());
+        await claimLoan(loanId);
     };
 
     return (
