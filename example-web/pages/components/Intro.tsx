@@ -20,7 +20,7 @@ const Intro = (props: IntroProps) => {
             <h1 style={{ display: 'inline-block', marginRight: 16 }}>Development feature</h1>
             <select value={selected} onChange={event => handleSelectChange(event?.target?.value)}>
                 <option value="">---</option>
-                {options.map((option, index) => <option key={index}>{option}</option>)}
+                {(options ?? []).map((option, index) => <option key={index}>{option}</option>)}
             </select>
         </div>
     )

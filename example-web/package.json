@@ -9,9 +9,9 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@celo/contractkit": "2.3.0",
+        "@celo/contractkit": "3.2.0",
         "@celo/react-celo": "4.2.1",
-        "@celo/utils": "2.3.0",
+        "@celo/utils": "3.2.0",
         "@impact-market/utils": "link:..",
         "@sentry/nextjs": "^7.36.0",
         "@walletconnect/client": "1.8.0",
