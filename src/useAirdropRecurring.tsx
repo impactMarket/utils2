@@ -4,7 +4,7 @@ import { internalUseTransaction } from './internalUseTransaction';
 import { toNumber } from './toNumber';
 import { updatePACTBalance } from './usePACTBalance';
 import AirdropRecurringABI from './abi/AirdropRecurringABI.json';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { BigNumber } from 'bignumber.js';
 
 /**
@@ -31,6 +31,35 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
     const [isReady, setIsReady] = useState(false);
     const airdropper = new Contract(airdropSmartContractAddress, AirdropRecurringABI, provider) as AirdropRecurring;
     const executeTransaction = internalUseTransaction();
+    const updateIntervalRef = useRef<NodeJS.Timer>();
+    const clockInterval = 120000;
+
+    // update claim data at the end of the cooldown
+    const _startUpdateInterval = (userAddress: string, lastClaimTime: number, cooldown: number) => {
+        const now = new Date().getTime() / 1000;
+        const end = lastClaimTime + cooldown;
+
+        // Cancel any existing interval
+        if (updateIntervalRef.current) {
+            clearInterval(updateIntervalRef.current);
+        }
+
+        // Start a new interval
+        if (now + clockInterval < end) {
+            updateIntervalRef.current = setInterval(() => {
+                if (now + clockInterval >= end) {
+                    clearInterval(updateIntervalRef.current);
+                    updateIntervalRef.current = setTimeout(() => {
+                        _reloadingClaimStatus(userAddress);
+                    }, end - now + 1000);
+                }
+            }, clockInterval);
+        } else {
+            updateIntervalRef.current = setTimeout(() => {
+                _reloadingClaimStatus(userAddress);
+            }, end - now + 1000);
+        }
+    };
 
     /**
      * Claims airgrab rewards.
@@ -68,6 +97,9 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
         setAmountClaimed(toNumber(claimedAmount));
         if (lastClaimTime.toNumber() !== 0) {
             setNextClaim(new Date((lastClaimTime.toNumber() + cooldown.toNumber()) * 1000));
+            _startUpdateInterval(address, lastClaimTime.toNumber(), cooldown.toNumber());
+        } else {
+            setNextClaim(new Date(0));
         }
     };
 
