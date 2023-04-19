@@ -1,5 +1,5 @@
 import { useCelo } from '@celo/react-celo';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { Web3Button } from '@web3modal/react'
 import React from 'react';
 import { useAccount } from 'wagmi';
 
@@ -15,7 +15,7 @@ const WalletConnection = (props: { children: any; title?: string }) => {
         <div>
             {!!title && <h2>{title}</h2>}
             <div style={{ marginBottom: 32, marginTop: title ? 8 : 0 }}>
-                <ConnectButton />
+                <Web3Button />
             </div>
             {address && (
                 <>
