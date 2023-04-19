@@ -234,15 +234,7 @@ const StakingProvider = React.memo((props: { children?: any }) => {
 });
 
 export const ImpactProvider = (props: ProviderProps) => {
-    const {
-        children,
-        address,
-        jsonRpc,
-        connection,
-        networkId,
-        apolloClientOptions,
-        defaultFeeCurrency
-    } = props;
+    const { children, address, jsonRpc, connection, networkId, apolloClientOptions, defaultFeeCurrency } = props;
 
     return (
         <ImpactProviderContext.Provider
