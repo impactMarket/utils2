@@ -37,7 +37,7 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
     // update claim data at the end of the cooldown
     const _startUpdateInterval = (userAddress: string, lastClaimTime: number, cooldown: number) => {
         const now = new Date().getTime() / 1000;
-        const end = lastClaimTime + cooldown
+        const end = lastClaimTime + cooldown;
 
         // Cancel any existing interval
         if (updateIntervalRef.current) {
@@ -50,13 +50,13 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
                 if (now + clockInterval >= end) {
                     clearInterval(updateIntervalRef.current);
                     updateIntervalRef.current = setTimeout(() => {
-                        _reloadingClaimStatus(userAddress)
+                        _reloadingClaimStatus(userAddress);
                     }, end - now + 1000);
                 }
             }, clockInterval);
         } else {
             updateIntervalRef.current = setTimeout(() => {
-                _reloadingClaimStatus(userAddress)
+                _reloadingClaimStatus(userAddress);
             }, end - now + 1000);
         }
     };
