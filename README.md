@@ -15,7 +15,73 @@ yarn add @impact-market/utils
 
 See docs for further details. Use `yarn docs` to generate docs and open index.html at docs folder.
 
-If you use this within react native, please install and add `import '@ethersproject/shims';` at App.{jsx,tsx}.
+An example using Next.js, web3modal and wagmi
+
+```javascript
+// _app.tsx
+import type { AppProps } from 'next/app';
+import { configureChains, createClient, WagmiConfig } from 'wagmi';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+import { EthereumClient, w3mConnectors } from '@web3modal/ethereum';
+import { Web3Modal } from '@web3modal/react';
+import { celo } from '@wagmi/chains';
+
+const projectId = '<walletconnect-project-id>';
+
+const { chains, provider } = configureChains(
+    [celo],
+    [jsonRpcProvider({ rpc: chain => ({ http: chain.rpcUrls.default.http[0] }) })]
+);
+
+const wagmiClient = createClient({
+    autoConnect: true,
+    connectors: w3mConnectors({ projectId, version: 2, chains }),
+    provider
+});
+
+const ethereumClient = new EthereumClient(wagmiClient, chains);
+
+function MyApp({ Component, pageProps }: AppProps) {
+    return (
+        <>
+            <WagmiConfig client={wagmiClient}>
+                <Component {...pageProps} />
+            </WagmiConfig>
+            <Web3Modal projectId={projectId} ethereumClient={ethereumClient}/>
+        </>
+    );
+}
+
+export default MyApp;
+```
+
+```javascript
+// index.tsx
+import React from 'react';
+import { ImpactProvider } from '@impact-market/utils/ImpactProvider';
+import { useAccount, useNetwork, useSigner } from 'wagmi';
+
+function App() {
+    const { address } = useAccount();
+    const { data: signer } = useSigner();
+    const { chain } = useNetwork();
+
+    return (
+        <ImpactProvider
+            jsonRpc={chain?.rpcUrls.public.http[0] ||  'https://alfajores-forno.celo-testnet.org'}
+            signer={signer ?? null}
+            address={address ?? null}
+            networkId={chain?.id || 44787}
+        >
+            {/** something */}
+        </ImpactProvider>
+    );
+}
+
+export default App;
+```
+
+If you use this within react-native, please install and add `import '@ethersproject/shims';` at App.{jsx,tsx}.
 It is required by ethers.
 
 ## Development
@@ -32,11 +98,11 @@ The second part will be running the `example/` create-react-app that's linked to
 
 ```bash
 # (in another tab)
-cd example
-yarn start # runs create-react-app dev server
+cd example-web
+yarn dev
 ```
 
-Now, anytime you make a change to your library in `src/` or to the example app's `example/src`, `create-react-app` will live-reload your local dev server so you can iterate on your component in real-time.
+Now, anytime you make a change to your library in `src/` or to the example app's `example-web/src`, the wxample app will live-reload your local dev server so you can iterate on your component in real-time.
 
 ## create-react-library
 
