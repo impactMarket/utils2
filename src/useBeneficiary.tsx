@@ -1,4 +1,5 @@
 import { ImpactProviderContext } from './ImpactProvider';
+import { TransactionReceipt } from '@ethersproject/providers';
 import { communityContract } from './community';
 import { estimateBlockTime } from './estimateBlockTime';
 import { estimateRemainingFundsInDays } from './estimateRemainingFundsInDays';
@@ -8,7 +9,6 @@ import { toNumber } from './toNumber';
 import { updateCUSDBalance } from './useCUSDBalance';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Contract } from '@ethersproject/contracts';
-import { TransactionReceipt } from '@ethersproject/providers';
 
 export type Beneficiary = {
     claimedAmount: number;

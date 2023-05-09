@@ -32,7 +32,7 @@ const components = [
 
 const options = components.map(({ label }) => label);
 
-const initialOption = options[9];
+const initialOption = options[1];
 
 function App() {
     const { address } = useAccount();
@@ -48,7 +48,6 @@ function App() {
             signer={signer ?? null}
             address={address ?? null}
             networkId={chain?.id || 44787}
-            defaultFeeCurrency='CELO'
         >
             <Intro handleChange={setSelectedOption} initialOption={initialOption} options={options} />
             {!!Component && <Component />}

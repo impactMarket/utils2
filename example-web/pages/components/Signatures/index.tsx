@@ -5,7 +5,7 @@ import WalletConnection from '../WalletConnection';
 const Signatures = () => {
     const { signMessage, signTypedData } = useSignatures();
 
-    const handleSignature = () => signMessage('hello');
+    const handleSignature = () => signMessage('hello').then(console.log).catch(console.error);
 
     const handleSignTypedData = () => signTypedData('Proving my identity').then(console.log).catch(console.error);
 

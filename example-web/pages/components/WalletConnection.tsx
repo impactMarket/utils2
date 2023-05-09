@@ -1,4 +1,3 @@
-import { useCelo } from '@celo/react-celo';
 import { Web3Button } from '@web3modal/react'
 import React from 'react';
 import { useAccount } from 'wagmi';

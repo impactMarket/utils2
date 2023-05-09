@@ -1,10 +1,10 @@
-import { useCelo } from '@celo/react-celo';
 import { useMicroCredit } from '@impact-market/utils/useMicroCredit';
 import React, { useState } from 'react';
+import { useAccount } from 'wagmi';
 
 const UserLoans = () => {
     const { userLoans, claimLoan, approve, repayLoan, getActiveLoanId, loan } = useMicroCredit();
-    const { address } = useCelo();
+    const { address } = useAccount();
     const [amount, setAmount] = useState('0');
 
     const checkLoan = async () => {

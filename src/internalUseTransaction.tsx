@@ -1,27 +1,89 @@
+import * as encoding from '@walletconnect/encoding';
+import { Deferrable } from '@ethersproject/properties';
 import { ImpactProviderContext } from './ImpactProvider';
+import { TransactionReceipt, TransactionRequest } from '@ethersproject/providers';
 import { getContracts } from './contracts';
 import { useContext } from 'react';
+import axios from 'axios';
+
+// some methods copied from walletconnect v2 examples
+
+const apiGetAccountNonce = async (jsonRpcUrl: string, address: string): Promise<number> => {
+    const response = await axios.post(jsonRpcUrl, {
+        id: 1,
+        jsonrpc: '2.0',
+        method: 'eth_getTransactionCount',
+        params: [address, 'latest']
+    });
+    const { result } = response.data;
+    const nonce = parseInt(result, 16);
+
+    return nonce;
+};
+
+const apiGetGasPrice = async (jsonRpcUrl: string, defaultFeeCurrency: string | undefined): Promise<string> => {
+    const response = await axios.post(jsonRpcUrl, {
+        id: 1,
+        jsonrpc: '2.0',
+        method: 'eth_gasPrice',
+        params: defaultFeeCurrency ? [defaultFeeCurrency]: []
+    });
+    const { result } = response.data;
+
+    return result;
+};
 
 export const internalUseTransaction = () => {
-    const { signer, address, provider, networkId, defaultFeeCurrency } = useContext(ImpactProviderContext);
+    const { signer, address, provider, networkId, defaultFeeCurrency, jsonRpcUrl } = useContext(ImpactProviderContext);
 
-    const executeTransaction = async (tx: { data?: string; from?: string; to?: string }) => {
-        // TODO: improve gas price validation
-        // should be based on network demand
+    const formatTransaction = async (tx: {
+        data?: string;
+        from?: string;
+        to?: string;
+    }): Promise<Deferrable<TransactionRequest>> => {
+        if (!address) {
+            return {};
+        }
 
+        const [_nonce, _gasPrice, _gasLimit, _value] = await Promise.all([
+            apiGetAccountNonce(jsonRpcUrl, tx.from || address),
+            apiGetGasPrice(jsonRpcUrl, defaultFeeCurrency),
+            provider.estimateGas(tx),
+            0
+        ]);
+        const nonce = encoding.sanitizeHex(encoding.numberToHex(_nonce));
+        // gasPrice
+        const gasPrice = encoding.sanitizeHex(_gasPrice);
+        // gasLimit
+        const gasLimit = encoding.sanitizeHex(encoding.numberToHex(_gasLimit.toNumber() * 2));
+        // value
+        const value = encoding.sanitizeHex(encoding.numberToHex(_value));
+
+        return {
+            ...tx,
+            from: tx.from || address,
+            gasLimit,
+            gasPrice,
+            nonce,
+            value
+        };
+    };
+
+    const executeTransaction = async (tx: {
+        data?: string;
+        from?: string;
+        to?: string;
+    }): Promise<TransactionReceipt> => {
         if (!address) {
             throw new Error('no valid address connected');
         }
 
         const { celo } = getContracts(provider, networkId);
 
-        // default gas price
-        let gasPrice = '5000000000';
+        // include fee currency on tx parameters
         let feeTxParams = {};
 
         if (defaultFeeCurrency && defaultFeeCurrency.toLowerCase() !== celo.address.toLowerCase()) {
-            gasPrice = '15000000000';
-            // extra needed tx params
             feeTxParams = {
                 feeCurrency: defaultFeeCurrency
             };
@@ -32,10 +94,7 @@ export const internalUseTransaction = () => {
         }
 
         const txResponse = await signer.sendTransaction({
-            data: tx.data,
-            from: tx.from || address,
-            // gasPrice,
-            to: tx.to,
+            ...(await formatTransaction(tx)),
             ...feeTxParams
         });
 

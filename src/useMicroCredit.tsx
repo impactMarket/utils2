@@ -40,7 +40,7 @@ type RawLoan = {
 };
 
 export const useMicroCredit = () => {
-    const { provider, address, connection, networkId } = React.useContext(ImpactProviderContext);
+    const { provider, address, signer, networkId } = React.useContext(ImpactProviderContext);
     const executeTransaction = internalUseTransaction();
     const [loan, setLoan] = useState<Loan>({
         amountBorrowed: 0,
@@ -64,7 +64,7 @@ export const useMicroCredit = () => {
      * @returns {Promise<CeloTxReceipt>} tx details
      */
     const approve = async (token: string, amount: string) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -91,7 +91,7 @@ export const useMicroCredit = () => {
      * @returns {Promise<CeloTxReceipt>} tx details
      */
     const repayLoan = async (loanId: number, repaymentAmount: string) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -162,7 +162,7 @@ export const useMicroCredit = () => {
 
     useEffect(() => {
         const loadLoanData = async () => {
-            if (!connection || !address) {
+            if (!signer || !address) {
                 return;
             }
 
@@ -183,7 +183,7 @@ export const useMicroCredit = () => {
      * @returns {Promise<CeloTxReceipt>} tx details
      */
     const userLoans = async (userAddress: string, loanId: number) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -202,7 +202,7 @@ export const useMicroCredit = () => {
      * @returns {Promise<CeloTxReceipt>} tx details
      */
     const claimLoan = async (loanId: number) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -221,7 +221,7 @@ export const useMicroCredit = () => {
      * @returns {Promise<CeloTxReceipt>} tx details
      */
     const getActiveLoanId = async (userAddress: string) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 

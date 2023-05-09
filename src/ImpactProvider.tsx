@@ -68,12 +68,14 @@ const intialProviderData: {
     defaultFeeCurrency?: string;
     signer: Signer | null;
     networkId: number;
+    jsonRpcUrl: string;
     provider: BaseProvider;
     subgraph: ImpactMarketSubgraph;
     ubiManagementSubgraph: ImpactMarketUBIManagementSubgraph;
 } = {
     // mandatory, value here doesn't matter
     address: null,
+    jsonRpcUrl: null as any,
     networkId: null as any,
     provider: null as any,
     signer: null as any,
@@ -234,26 +236,23 @@ const StakingProvider = React.memo((props: { children?: any }) => {
 });
 
 export const ImpactProvider = (props: ProviderProps) => {
-    const {
-        children,
-        address,
-        jsonRpc,
-        signer,
-        networkId,
-        apolloClientOptions,
-        defaultFeeCurrency = 'cUSD'
-    } = props;
+    const { children, address, jsonRpc, signer, networkId, apolloClientOptions, defaultFeeCurrency } = props;
 
     return (
         <ImpactProviderContext.Provider
             value={{
                 address,
                 defaultFeeCurrency,
+                jsonRpcUrl: jsonRpc,
                 networkId,
                 provider: new StaticJsonRpcProvider(jsonRpc),
                 signer,
                 subgraph: new ImpactMarketSubgraph(networkId, apolloClientOptions),
-                ubiManagementSubgraph: new ImpactMarketUBIManagementSubgraph(new StaticJsonRpcProvider(jsonRpc), networkId, apolloClientOptions)
+                ubiManagementSubgraph: new ImpactMarketUBIManagementSubgraph(
+                    new StaticJsonRpcProvider(jsonRpc),
+                    networkId,
+                    apolloClientOptions
+                )
             }}
         >
             <StakingProvider>
