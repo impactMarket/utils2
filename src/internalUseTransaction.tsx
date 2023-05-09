@@ -26,7 +26,7 @@ const apiGetGasPrice = async (jsonRpcUrl: string, defaultFeeCurrency: string | u
         id: 1,
         jsonrpc: '2.0',
         method: 'eth_gasPrice',
-        params: defaultFeeCurrency ? [defaultFeeCurrency]: []
+        params: defaultFeeCurrency ? [defaultFeeCurrency] : []
     });
     const { result } = response.data;
 
