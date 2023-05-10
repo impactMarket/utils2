@@ -29,16 +29,16 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Web3Modal
                 projectId={projectId}
                 ethereumClient={ethereumClient}
-                explorerRecommendedWalletIds={[
-                    // metamask
-                    'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96',
-                    // valora
-                    'd01c7758d741b363e637a817a09bcf579feae4db9f5bb16f599fdd1f66e2f974'
-                ]}
+                // explorerRecommendedWalletIds={[
+                //     // metamask
+                //     'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96',
+                //     // valora
+                //     'd01c7758d741b363e637a817a09bcf579feae4db9f5bb16f599fdd1f66e2f974'
+                // ]}
                 mobileWallets={[
                     {
                         id: 'libera',
-                        name: 'libera',
+                        name: 'Libera',
                         links: {
                             native: 'libera://',
                             universal: 'https://liberawallet.com'
@@ -46,7 +46,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     }
                 ]}
                 walletImages={{
-                    libera: 'https://play.google.com/store/apps/details?id=com.impactmarket.mobile&hl=pt&gl=DZ'
+                    libera: 'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/9485d17f-c413-47fe-ebee-a876a9dc9100/lg'
                 }}
             />
         </>

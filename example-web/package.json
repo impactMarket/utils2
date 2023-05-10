@@ -14,6 +14,7 @@
     "dependencies": {
         "@impact-market/utils": "link:..",
         "@sentry/nextjs": "7.36.0",
+        "@wagmi/core": "1.0.1",
         "@walletconnect/client": "1.8.0",
         "@web3modal/ethereum": "2.3.7",
         "@web3modal/react": "2.3.7",
