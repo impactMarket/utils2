@@ -20,7 +20,7 @@ An example using Next.js, web3modal and wagmi
 ```javascript
 // _app.tsx
 import type { AppProps } from 'next/app';
-import { configureChains, createClient, WagmiConfig } from 'wagmi';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { EthereumClient, w3mConnectors } from '@web3modal/ethereum';
 import { Web3Modal } from '@web3modal/react';
@@ -28,26 +28,26 @@ import { celo } from '@wagmi/chains';
 
 const projectId = '<walletconnect-project-id>';
 
-const { chains, provider } = configureChains(
+const { chains, publicClient } = configureChains(
     [celo],
     [jsonRpcProvider({ rpc: chain => ({ http: chain.rpcUrls.default.http[0] }) })]
 );
 
-const wagmiClient = createClient({
+const wagmiConfig = createConfig({
     autoConnect: true,
     connectors: w3mConnectors({ projectId, version: 2, chains }),
-    provider
+    publicClient,
 });
 
-const ethereumClient = new EthereumClient(wagmiClient, chains);
+const ethereumClient = new EthereumClient(wagmiConfig, chains);
 
 function MyApp({ Component, pageProps }: AppProps) {
     return (
         <>
-            <WagmiConfig client={wagmiClient}>
+            <WagmiConfig config={wagmiConfig}>
                 <Component {...pageProps} />
             </WagmiConfig>
-            <Web3Modal projectId={projectId} ethereumClient={ethereumClient}/>
+            <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
         </>
     );
 }
@@ -59,11 +59,11 @@ export default MyApp;
 // index.tsx
 import React from 'react';
 import { ImpactProvider } from '@impact-market/utils/ImpactProvider';
-import { useAccount, useNetwork, useSigner } from 'wagmi';
+import { useAccount, useNetwork, useWalletClient } from 'wagmi';
 
 function App() {
     const { address } = useAccount();
-    const { data: signer } = useSigner();
+    const { data: signer } = useWalletClient();
     const { chain } = useNetwork();
 
     return (

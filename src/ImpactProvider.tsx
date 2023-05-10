@@ -3,7 +3,7 @@ import { BaseProvider, StaticJsonRpcProvider } from '@ethersproject/providers';
 import { ImpactMarketSubgraph, ImpactMarketUBIManagementSubgraph } from './subgraphs';
 import { NormalizedCacheObject } from '@apollo/client/cache/inmemory/types';
 import { RetryLink } from '@apollo/client/link/retry/retryLink';
-import { Signer } from '@ethersproject/abstract-signer';
+import { WalletClient } from 'wagmi';
 import React, { useState } from 'react';
 
 export type EpochType = {
@@ -66,7 +66,7 @@ const initialRewards: RewardsType = {
 const intialProviderData: {
     address: string | null;
     defaultFeeCurrency?: string;
-    signer: Signer | null;
+    signer: WalletClient | null;
     networkId: number;
     jsonRpcUrl: string;
     provider: BaseProvider;
@@ -145,7 +145,7 @@ export const StakingContext = React.createContext(intialStakingStateData);
 type ProviderProps = {
     children?: any;
     address: string | null;
-    signer: Signer | null;
+    signer: WalletClient | null;
     jsonRpc: string;
     networkId: number;
     defaultFeeCurrency?: string;

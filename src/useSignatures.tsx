@@ -1,7 +1,6 @@
 import { ContractAddresses } from './contractAddress';
 import { ImpactProviderContext } from './ImpactProvider';
-import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
-import { Web3Provider } from '@ethersproject/providers';
+import { TypedDataField } from '@ethersproject/abstract-signer';
 import { hexlify } from '@ethersproject/bytes';
 import { networksId } from './config';
 import { toUtf8Bytes } from '@ethersproject/strings';
@@ -58,7 +57,7 @@ export const useSignatures = () => {
             throw new Error('no valid signer connected');
         }
 
-        return signer.signMessage(hexlify(toUtf8Bytes(message)));
+        return signer.signMessage({ message: hexlify(toUtf8Bytes(message)) });
     };
 
     /**
@@ -68,16 +67,17 @@ export const useSignatures = () => {
      * @returns {Promise<string>} Sigature hash
      */
     const signTypedData = (message: string, options?: SignatureOptions): Promise<string> => {
+        if (!signer) {
+            throw new Error('no valid signer connected');
+        }
+
         const expiry = options?.expiry || Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30;
         const name = options?.name || 'impactMarket';
         const verifyingContract =
-            options?.verifyingContract || ContractAddresses.get(networkId || networksId.CeloMainnet)!.PACTDelegator;
+            (options?.verifyingContract || ContractAddresses.get(networkId || networksId.CeloMainnet)!.PACTDelegator) as `0x${string}`;
         const version = options?.version || '1';
 
-        const provider = new Web3Provider(signer!.provider! as any);
-        const pSigner = provider.getSigner();
-
-        const domain: TypedDataDomain = {
+        const domain = {
             chainId: networkId,
             name,
             verifyingContract,
@@ -94,7 +94,7 @@ export const useSignatures = () => {
             message
         };
 
-        return pSigner!._signTypedData(domain, types, value);
+        return signer.signTypedData({ domain, message: value, primaryType: 'Auth', types });
     };
 
     return { signMessage, signTypedData };

@@ -1,12 +1,17 @@
-import * as encoding from '@walletconnect/encoding';
-import { Deferrable } from '@ethersproject/properties';
+import { Account, Chain, SendTransactionParameters } from 'viem';
 import { ImpactProviderContext } from './ImpactProvider';
-import { TransactionReceipt, TransactionRequest } from '@ethersproject/providers';
+import { TransactionReceipt } from '@ethersproject/providers';
 import { getContracts } from './contracts';
 import { useContext } from 'react';
 import axios from 'axios';
 
 // some methods copied from walletconnect v2 examples
+
+type TxHashParams = {
+    data?: `0x${string}`;
+    from?: `0x${string}`;
+    to?: `0x${string}`;
+}
 
 const apiGetAccountNonce = async (jsonRpcUrl: string, address: string): Promise<number> => {
     const response = await axios.post(jsonRpcUrl, {
@@ -36,13 +41,10 @@ const apiGetGasPrice = async (jsonRpcUrl: string, defaultFeeCurrency: string | u
 export const internalUseTransaction = () => {
     const { signer, address, provider, networkId, defaultFeeCurrency, jsonRpcUrl } = useContext(ImpactProviderContext);
 
-    const formatTransaction = async (tx: {
-        data?: string;
-        from?: string;
-        to?: string;
-    }): Promise<Deferrable<TransactionRequest>> => {
+    // internal transaction formatter
+    const formatTransaction = async (tx: TxHashParams): Promise<SendTransactionParameters<Chain, Account, Chain | undefined>> => {
         if (!address) {
-            return {};
+            throw new Error('no valid address connected');
         }
 
         const [_nonce, _gasPrice, _gasLimit, _value] = await Promise.all([
@@ -51,21 +53,14 @@ export const internalUseTransaction = () => {
             provider.estimateGas(tx),
             0
         ]);
-        const nonce = encoding.sanitizeHex(encoding.numberToHex(_nonce));
-        // gasPrice
-        const gasPrice = encoding.sanitizeHex(_gasPrice);
-        // gasLimit
-        const gasLimit = encoding.sanitizeHex(encoding.numberToHex(_gasLimit.toNumber() * 2));
-        // value
-        const value = encoding.sanitizeHex(encoding.numberToHex(_value));
 
         return {
             ...tx,
-            from: tx.from || address,
-            gasLimit,
-            gasPrice,
-            nonce,
-            value
+            account: (tx.from || address) as `0x${string}`,
+            gas: BigInt(_gasLimit.toNumber() * 2),
+            gasPrice: BigInt(_gasPrice),
+            nonce: _nonce,
+            value: BigInt(_value)
         };
     };
 
@@ -93,8 +88,8 @@ export const internalUseTransaction = () => {
             throw new Error('no valid signer connected');
         }
 
-        const txResponse = await signer.sendTransaction({
-            ...(await formatTransaction(tx)),
+        const txHash = await signer.sendTransaction({
+            ...(await formatTransaction(tx as TxHashParams)),
             ...feeTxParams
         });
 
@@ -117,7 +112,9 @@ export const internalUseTransaction = () => {
             }
         } catch (_) {}
 
-        return await txResponse.wait();
+        // the receipt is used in a couple of different places
+        // so it's necessary to return it
+        return await provider.getTransactionReceipt(txHash);
     };
 
     return executeTransaction;

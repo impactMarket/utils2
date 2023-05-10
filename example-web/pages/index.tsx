@@ -13,7 +13,7 @@ import Airdrop from './components/Airdrop';
 import DepositRedirect from './components/DepositRedirect';
 import LearnAndEarn from './components/LearnAndEarn';
 import MicroCredit from './components/MicroCredit';
-import { useAccount, useNetwork, useSigner } from 'wagmi';
+import { useAccount, useNetwork, useWalletClient } from 'wagmi';
 
 const components = [
     { label: 'Get wallets balance', component: WalletsBalance },
@@ -36,7 +36,7 @@ const initialOption = options[1];
 
 function App() {
     const { address } = useAccount();
-    const { data: signer } = useSigner();
+    const { data: signer } = useWalletClient();
     const { chain } = useNetwork();
     const [selectedOption, setSelectedOption] = useState<string>(initialOption);
 
