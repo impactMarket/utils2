@@ -11,7 +11,7 @@ type TxHashParams = {
     data?: `0x${string}`;
     from?: `0x${string}`;
     to?: `0x${string}`;
-}
+};
 
 const apiGetAccountNonce = async (jsonRpcUrl: string, address: string): Promise<number> => {
     const response = await axios.post(jsonRpcUrl, {
@@ -42,7 +42,9 @@ export const internalUseTransaction = () => {
     const { signer, address, provider, networkId, defaultFeeCurrency, jsonRpcUrl } = useContext(ImpactProviderContext);
 
     // internal transaction formatter
-    const formatTransaction = async (tx: TxHashParams): Promise<SendTransactionParameters<Chain, Account, Chain | undefined>> => {
+    const formatTransaction = async (
+        tx: TxHashParams
+    ): Promise<SendTransactionParameters<Chain, Account, Chain | undefined>> => {
         if (!address) {
             throw new Error('no valid address connected');
         }
