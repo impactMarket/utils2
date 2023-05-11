@@ -52,7 +52,8 @@ export const internalUseTransaction = () => {
         const [_nonce, _gasPrice, _gasLimit, _value] = await Promise.all([
             apiGetAccountNonce(jsonRpcUrl, tx.from || address),
             apiGetGasPrice(jsonRpcUrl, defaultFeeCurrency),
-            provider.estimateGas(tx),
+            // ensure basic params are provided
+            provider.estimateGas({...tx, from: address}),
             0
         ]);
 
@@ -114,9 +115,9 @@ export const internalUseTransaction = () => {
             }
         } catch (_) {}
 
-        // the receipt is used in a couple of different places
-        // so it's necessary to return it
-        return await provider.getTransactionReceipt(txHash);
+        // initial version of utils returned the transaction receipt
+        // and it's used in many places, so we will keep doing it
+        return await provider.waitForTransaction(txHash);
     };
 
     return executeTransaction;
