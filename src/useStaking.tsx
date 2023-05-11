@@ -213,9 +213,6 @@ export const useStaking = () => {
     // Get stakeholder amount
     useEffect(() => {
         const getStakeholderAmount = async () => {
-            if (!signer) {
-                return;
-            }
             const { donationMiner, staking, spact } = getContracts(provider, networkId);
             const [unstakeCooldown, totalAmount] = await Promise.all([
                 staking.cooldown(),
@@ -282,7 +279,7 @@ export const useStaking = () => {
         };
 
         getStakeholderAmount();
-    }, []);
+    }, [address]);
 
     return { approve, claim, stake, stakeRewards, staking, unstake, unstakingUserInfo };
 };
