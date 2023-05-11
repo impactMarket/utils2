@@ -21,8 +21,8 @@ export const useDepositRedirect = () => {
      * @returns {Promise<UserDeposit[]>} void
      */
     const _fetchUserDeposits = async () => {
-        if (!address || !signer) {
-            throw new Error('No wallet connected');
+        if (!address) {
+            throw new Error('No address provided');
         }
 
         const { depositRedirect } = getContracts(provider, networkId);
@@ -141,8 +141,10 @@ export const useDepositRedirect = () => {
 
     useEffect(() => {
         const load = async () => {
-            setUserDeposits(await _fetchUserDeposits());
-            setIsReady(true);
+            if (address) {
+                setUserDeposits(await _fetchUserDeposits());
+                setIsReady(true);
+            }
         };
 
         load();
