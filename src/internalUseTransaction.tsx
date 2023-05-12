@@ -53,7 +53,7 @@ export const internalUseTransaction = () => {
             apiGetAccountNonce(jsonRpcUrl, tx.from || address),
             apiGetGasPrice(jsonRpcUrl, defaultFeeCurrency),
             // ensure basic params are provided
-            provider.estimateGas({...tx, from: address}),
+            provider.estimateGas({ ...tx, from: address }),
             0
         ]);
 
