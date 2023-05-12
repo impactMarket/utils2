@@ -1,11 +1,11 @@
 import '@celo/react-celo/lib/styles.css';
 import type { AppProps } from 'next/app';
-import { Alfajores, CeloProvider, SupportedProviders } from '@celo/react-celo';
+import { CeloProvider, Mainnet, SupportedProviders } from '@celo/react-celo';
 
 function MyApp({ Component, pageProps }: AppProps) {
     return (
         <CeloProvider
-            defaultNetwork={Alfajores.name}
+            defaultNetwork={Mainnet.name}
             dapp={{
                 name: 'My awesome dApp',
                 description: 'My awesome description',

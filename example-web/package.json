@@ -14,6 +14,7 @@
         "@celo/utils": "2.3.0",
         "@impact-market/utils": "link:..",
         "@walletconnect/client": "1.8.0",
+        "dotenv": "16.0.3",
         "ethers": "5.7.2",
         "next": "12.3.1",
         "react": "18.2.0",

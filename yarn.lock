@@ -432,10 +432,10 @@
     events "^3.0.0"
     promise "^8.0.3"
 
-"@caskprotocol/sdk@^1.5.3":
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/@caskprotocol/sdk/-/sdk-1.5.3.tgz#b4041fdc04cec99dae1aeecf102f10229e649e3b"
-  integrity sha512-LmzjCzYqVBah2t1GHZdfd3dVdXJnwbYerDrKelI6PTWuGNGDOWH5bWEzVHMX4jzAepH2z0P/a8AiLzKwjSnrBQ==
+"@caskprotocol/sdk@1.5.9":
+  version "1.5.9"
+  resolved "https://registry.yarnpkg.com/@caskprotocol/sdk/-/sdk-1.5.9.tgz#cddb9bed2ec9485c8538f71aa83232004f176cac"
+  integrity sha512-PftawsJ+jEmWshMQfhtQ/N27WHo9oGKKv9icHtlgnMv21B68n9zVG52mfGqPSczuHo+FLVM9tsYeTdg3xNmGXg==
   dependencies:
     "@alch/alchemy-web3" "^1.3.0"
     "@apollo/client" "^3.6.0"

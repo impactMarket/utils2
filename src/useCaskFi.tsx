@@ -1,5 +1,5 @@
 import { CaskSDK } from '@caskprotocol/sdk';
-import { ExternalProvider, Web3Provider } from '@ethersproject/providers';
+import { ExternalProvider, TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { ImpactProviderContext } from './ImpactProvider';
 import { networksId } from './config';
 import React, { useContext, useEffect } from 'react';
@@ -20,49 +20,35 @@ function getProviderAddress(networkId: number): string {
             providerAddress = '0x7110b4Df915cb92F53Bc01cC9Ab15F51e5DBb52F';
             break;
         case networksId.CeloMainnet:
-            providerAddress = '';
+            providerAddress = '0xd9CA091aF9A1716249dFbFD01Aa2ed47D47ea5C3';
             break;
     }
 
     return providerAddress;
 }
 
-export const useCaskFi = () => {
-    const { address, connection, networkId } = useContext(ImpactProviderContext);
-    const [fundingSource, setFundingSource] = React.useState(-1);
-
-    const cask = new CaskSDK({
-        connections: {
-            signer: new Web3Provider(connection.web3.currentProvider as ExternalProvider).getSigner()
-        },
-        environment: CaskSDK.environments.TESTNET,
-        initialChainId: CaskSDK.chains.CELO_TESTNET.chainId,
-        ipfs: {
-            pinataApiKey: '',
-            pinataApiSecret: ''
-        }
-    });
+export const useCaskFi = (ipfs: { pinataApiKey: string; pinataApiSecret: string }) => {
+    const { connection, networkId } = useContext(ImpactProviderContext);
+    const [isReady, setIsReady] = React.useState(false);
+    const [cask, setCask] = React.useState<any>(null);
 
     useEffect(() => {
         const load = async () => {
-            await cask.init();
-            
-            const fundingSource_ = await cask.vault.getFundingSource(address);
-            
-            setFundingSource(fundingSource_.fundingSource);
-            
+            const cask_ = new CaskSDK({
+                connections: {
+                    signer: new Web3Provider(connection.web3.currentProvider as ExternalProvider).getSigner()
+                },
+                // environment: CaskSDK.environments.TESTNET,
+                // initialChainId: CaskSDK.chains.CELO_TESTNET.chainId,
+                environment: CaskSDK.environments.PRODUCTION,
+                initialChainId: CaskSDK.chains.CELO_MAINNET.chainId,
+                ipfs
+            });
 
+            await cask_.init();
 
-
-            // const providerAddress = '0x7110b4Df915cb92F53Bc01cC9Ab15F51e5DBb52F';
-            // const providerProfile = await cask.subscriptionPlans.loadProfile({ address: providerAddress });
-
-            // console.log({ providerProfile });
-            // const planInfo = providerProfile.getPlan(planId);
-
-            // console.log(`Subscribing to plan ${planInfo.name}`)
-
-            // await cask.vault.setFundingSource({ fundingSource: 1 });
+            setCask(cask_);
+            setIsReady(true);
         };
 
         load();
@@ -88,7 +74,7 @@ export const useCaskFi = () => {
         const providerAddress = getProviderAddress(networkId);
         const providerProfile = await cask.subscriptionPlans.loadProfile({ address: providerAddress });
 
-        return providerProfile.plans as SubscriptionPlanType[];
+        return Object.entries(providerProfile.plans).map(([, plan]) => plan) as SubscriptionPlanType[];
     };
 
     const getConsumerSubscriptionsDetails = async () => {
@@ -112,7 +98,7 @@ export const useCaskFi = () => {
     const subscribe = (planId: number): Promise<any> => {
         const providerAddress = getProviderAddress(networkId);
 
-        return cask.subscriptions.getConsumerSubscriptions({
+        return cask.subscriptions.create({
             planId,
             provider: providerAddress
         });
@@ -121,22 +107,22 @@ export const useCaskFi = () => {
     /**
      * Unsubscribe a plan
      * @param {number} subscriptionId Subscription id to unsubscribe
-     * @returns {Promise<any>} Transaction details
+     * @returns {Promise<TransactionResponse>} TransactionResponse
      */
-    const unsubscribe = (subscriptionId: number): Promise<any> =>
-        cask.subscriptions.getConsumerSubscriptions(subscriptionId);
+    const unsubscribe = (subscriptionId: number): Promise<TransactionResponse> =>
+        cask.subscriptions.cancel(subscriptionId);
 
     /**
      * Set funding source to personal wallet
-     * @returns {Promise<void>} void
+     * @returns {Promise<TransactionResponse>} TransactionResponse
      */
-    const changeFundingSource = (): Promise<void> => cask.vault.setFundingSource({ fundingSource: 1 });
+    const changeFundingSource = (): Promise<TransactionResponse> => cask.vault.setFundingSource({ fundingSource: 1 });
 
     return {
         changeFundingSource,
-        fundingSource,
         getConsumerSubscriptionsDetails,
         getPlans,
+        isReady,
         subscribe,
         unsubscribe
     };

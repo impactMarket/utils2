@@ -3,7 +3,7 @@ import Intro from './components/Intro';
 import WalletsBalance from './components/WalletsBalance';
 import DaoBreakdown from './components/DaoBreakdown';
 import DaoHooks from './components/DaoHooks';
-import { Alfajores, useCelo, useProviderOrSigner } from '@celo/react-celo';
+import { Mainnet, useCelo, useProviderOrSigner } from '@celo/react-celo';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import PACTMetrics from './components/PACTMetrics';
 import Community from './components/Community';
@@ -14,6 +14,8 @@ import Signatures from './components/Signatures';
 import Airdrop from './components/Airdrop';
 import LearnAndEarn from './components/LearnAndEarn';
 import CaskFi from './components/CaskFi';
+import * as dotenv from 'dotenv';
+dotenv.config()
 
 const components = [
     { label: 'Get wallets balance', component: WalletsBalance },
@@ -33,7 +35,7 @@ const options = components.map(({ label }) => label);
 
 const initialOption = options[10];
 
-const network = Alfajores;
+const network = Mainnet;
 
 const provider = new JsonRpcProvider(network.rpcUrl);
 function App() {
@@ -72,8 +74,6 @@ function App() {
     if (walletNetwork?.chainId && !isSameNetwork) {
         return <div>The app and your wallet are in different networks!</div>;
     }
-
-    console.log(signer);
 
     return (
         <>
