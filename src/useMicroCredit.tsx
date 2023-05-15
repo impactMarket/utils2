@@ -26,17 +26,17 @@ export type Loan = {
     period: number;
     repaymentsLength: number;
     startDate: number;
-}
+};
 type RawLoan = {
-    amountBorrowed: BigNumber,
-    amountRepayed: BigNumber,
-    currentDebt: BigNumber,
-    dailyInterest: BigNumber,
-    lastComputedDate: BigNumber,
-    lastComputedDebt: BigNumber,
-    period: BigNumber,
-    repaymentsLength: BigNumber,
-    startDate: BigNumber
+    amountBorrowed: BigNumber;
+    amountRepayed: BigNumber;
+    currentDebt: BigNumber;
+    dailyInterest: BigNumber;
+    lastComputedDate: BigNumber;
+    lastComputedDebt: BigNumber;
+    period: BigNumber;
+    repaymentsLength: BigNumber;
+    startDate: BigNumber;
 };
 
 export const useMicroCredit = () => {
@@ -129,7 +129,7 @@ export const useMicroCredit = () => {
         }
 
         return LoanStatus.LOAN_CLAIMED;
-    }
+    };
 
     const updateLoan = (data: RawLoan) => {
         const {
@@ -167,7 +167,7 @@ export const useMicroCredit = () => {
             }
 
             const loanId = await getActiveLoanId(address);
-            
+
             if (loanId !== -1) {
                 userLoans(address, loanId).then(() => setIsReady(true));
             }
