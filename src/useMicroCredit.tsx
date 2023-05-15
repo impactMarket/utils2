@@ -147,10 +147,10 @@ export const useMicroCredit = () => {
         const formattedData = {
             amountBorrowed: toNumber(amountBorrowed.toString()),
             amountRepayed: toNumber(amountRepayed.toString()),
-            currentDebt: toNumber(currentDebt.toString()),
+            currentDebt: toNumber(currentDebt.toString(), { ROUNDING_MODE: BigNumber.ROUND_UP }),
             dailyInterest: toNumber(dailyInterest.toString()),
             lastComputedDate: lastComputedDate.toNumber(),
-            lastComputedDebt: toNumber(lastComputedDebt.toString()),
+            lastComputedDebt: toNumber(lastComputedDebt.toString(), { ROUNDING_MODE: BigNumber.ROUND_UP }),
             loanStatus: _loanStatus(data),
             period: period.toNumber(),
             repaymentsLength: repaymentsLength.toNumber(),
