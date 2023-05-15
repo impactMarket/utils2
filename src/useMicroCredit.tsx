@@ -5,19 +5,39 @@ import { internalUseTransaction } from './internalUseTransaction';
 import { toNumber } from './toNumber';
 import { toToken } from './toToken';
 import BaseERC20ABI from './abi/BaseERC20.json';
+import BigNumber from 'bignumber.js';
 import React, { useEffect, useState } from 'react';
 
-interface Loan {
+export enum LoanStatus {
+    NO_LOAN = 0,
+    PENDING_CLAIM = 1,
+    LOAN_CLAIMED = 2,
+    LOAN_FULL_REPAID = 3
+}
+export type Loan = {
     amountBorrowed: number;
     amountRepayed: number;
     currentDebt: number;
     dailyInterest: number;
-    lastComputedDate: string;
+    lastComputedDate: number;
     lastComputedDebt: number;
-    period: string;
-    repaymentsLength: string;
+    // 0 no loan, 1 pending claim, 2 loan claimed, 3 loan full repaid
+    loanStatus: LoanStatus;
+    period: number;
+    repaymentsLength: number;
     startDate: number;
 }
+type RawLoan = {
+    amountBorrowed: BigNumber,
+    amountRepayed: BigNumber,
+    currentDebt: BigNumber,
+    dailyInterest: BigNumber,
+    lastComputedDate: BigNumber,
+    lastComputedDebt: BigNumber,
+    period: BigNumber,
+    repaymentsLength: BigNumber,
+    startDate: BigNumber
+};
 
 export const useMicroCredit = () => {
     const { provider, address, connection, networkId } = React.useContext(ImpactProviderContext);
@@ -27,10 +47,11 @@ export const useMicroCredit = () => {
         amountRepayed: 0,
         currentDebt: 0,
         dailyInterest: 0,
-        lastComputedDate: '0',
+        lastComputedDate: 0,
         lastComputedDebt: 0,
-        period: '0',
-        repaymentsLength: '0',
+        loanStatus: 0,
+        period: 0,
+        repaymentsLength: 0,
         startDate: 0
     });
 
@@ -49,7 +70,15 @@ export const useMicroCredit = () => {
 
         const { microCredit } = getContracts(provider, networkId);
         const tokenContract = new Contract(token, BaseERC20ABI, provider);
-        const tx = await tokenContract.populateTransaction.approve(microCredit.address, toToken(amount));
+        let actualAmount = toToken(amount);
+
+        if (loan.lastComputedDebt - parseFloat(amount) < 0.01) {
+            const loanId = await getActiveLoanId(address);
+            const { currentDebt } = await userLoans(address, loanId);
+
+            actualAmount = currentDebt.toString();
+        }
+        const tx = await tokenContract.populateTransaction.approve(microCredit.address, actualAmount);
         const response = await executeTransaction(tx);
 
         return response;
@@ -67,7 +96,15 @@ export const useMicroCredit = () => {
         }
 
         const { microCredit } = getContracts(provider, networkId);
-        const tx = await microCredit.populateTransaction.repayLoan(loanId, toToken(repaymentAmount));
+        let actualAmount = toToken(repaymentAmount);
+
+        if (loan.lastComputedDebt - parseFloat(repaymentAmount) < 0.01) {
+            const loanId = await getActiveLoanId(address);
+            const { currentDebt } = await userLoans(address, loanId);
+
+            actualAmount = currentDebt.toString();
+        }
+        const tx = await microCredit.populateTransaction.repayLoan(loanId, actualAmount);
         const response = await executeTransaction(tx);
 
         await userLoans(address, loanId);
@@ -75,7 +112,26 @@ export const useMicroCredit = () => {
         return response;
     };
 
-    const updateLoan = (data: Loan) => {
+    /**
+     * Private method to dedut loan status
+     * @param {RawLoan} loan Loan raw data from smart-contract
+     * @returns {number} loan status
+     */
+    const _loanStatus = (loan: RawLoan) => {
+        if (loan.lastComputedDebt.toString() === '0') {
+            if (loan.period.toNumber() === 0) {
+                return LoanStatus.NO_LOAN;
+            } else if (loan.repaymentsLength.toNumber() !== 0) {
+                return LoanStatus.LOAN_FULL_REPAID;
+            }
+
+            return LoanStatus.PENDING_CLAIM;
+        }
+
+        return LoanStatus.LOAN_CLAIMED;
+    }
+
+    const updateLoan = (data: RawLoan) => {
         const {
             amountBorrowed,
             amountRepayed,
@@ -93,11 +149,12 @@ export const useMicroCredit = () => {
             amountRepayed: toNumber(amountRepayed.toString()),
             currentDebt: toNumber(currentDebt.toString()),
             dailyInterest: toNumber(dailyInterest.toString()),
-            lastComputedDate: lastComputedDate.toString(),
+            lastComputedDate: lastComputedDate.toNumber(),
             lastComputedDebt: toNumber(lastComputedDebt.toString()),
-            period: period.toString(),
-            repaymentsLength: repaymentsLength.toString(),
-            startDate: +startDate.toString()
+            loanStatus: _loanStatus(data),
+            period: period.toNumber(),
+            repaymentsLength: repaymentsLength.toNumber(),
+            startDate: startDate.toNumber()
         };
 
         setLoan(formattedData);
@@ -110,8 +167,10 @@ export const useMicroCredit = () => {
             }
 
             const loanId = await getActiveLoanId(address);
-
-            await userLoans(address, loanId).then(() => setIsReady(true));
+            
+            if (loanId !== -1) {
+                userLoans(address, loanId).then(() => setIsReady(true));
+            }
         };
 
         loadLoanData();
