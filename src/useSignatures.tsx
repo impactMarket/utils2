@@ -1,9 +1,7 @@
 import { ContractAddresses } from './contractAddress';
 import { ImpactProviderContext } from './ImpactProvider';
 import { TypedDataField } from '@ethersproject/abstract-signer';
-import { hexlify } from '@ethersproject/bytes';
 import { networksId } from './config';
-import { toUtf8Bytes } from '@ethersproject/strings';
 import React from 'react';
 
 /**
@@ -57,7 +55,7 @@ export const useSignatures = () => {
             throw new Error('no valid signer connected');
         }
 
-        return signer.signMessage({ message: hexlify(toUtf8Bytes(message)) });
+        return signer.signMessage({ message });
     };
 
     /**
