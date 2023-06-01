@@ -30,6 +30,20 @@ type SignatureOptions = {
     version?: string;
 };
 
+/**
+ * Typed signature response
+ */
+type TypedSignatureResponse = {
+    /**
+     * Message being signed
+     */
+    message: Record<string, any>;
+    /**
+     * Sinature hash
+     */
+    signature: string;
+};
+
 export const useSignatures = () => {
     const { signer, networkId } = React.useContext(ImpactProviderContext);
 
@@ -38,7 +52,7 @@ export const useSignatures = () => {
      * ***DO NOT HASH IT***
      * @param {string} message plaintext readable string
      * @returns {Promise<string>} signature
-     * @deprecated use `signTyped` instead
+     * @deprecated use `signTypedData` instead
      */
     const signMessage = (message: string): Promise<string> => {
         // const connectionProvider = signer.web3.currentProvider as unknown as {
@@ -62,9 +76,9 @@ export const useSignatures = () => {
      * Sign a message using EIP-712
      * @param {string} message Message to sign
      * @param {SignatureOptions} options Signature options
-     * @returns {Promise<string>} Sigature hash
+     * @returns {Promise<TypedSignatureResponse>} Sigature hash
      */
-    const signTypedData = (message: string, options?: SignatureOptions): Promise<string> => {
+    const signTypedData = async (message: string, options?: SignatureOptions): Promise<TypedSignatureResponse> => {
         if (!signer) {
             throw new Error('no valid signer connected');
         }
@@ -92,7 +106,9 @@ export const useSignatures = () => {
             message
         };
 
-        return signer.signTypedData({ domain, message: value, primaryType: 'Auth', types });
+        const signature = await signer.signTypedData({ domain, message: value, primaryType: 'Auth', types });
+
+        return { message: value, signature };
     };
 
     return { signMessage, signTypedData };
