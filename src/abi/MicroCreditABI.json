@@ -48,5 +48,38 @@
         ],
         "name": "walletMetadata",
         "inputs": [{ "type": "address", "name": "_userAddress", "internalType": "address" }]
+    },
+    {
+        "type": "function",
+        "stateMutability": "nonpayable",
+        "outputs": [],
+        "name": "addLoans",
+        "inputs": [
+            { "type": "address[]", "name": "_userAddresses", "internalType": "address[]" },
+            { "type": "uint256[]", "name": "_amounts", "internalType": "uint256[]" },
+            { "type": "uint256[]", "name": "_periods", "internalType": "uint256[]" },
+            { "type": "uint256[]", "name": "_dailyInterests", "internalType": "uint256[]" },
+            { "type": "uint256[]", "name": "_claimDeadlines", "internalType": "uint256[]" }
+        ]
+    },
+    {
+        "type": "function",
+        "stateMutability": "nonpayable",
+        "outputs": [],
+        "name": "cancelLoans",
+        "inputs": [
+            { "type": "address[]", "name": "_userAddresses", "internalType": "address[]" },
+            { "type": "uint256[]", "name": "_loansIds", "internalType": "uint256[]" }
+        ]
+    },
+    {
+        "type": "function",
+        "stateMutability": "nonpayable",
+        "outputs": [],
+        "name": "changeUserAddress",
+        "inputs": [
+            { "type": "address", "name": "_oldWalletAddress", "internalType": "address" },
+            { "type": "address", "name": "_newWalletAddress", "internalType": "address" }
+        ]
     }
 ]
