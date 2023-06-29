@@ -39,7 +39,8 @@ const apiGetGasPrice = async (jsonRpcUrl: string, defaultFeeCurrency: string | u
 };
 
 export const internalUseTransaction = () => {
-    const { signer, address, provider, networkId, defaultFeeCurrency, jsonRpcUrl } = useContext(ImpactProviderContext);
+    const { signer, address, provider, networkId, defaultFeeCurrency, jsonRpcUrl, connection } =
+        useContext(ImpactProviderContext);
 
     // internal transaction formatter
     const formatTransaction = async (
@@ -89,6 +90,17 @@ export const internalUseTransaction = () => {
 
         if (!signer) {
             throw new Error('no valid signer connected');
+        }
+
+        if (signer === null && connection) {
+            const txResponse = await connection.sendTransaction({
+                data: tx.data,
+                from: tx.from || address,
+                gasPrice: await apiGetGasPrice(jsonRpcUrl, defaultFeeCurrency),
+                to: tx.to
+            });
+
+            return await txResponse.waitReceipt();
         }
 
         const txHash = await signer.sendTransaction({

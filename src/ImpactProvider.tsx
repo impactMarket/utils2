@@ -1,5 +1,6 @@
 import { ApolloCache } from '@apollo/client/cache/core/cache';
 import { BaseProvider, StaticJsonRpcProvider } from '@ethersproject/providers';
+import { Connection } from '@celo/connect';
 import { ImpactMarketSubgraph, ImpactMarketUBIManagementSubgraph } from './subgraphs';
 import { NormalizedCacheObject } from '@apollo/client/cache/inmemory/types';
 import { RetryLink } from '@apollo/client/link/retry/retryLink';
@@ -66,6 +67,7 @@ const initialRewards: RewardsType = {
 const intialProviderData: {
     address: string | null;
     defaultFeeCurrency?: string;
+    connection?: Connection;
     signer: WalletClient | null;
     networkId: number;
     jsonRpcUrl: string;
@@ -145,6 +147,10 @@ export const StakingContext = React.createContext(intialStakingStateData);
 type ProviderProps = {
     children?: any;
     address: string | null;
+    /**
+     * @deprecated Use `signer` instead
+     */
+    connection?: Connection;
     signer: WalletClient | null;
     jsonRpc: string;
     networkId: number;
@@ -236,12 +242,13 @@ const StakingProvider = React.memo((props: { children?: any }) => {
 });
 
 export const ImpactProvider = (props: ProviderProps) => {
-    const { children, address, jsonRpc, signer, networkId, apolloClientOptions, defaultFeeCurrency } = props;
+    const { children, address, jsonRpc, signer, networkId, apolloClientOptions, defaultFeeCurrency, connection } = props;
 
     return (
         <ImpactProviderContext.Provider
             value={{
                 address,
+                connection,
                 defaultFeeCurrency,
                 jsonRpcUrl: jsonRpc,
                 networkId,
