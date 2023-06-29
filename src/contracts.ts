@@ -38,11 +38,33 @@ export interface IDepositRedirect extends Contract {
     interest(depositorAddress: string, tokenAddress: string, amount: string): Promise<any>;
 }
 
+export type UserLoans = {
+    amountBorrowed: BigNumber;
+    period: BigNumber;
+    dailyInterest: BigNumber;
+    claimDeadline: BigNumber;
+    startDate: BigNumber;
+    currentDebt: BigNumber;
+    lastComputedDebt: BigNumber;
+    amountRepayed: BigNumber;
+    repaymentsLength: BigNumber;
+    lastComputedDate: BigNumber;
+};
+
 export interface IMicroCredit extends Contract {
     approve(loanId: string, amount: string): Promise<void>;
-    userLoans(userAddress: string, loanId: string): Promise<void>;
+    userLoans(userAddress: string, loanId: number | string): Promise<UserLoans>;
     claimLoan(loanId: string): Promise<void>;
     repayLoan(loanId: string, amount: string): Promise<void>;
+    addLoans(
+        userAddresses: string[],
+        amounts: number[],
+        periods: number[],
+        dailyInterests: number[],
+        startDates: number[]
+    ): Promise<void>;
+    cancelLoans(userAddresses: string[], loansIds: number[]): Promise<void>;
+    changeUserAddress(oldWalletAddress: string, newWalletAddress: string): Promise<void>;
 }
 
 export const getContracts = (provider: BaseProvider, networkId: number) => {
@@ -92,7 +114,7 @@ export const getContracts = (provider: BaseProvider, networkId: number) => {
 
     const merkleDistributor = new Contract(addresses.merkleDistributor, MerkleDistributorABI, provider);
 
-    const microCredit = new Contract(addresses.microCredit, MicroCreditABI, provider);
+    const microCredit = new Contract(addresses.microCredit, MicroCreditABI, provider) as IMicroCredit;
 
     const donationMiner = new Contract(addresses.donationMiner, DonationMinerABI, provider);
 

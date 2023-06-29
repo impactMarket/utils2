@@ -1,9 +1,9 @@
-import { useMicroCredit } from '@impact-market/utils/useMicroCredit';
+import { useBorrower } from '@impact-market/utils/useBorrower';
 import React, { useState } from 'react';
 import { useAccount } from 'wagmi';
 
 const UserLoans = () => {
-    const { userLoans, claimLoan, approve, repayLoan, getActiveLoanId, loan } = useMicroCredit();
+    const { userLoans, claimLoan, approve, repayLoan, getActiveLoanId, loan } = useBorrower();
     const { address } = useAccount();
     const [amount, setAmount] = useState('0');
 

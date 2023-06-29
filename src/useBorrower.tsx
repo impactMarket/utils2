@@ -1,6 +1,6 @@
 import { Contract } from '@ethersproject/contracts';
 import { ImpactProviderContext } from './ImpactProvider';
-import { getContracts } from './contracts';
+import { UserLoans, getContracts } from './contracts';
 import { internalUseTransaction } from './internalUseTransaction';
 import { toNumber } from './toNumber';
 import { toToken } from './toToken';
@@ -27,19 +27,8 @@ export type Loan = {
     repaymentsLength: number;
     startDate: number;
 };
-type RawLoan = {
-    amountBorrowed: BigNumber;
-    amountRepayed: BigNumber;
-    currentDebt: BigNumber;
-    dailyInterest: BigNumber;
-    lastComputedDate: BigNumber;
-    lastComputedDebt: BigNumber;
-    period: BigNumber;
-    repaymentsLength: BigNumber;
-    startDate: BigNumber;
-};
 
-export const useMicroCredit = () => {
+export const useBorrower = () => {
     const { provider, address, signer, networkId } = React.useContext(ImpactProviderContext);
     const executeTransaction = internalUseTransaction();
     const [loan, setLoan] = useState<Loan>({
@@ -114,10 +103,10 @@ export const useMicroCredit = () => {
 
     /**
      * Private method to dedut loan status
-     * @param {RawLoan} loan Loan raw data from smart-contract
+     * @param {UserLoans} loan Loan raw data from smart-contract
      * @returns {number} loan status
      */
-    const _loanStatus = (loan: RawLoan): number => {
+    const _loanStatus = (loan: UserLoans): number => {
         if (loan.lastComputedDebt.toString() === '0') {
             if (loan.period.toNumber() === 0) {
                 return LoanStatus.NO_LOAN;
@@ -131,7 +120,7 @@ export const useMicroCredit = () => {
         return LoanStatus.LOAN_CLAIMED;
     };
 
-    const updateLoan = (data: RawLoan) => {
+    const updateLoan = (data: UserLoans) => {
         const {
             amountBorrowed,
             amountRepayed,
