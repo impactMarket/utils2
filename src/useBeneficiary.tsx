@@ -1,4 +1,5 @@
 import { ImpactProviderContext } from './ImpactProvider';
+import { TransactionReceipt } from '@ethersproject/providers';
 import { communityContract } from './community';
 import { estimateBlockTime } from './estimateBlockTime';
 import { estimateRemainingFundsInDays } from './estimateRemainingFundsInDays';
@@ -7,7 +8,6 @@ import { internalUseTransaction } from './internalUseTransaction';
 import { toNumber } from './toNumber';
 import { updateCUSDBalance } from './useCUSDBalance';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { CeloTxReceipt } from '@celo/connect';
 import type { Contract } from '@ethersproject/contracts';
 
 export type Beneficiary = {
@@ -26,7 +26,7 @@ export type Beneficiary = {
 
 type UseBeneficiary = {
     beneficiary: Beneficiary & { contract?: Contract };
-    claim: () => Promise<CeloTxReceipt>;
+    claim: () => Promise<TransactionReceipt>;
     isReady: boolean;
     refetch: () => void;
 };
@@ -38,7 +38,7 @@ type UseBeneficiary = {
  * @returns {UseBeneficiary} hook
  */
 export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
-    const { connection, provider, address, subgraph, networkId } = React.useContext(ImpactProviderContext);
+    const { signer, provider, address, subgraph, networkId } = React.useContext(ImpactProviderContext);
     const updateIntervalRef = useRef<NodeJS.Timer>();
     const syncClockInterval = 120000;
 
@@ -188,7 +188,7 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
     const claim = async () => {
         const { contract } = beneficiary;
 
-        if (!contract || !connection || !address) {
+        if (!contract || !signer || !address) {
             throw new Error('No connection');
         }
         const tx = await contract.populateTransaction.claim();
@@ -208,7 +208,7 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
     const refetch = useCallback(() => {
         const { contract } = beneficiary;
 
-        if (!contract || !connection || !address) {
+        if (!contract || !signer || !address) {
             throw new Error('No connection');
         }
         updateClaimData(contract);
@@ -216,7 +216,7 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
 
     useEffect(() => {
         // make sure it's valid!
-        if (address && connection && provider && communityAddress) {
+        if (address && signer && provider && communityAddress) {
             const contract_ = communityContract(communityAddress, provider);
 
             updateClaimData(contract_);

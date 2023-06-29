@@ -1,83 +1,55 @@
-import '@celo/react-celo/lib/styles.css';
 import type { AppProps } from 'next/app';
-import { Alfajores, CeloProvider, SupportedProviders } from '@celo/react-celo';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+import { EthereumClient, w3mConnectors } from '@web3modal/ethereum';
+import { Web3Modal } from '@web3modal/react';
+import { celo } from '@wagmi/chains';
+
+const projectId = 'e14be5c27cfd796596686bdc6876e836';
+
+const { chains, publicClient } = configureChains(
+    [celo],
+    [jsonRpcProvider({ rpc: chain => ({ http: chain.rpcUrls.default.http[0] }) })]
+);
+
+const wagmiConfig = createConfig({
+    autoConnect: true,
+    connectors: w3mConnectors({ projectId, version: 2, chains }),
+    publicClient,
+});
+
+const ethereumClient = new EthereumClient(wagmiConfig, chains);
 
 function MyApp({ Component, pageProps }: AppProps) {
     return (
-        <CeloProvider
-            defaultNetwork={Alfajores.name}
-            dapp={{
-                name: 'My awesome dApp',
-                description: 'My awesome description',
-                url: 'https://example.com',
-                icon: ''
-            }}
-            connectModal={{
-                providersOptions: {
-                    searchable: true,
-                    additionalWCWallets: [
-                        // see https://github.com/WalletConnect/walletconnect-registry/#schema for a schema example
-                        {
-                            app: {
-                                android: 'https://play.google.com/store/apps/details?id=com.impactmarket.mobile',
-                                browser: '',
-                                ios: 'https://apps.apple.com/app/impactmarket/id1530870911',
-                                linux: '',
-                                mac: '',
-                                windows: ''
-                            },
-                            chains: ['eip:42220'],
-                            description: 'Your future unlocked.',
-                            desktop: {
-                                native: 'libera://',
-                                universal: 'libera://'
-                            },
-                            homepage: 'https://impactmarket.com/',
-                            id: 'libera-wallet',
-                            logos: {
-                                lg: 'https://dxdwf61ltxjyn.cloudfront.net/eyJidWNrZXQiOiJpbXBhY3RtYXJrZXQtYXBwIiwia2V5IjoiTGliZXJhTG9nby5qcGciLCJlZGl0cyI6eyJyZXNpemUiOnsid2lkdGgiOjQwMCwiaGVpZ2h0Ijo0MDAsImZpdCI6Imluc2lkZSJ9fSwib3V0cHV0Rm9ybWF0IjoianBnIn0=',
-                                md: 'https://dxdwf61ltxjyn.cloudfront.net/eyJidWNrZXQiOiJpbXBhY3RtYXJrZXQtYXBwIiwia2V5IjoiTGliZXJhTG9nby5qcGciLCJlZGl0cyI6eyJyZXNpemUiOnsid2lkdGgiOjQwMCwiaGVpZ2h0Ijo0MDAsImZpdCI6Imluc2lkZSJ9fSwib3V0cHV0Rm9ybWF0IjoianBnIn0=',
-                                sm: 'https://dxdwf61ltxjyn.cloudfront.net/eyJidWNrZXQiOiJpbXBhY3RtYXJrZXQtYXBwIiwia2V5IjoiTGliZXJhTG9nby5qcGciLCJlZGl0cyI6eyJyZXNpemUiOnsid2lkdGgiOjQwMCwiaGVpZ2h0Ijo0MDAsImZpdCI6Imluc2lkZSJ9fSwib3V0cHV0Rm9ybWF0IjoianBnIn0='
-                            },
-                            metadata: {
-                                colors: {
-                                    primary: '#fff',
-                                    secondary: '#2E6AFF'
-                                },
-                                shortName: 'Libera'
-                            },
-                            mobile: {
-                                native: 'libera://',
-                                universal: 'libera://'
-                            },
-                            name: 'Libera',
-                            responsive: {
-                                browserFriendly: false,
-                                browserOnly: false,
-                                mobileFriendly: true,
-                                mobileOnly: true
-                            },
-                            // IMPORTANT
-                            // This is the version of WC. We only support version 1 at the moment.
-                            versions: ['1']
+        <>
+            <WagmiConfig config={wagmiConfig}>
+                <Component {...pageProps} />
+            </WagmiConfig>
+            <Web3Modal
+                projectId={projectId}
+                ethereumClient={ethereumClient}
+                // explorerRecommendedWalletIds={[
+                //     // metamask
+                //     'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96',
+                //     // valora
+                //     'd01c7758d741b363e637a817a09bcf579feae4db9f5bb16f599fdd1f66e2f974'
+                // ]}
+                mobileWallets={[
+                    {
+                        id: 'libera',
+                        name: 'Libera',
+                        links: {
+                            native: 'libera://',
+                            universal: 'https://liberawallet.com'
                         }
-                    ],
-                    // This option hides specific wallets from the default list
-                    hideFromDefaults: [
-                        SupportedProviders.PrivateKey,
-                        SupportedProviders.CeloTerminal,
-                        SupportedProviders.CeloWallet,
-                        SupportedProviders.CeloDance,
-                        SupportedProviders.Injected,
-                        SupportedProviders.Ledger,
-                        SupportedProviders.Steakwallet,
-                        SupportedProviders.CoinbaseWallet
-                    ]
-                }
-            }}
-        >
-            <Component {...pageProps} />
-        </CeloProvider>
+                    }
+                ]}
+                walletImages={{
+                    libera: 'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/9485d17f-c413-47fe-ebee-a876a9dc9100/lg'
+                }}
+            />
+        </>
     );
 }
 

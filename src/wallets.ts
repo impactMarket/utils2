@@ -7,7 +7,7 @@ const instance = axios.create({
 
 const ethCurrencies = ['eth', 'dai', 'usdc', 'usdt'] as const;
 const ethContractAddresses: {
-    name: typeof ethCurrencies[number];
+    name: (typeof ethCurrencies)[number];
     address: string;
 }[] = [
     { address: '0x6b175474e89094c44da98b954eedeac495271d0f', name: 'dai' },
@@ -17,7 +17,7 @@ const ethContractAddresses: {
 
 const celoCurrencies = ['celo', 'cusd', 'ceur'] as const;
 const celoContractAddresses: {
-    name: typeof celoCurrencies[number];
+    name: (typeof celoCurrencies)[number];
     address: string;
 }[] = [
     { address: '0x471EcE3750Da237f93B8E339c536989b8978a438', name: 'celo' },
@@ -39,7 +39,7 @@ const getCoinPrice = async (coin: string) =>
 const getEtherScanBalance = async (
     wallet: string,
     etherscanApiKey: string,
-    balanceOf: typeof ethCurrencies[number]
+    balanceOf: (typeof ethCurrencies)[number]
 ) => {
     const contractaddress = ethContractAddresses.find(({ name }) => name === balanceOf)?.address;
 
@@ -56,7 +56,7 @@ const getEtherScanBalance = async (
     return parseInt(balance.data.result, 10) / 1000000;
 };
 
-const getCeloApiBalance = async (wallet: string, balanceOf: typeof celoCurrencies[number]) => {
+const getCeloApiBalance = async (wallet: string, balanceOf: (typeof celoCurrencies)[number]) => {
     const contractaddress = celoContractAddresses.find(({ name }) => name === balanceOf)?.address;
 
     const balance = await axios.get<any, AxiosResponse<{ result: string }>>(
@@ -70,7 +70,7 @@ const getCeloWalletBalance = async (wallet: string) => {
     const [celoPrice, celoEuroPrice] = await Promise.all([getCoinPrice('celo'), getCoinPrice('celo-euro')]);
 
     const balance = await Promise.all(
-        celoCurrencies.map(async (currency: typeof celoCurrencies[number]) => {
+        celoCurrencies.map(async (currency: (typeof celoCurrencies)[number]) => {
             const val = await getCeloApiBalance(wallet, currency);
 
             if (currency === 'celo') {
@@ -92,7 +92,7 @@ const getEthereumWalletBalance = async (wallet: string, etherscanApiKey: string)
     const ethPrice = await getCoinPrice('ethereum');
 
     const balance = await Promise.all(
-        ethCurrencies.map(async (currency: typeof ethCurrencies[number]) => {
+        ethCurrencies.map(async (currency: (typeof ethCurrencies)[number]) => {
             const val = await getEtherScanBalance(wallet, etherscanApiKey, currency);
 
             return currency === 'eth' ? ethPrice * val : val;

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { getPACTTradingMetrics, getPACTTVL, getUBILiquidity } from '@impact-market/utils/pact';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
-import { Mainnet } from '@celo/react-celo';
+import { celo } from '@wagmi/chains';
 
 const PACTMetrics = () => {
     const [pactTradingMetrics, setPactTradingMetrics] = React.useState<{
@@ -24,7 +24,7 @@ const PACTMetrics = () => {
 
     useEffect(() => {
         const loadPactPriceVolumeLiquidity = async () => {
-            const provider = new StaticJsonRpcProvider(Mainnet.rpcUrl);
+            const provider = new StaticJsonRpcProvider(celo.rpcUrls.default.http[0]);
             const { chainId } = await provider.getNetwork();
             const r = await getPACTTradingMetrics(chainId);
             const tvl = await getPACTTVL(provider, chainId);

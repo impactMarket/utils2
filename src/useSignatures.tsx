@@ -1,11 +1,7 @@
 import { ContractAddresses } from './contractAddress';
 import { ImpactProviderContext } from './ImpactProvider';
-import { TypedDataDomain, TypedDataField } from '@ethersproject/abstract-signer';
-import { Web3Provider } from '@ethersproject/providers';
-import { hashMessage } from '@ethersproject/hash';
-import { hexlify } from '@ethersproject/bytes';
+import { TypedDataField } from '@ethersproject/abstract-signer';
 import { networksId } from './config';
-import { toUtf8Bytes } from '@ethersproject/strings';
 import React from 'react';
 
 /**
@@ -34,47 +30,66 @@ type SignatureOptions = {
     version?: string;
 };
 
+/**
+ * Typed signature response
+ */
+type TypedSignatureResponse = {
+    /**
+     * Message being signed
+     */
+    message: Record<string, any>;
+    /**
+     * Sinature hash
+     */
+    signature: string;
+};
+
 export const useSignatures = () => {
-    const { connection, address, networkId } = React.useContext(ImpactProviderContext);
+    const { signer, networkId } = React.useContext(ImpactProviderContext);
 
     /**
      * Signs a given message.
      * ***DO NOT HASH IT***
      * @param {string} message plaintext readable string
      * @returns {Promise<string>} signature
-     * @deprecated use `signTyped` instead
+     * @deprecated use `signTypedData` instead
      */
     const signMessage = (message: string): Promise<string> => {
-        const connectionProvider = connection.web3.currentProvider as unknown as {
-            existingProvider: { isDesktop: boolean; _metamask?: unknown };
-        };
+        // const connectionProvider = signer.web3.currentProvider as unknown as {
+        //     existingProvider: { isDesktop: boolean; _metamask?: unknown };
+        // };
 
-        // it is not yet clear why, but metamask is not working with hexlify/toUtf8Bytes
+        // // it is not yet clear why, but metamask is not working with hexlify/toUtf8Bytes
 
-        if (connectionProvider.existingProvider.isDesktop || connectionProvider.existingProvider._metamask) {
-            return connection.sign(hashMessage(message), address!);
+        // if (connectionProvider.existingProvider.isDesktop || connectionProvider.existingProvider._metamask) {
+        //     return signer.signMessage(hashMessage(message));
+        // }
+
+        if (!signer) {
+            throw new Error('no valid signer connected');
         }
 
-        return connection.sign(hexlify(toUtf8Bytes(message)), address!);
+        return signer.signMessage({ message });
     };
 
     /**
      * Sign a message using EIP-712
      * @param {string} message Message to sign
      * @param {SignatureOptions} options Signature options
-     * @returns {Promise<string>} Sigature hash
+     * @returns {Promise<TypedSignatureResponse>} Sigature hash
      */
-    const signTypedData = (message: string, options?: SignatureOptions): Promise<string> => {
+    const signTypedData = async (message: string, options?: SignatureOptions): Promise<TypedSignatureResponse> => {
+        if (!signer) {
+            throw new Error('no valid signer connected');
+        }
+
         const expiry = options?.expiry || Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30;
         const name = options?.name || 'impactMarket';
-        const verifyingContract =
-            options?.verifyingContract || ContractAddresses.get(networkId || networksId.CeloMainnet)!.PACTDelegator;
+        const verifyingContract = (options?.verifyingContract ||
+            ContractAddresses.get(networkId || networksId.CeloMainnet)!.PACTDelegator) as `0x${string}`;
         const version = options?.version || '1';
 
-        const provider = new Web3Provider(connection.web3.currentProvider as any);
-        const signer = provider.getSigner();
-
-        const domain: TypedDataDomain = {
+        const domain = {
             chainId: networkId,
             name,
             verifyingContract,
@@ -91,7 +106,9 @@ export const useSignatures = () => {
             message
         };
 
-        return signer._signTypedData(domain, types, value);
+        const signature = await signer.signTypedData({ domain, message: value, primaryType: 'Auth', types });
+
+        return { message: value, signature };
     };
 
     return { signMessage, signTypedData };

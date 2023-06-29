@@ -1,18 +1,18 @@
 import { ImpactProviderContext } from './ImpactProvider';
+import { TransactionReceipt } from '@ethersproject/providers';
 import { communityContract } from './community';
 import { internalUseTransaction } from './internalUseTransaction';
 import React from 'react';
-import type { CeloTxReceipt } from '@celo/connect';
 
 export const useAmbassador = () => {
-    const { connection, address, provider, subgraph } = React.useContext(ImpactProviderContext);
+    const { signer, address, provider, subgraph } = React.useContext(ImpactProviderContext);
     const executeTransaction = internalUseTransaction();
 
     /**
      * Add manager to community
      * @param {string} communityAddress Community address
      * @param {string} managerAddress Manager address to be added
-     * @returns {Promise<CeloTxReceipt>} transaction response object
+     * @returns {Promise<TransactionReceipt>} transaction response object
      * @throws {Error} "No connection"
      * @example
      * ```typescript
@@ -20,8 +20,8 @@ export const useAmbassador = () => {
      * const tx = await addManager('community-address', 'manager-address');
      * ```
      */
-    const addManager = async (communityAddress: string, managerAddress: string): Promise<CeloTxReceipt> => {
-        if (!connection || !address) {
+    const addManager = async (communityAddress: string, managerAddress: string): Promise<TransactionReceipt> => {
+        if (!signer || !address) {
             throw new Error('No connection');
         }
         const tx = await communityContract(communityAddress).populateTransaction.addManager(managerAddress);
@@ -34,11 +34,11 @@ export const useAmbassador = () => {
      * Remove manager from community
      * @param {string} communityAddress Community address
      * @param {string} managerAddress Manager address to be removed
-     * @returns {Promise<CeloTxReceipt>} transaction response object
+     * @returns {Promise<TransactionReceipt>} transaction response object
      * @throws {Error} "No connection"
      */
-    const removeManager = async (communityAddress: string, managerAddress: string): Promise<CeloTxReceipt> => {
-        if (!connection || !address) {
+    const removeManager = async (communityAddress: string, managerAddress: string): Promise<TransactionReceipt> => {
+        if (!signer || !address) {
             throw new Error('No connection');
         }
         const tx = await communityContract(communityAddress).populateTransaction.removeManager(managerAddress);
@@ -50,11 +50,11 @@ export const useAmbassador = () => {
     /**
      * Lock community
      * @param {string} communityAddress Community address
-     * @returns {Promise<CeloTxReceipt>} transaction response object
+     * @returns {Promise<TransactionReceipt>} transaction response object
      * @throws {Error} "No connection"
      */
-    const lockCommunity = async (communityAddress: string): Promise<CeloTxReceipt> => {
-        if (!connection || !address) {
+    const lockCommunity = async (communityAddress: string): Promise<TransactionReceipt> => {
+        if (!signer || !address) {
             throw new Error('No connection');
         }
         const tx = await communityContract(communityAddress).populateTransaction.lock();
@@ -66,11 +66,11 @@ export const useAmbassador = () => {
     /**
      * Unlock community
      * @param {string} communityAddress Community address
-     * @returns {Promise<CeloTxReceipt>} transaction response object
+     * @returns {Promise<TransactionReceipt>} transaction response object
      * @throws {Error} "No connection"
      */
-    const unlockCommunity = async (communityAddress: string): Promise<CeloTxReceipt> => {
-        if (!connection || !address) {
+    const unlockCommunity = async (communityAddress: string): Promise<TransactionReceipt> => {
+        if (!signer || !address) {
             throw new Error('No connection');
         }
         const tx = await communityContract(communityAddress).populateTransaction.unlock();
@@ -83,14 +83,14 @@ export const useAmbassador = () => {
      * Update max number of beneficiaries in the community
      * @param {string} communityAddress Community address
      * @param {string} maxBeneficiaries Maximum number of beneficiaries in the community
-     * @returns {Promise<CeloTxReceipt>} transaction response object
+     * @returns {Promise<TransactionReceipt>} transaction response object
      * @throws {Error} "No connection"
      */
     const updateMaxBeneficiaries = async (
         communityAddress: string,
         maxBeneficiaries: number
-    ): Promise<CeloTxReceipt> => {
-        if (!connection || !address) {
+    ): Promise<TransactionReceipt> => {
+        if (!signer || !address) {
             throw new Error('No connection');
         }
         const tx = await communityContract(communityAddress).populateTransaction.updateMaxBeneficiaries(
@@ -108,7 +108,7 @@ export const useAmbassador = () => {
      * @throws {Error} "No connection"
      */
     const getMaxBeneficiaries = async (communityAddress: string): Promise<number> => {
-        if (!connection || !address) {
+        if (!signer || !address) {
             throw new Error('No connection');
         }
         const max = await subgraph.getCommunityData(communityAddress, '{ maxBeneficiaries }');
@@ -123,7 +123,7 @@ export const useAmbassador = () => {
      * @throws {Error} "No connection"
      */
     const isCommunityLocked = async (communityAddress: string): Promise<boolean> => {
-        if (!connection || !address) {
+        if (!signer || !address) {
             throw new Error('No connection');
         }
         const locked = await communityContract(communityAddress, provider).locked();

@@ -40,7 +40,7 @@ type RawLoan = {
 };
 
 export const useMicroCredit = () => {
-    const { provider, address, connection, networkId } = React.useContext(ImpactProviderContext);
+    const { provider, address, signer, networkId } = React.useContext(ImpactProviderContext);
     const executeTransaction = internalUseTransaction();
     const [loan, setLoan] = useState<Loan>({
         amountBorrowed: 0,
@@ -64,7 +64,7 @@ export const useMicroCredit = () => {
      * @returns {Promise<CeloTxReceipt>} tx details
      */
     const approve = async (token: string, amount: string) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -91,7 +91,7 @@ export const useMicroCredit = () => {
      * @returns {Promise<CeloTxReceipt>} tx details
      */
     const repayLoan = async (loanId: number, repaymentAmount: string) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -117,7 +117,7 @@ export const useMicroCredit = () => {
      * @param {RawLoan} loan Loan raw data from smart-contract
      * @returns {number} loan status
      */
-    const _loanStatus = (loan: RawLoan) => {
+    const _loanStatus = (loan: RawLoan): number => {
         if (loan.lastComputedDebt.toString() === '0') {
             if (loan.period.toNumber() === 0) {
                 return LoanStatus.NO_LOAN;
@@ -162,7 +162,7 @@ export const useMicroCredit = () => {
 
     useEffect(() => {
         const loadLoanData = async () => {
-            if (!connection || !address) {
+            if (!address) {
                 return;
             }
 
@@ -174,7 +174,7 @@ export const useMicroCredit = () => {
         };
 
         loadLoanData();
-    }, []);
+    }, [address]);
 
     /**
      * User Loans
@@ -183,10 +183,6 @@ export const useMicroCredit = () => {
      * @returns {Promise<CeloTxReceipt>} tx details
      */
     const userLoans = async (userAddress: string, loanId: number) => {
-        if (!address || !connection) {
-            throw new Error('No wallet connected');
-        }
-
         const { microCredit } = getContracts(provider, networkId);
 
         const response = await microCredit.userLoans(userAddress, loanId);
@@ -199,10 +195,10 @@ export const useMicroCredit = () => {
     /**
      * Claim Loan
      * @param {number} loanId id of the loan being claimed
-     * @returns {Promise<CeloTxReceipt>} tx details
+     * @returns {Promise<TransactionReceipt>} tx details
      */
     const claimLoan = async (loanId: number) => {
-        if (!address || !connection) {
+        if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
@@ -218,13 +214,9 @@ export const useMicroCredit = () => {
     /**
      * Get users latest (active) loan Id
      * @param {string} userAddress Address of the user
-     * @returns {Promise<CeloTxReceipt>} tx details
+     * @returns {Promise<number>} tx details
      */
-    const getActiveLoanId = async (userAddress: string) => {
-        if (!address || !connection) {
-            throw new Error('No wallet connected');
-        }
-
+    const getActiveLoanId = async (userAddress: string): Promise<number> => {
         const { microCredit } = getContracts(provider, networkId);
         const response = await microCredit.walletMetadata(userAddress);
         const { loansLength } = response;

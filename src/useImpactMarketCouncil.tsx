@@ -50,14 +50,14 @@ export type BuildingOperationBlocks = {
 };
 
 export const useImpactMarketCouncil = () => {
-    const { connection, address, provider, ubiManagementSubgraph, networkId } = React.useContext(ImpactProviderContext);
+    const { signer, address, provider, ubiManagementSubgraph, networkId } = React.useContext(ImpactProviderContext);
     const [quorumVotes, setQuorumVotes] = useState<number>(0);
     const [proposalCount, setProposalCount] = useState<number>(0);
     const [isReady, setIsReady] = useState(false);
     const executeTransaction = internalUseTransaction();
 
     useEffect(() => {
-        if (connection) {
+        if (signer) {
             const getState = async () => {
                 const { impactMarketCouncil } = getContracts(provider, networkId);
                 const quorumVotes = await impactMarketCouncil.quorumVotes();
@@ -70,7 +70,7 @@ export const useImpactMarketCouncil = () => {
 
             getState();
         }
-    }, [connection]);
+    }, [signer]);
 
     /**
      * @dev Generates proposal to create new community
@@ -78,7 +78,7 @@ export const useImpactMarketCouncil = () => {
      * @returns {Promise<number>} proposal id
      */
     const addCommunity = async (community: CommunityAddArgs) => {
-        if (!connection || !address) {
+        if (!signer || !address) {
             return;
         }
         const { impactMarketCouncil, communityAdmin } = getContracts(provider, networkId);
@@ -157,7 +157,7 @@ export const useImpactMarketCouncil = () => {
      * @returns {Promise<number>} proposal id
      */
     const removeCommunity = async (community: CommunityRemoveArgs) => {
-        if (!connection || !address) {
+        if (!signer || !address) {
             return;
         }
         const { impactMarketCouncil, communityAdmin } = getContracts(provider, networkId);
@@ -191,7 +191,7 @@ export const useImpactMarketCouncil = () => {
      * @returns {Promise<number>} proposal id
      */
     const updateCommunityParams = async (community: CommunityUpdateParamsArgs) => {
-        if (!connection || !address) {
+        if (!signer || !address) {
             return;
         }
         const { impactMarketCouncil } = getContracts(provider, networkId);
@@ -226,7 +226,7 @@ export const useImpactMarketCouncil = () => {
      * @returns {Promise<number>} proposal id
      */
     const updateBeneficiaryParams = async (community: CommunityUpdateBeneficiaryParamsArgs) => {
-        if (!connection || !address) {
+        if (!signer || !address) {
             return;
         }
         const { impactMarketCouncil, communityAdmin } = getContracts(provider, networkId);
@@ -283,7 +283,7 @@ export const useImpactMarketCouncil = () => {
      * @returns {ethers.ContractReceipt} transaction receipt
      */
     const execute = async (proposalId: number) => {
-        if (!connection || !address) {
+        if (!signer || !address) {
             return;
         }
         const { impactMarketCouncil } = getContracts(provider, networkId);
@@ -299,7 +299,7 @@ export const useImpactMarketCouncil = () => {
      * @returns {ethers.ContractReceipt} transaction receipt
      */
     const cancel = async (proposalId: number) => {
-        if (!connection || !address) {
+        if (!signer || !address) {
             return;
         }
         const { impactMarketCouncil } = getContracts(provider, networkId);
@@ -316,7 +316,7 @@ export const useImpactMarketCouncil = () => {
      * @returns {ethers.ContractReceipt} transaction receipt
      */
     const vote = async (proposalId: number, support: number) => {
-        if (!connection || !address) {
+        if (!signer || !address) {
             return;
         }
         const { impactMarketCouncil } = getContracts(provider, networkId);
@@ -378,7 +378,7 @@ export const useImpactMarketCouncil = () => {
             throw new Error('Max operations is 10');
         }
 
-        if (!connection || !address) {
+        if (!signer || !address) {
             return;
         }
         const { impactMarketCouncil, communityAdmin } = getContracts(provider, networkId);

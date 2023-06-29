@@ -4,6 +4,7 @@ import { Connection } from '@celo/connect';
 import { ImpactMarketSubgraph, ImpactMarketUBIManagementSubgraph } from './subgraphs';
 import { NormalizedCacheObject } from '@apollo/client/cache/inmemory/types';
 import { RetryLink } from '@apollo/client/link/retry/retryLink';
+import { WalletClient } from 'wagmi';
 import React, { useState } from 'react';
 
 export type EpochType = {
@@ -65,18 +66,21 @@ const initialRewards: RewardsType = {
 
 const intialProviderData: {
     address: string | null;
-    connection: Connection;
     defaultFeeCurrency?: string;
+    connection?: Connection;
+    signer: WalletClient | null;
     networkId: number;
+    jsonRpcUrl: string;
     provider: BaseProvider;
     subgraph: ImpactMarketSubgraph;
     ubiManagementSubgraph: ImpactMarketUBIManagementSubgraph;
 } = {
     // mandatory, value here doesn't matter
     address: null,
-    connection: null as any,
+    jsonRpcUrl: null as any,
     networkId: null as any,
     provider: null as any,
+    signer: null as any,
     subgraph: null as any,
     ubiManagementSubgraph: null as any
 };
@@ -143,7 +147,11 @@ export const StakingContext = React.createContext(intialStakingStateData);
 type ProviderProps = {
     children?: any;
     address: string | null;
-    connection: Connection;
+    /**
+     * @deprecated Use `signer` instead
+     */
+    connection?: Connection;
+    signer: WalletClient | null;
     jsonRpc: string;
     networkId: number;
     defaultFeeCurrency?: string;
@@ -234,7 +242,8 @@ const StakingProvider = React.memo((props: { children?: any }) => {
 });
 
 export const ImpactProvider = (props: ProviderProps) => {
-    const { children, address, jsonRpc, connection, networkId, apolloClientOptions, defaultFeeCurrency } = props;
+    const { children, address, jsonRpc, signer, networkId, apolloClientOptions, defaultFeeCurrency, connection } =
+        props;
 
     return (
         <ImpactProviderContext.Provider
@@ -242,10 +251,16 @@ export const ImpactProvider = (props: ProviderProps) => {
                 address,
                 connection,
                 defaultFeeCurrency,
+                jsonRpcUrl: jsonRpc,
                 networkId,
                 provider: new StaticJsonRpcProvider(jsonRpc),
+                signer,
                 subgraph: new ImpactMarketSubgraph(networkId, apolloClientOptions),
-                ubiManagementSubgraph: new ImpactMarketUBIManagementSubgraph(connection, networkId, apolloClientOptions)
+                ubiManagementSubgraph: new ImpactMarketUBIManagementSubgraph(
+                    new StaticJsonRpcProvider(jsonRpc),
+                    networkId,
+                    apolloClientOptions
+                )
             }}
         >
             <StakingProvider>

@@ -9,7 +9,7 @@ import { updateRewards } from './useRewards';
 import React from 'react';
 
 export const useDonationMiner = () => {
-    const { provider, connection, address, networkId } = React.useContext(ImpactProviderContext);
+    const { provider, signer, address, networkId } = React.useContext(ImpactProviderContext);
     const { setEpoch } = React.useContext(EpochContext);
     const { setRewards } = React.useContext(RewardsContext);
     const { setBalance } = React.useContext(CUSDBalanceContext);
@@ -47,7 +47,7 @@ export const useDonationMiner = () => {
 
     const donateToTreasury = async (value: string | number) => {
         try {
-            if (!connection || !address) {
+            if (!signer || !address) {
                 return;
             }
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
@@ -90,7 +90,7 @@ export const useDonationMiner = () => {
 
     const donateToCommunity = async (community: string, value: string | number) => {
         try {
-            if (!connection || !address) {
+            if (!signer || !address) {
                 return;
             }
             const amount = toToken(value, { EXPONENTIAL_AT: 29 });
