@@ -12,9 +12,9 @@ export const useLoanManager = () => {
      * Add loans
      * @param {string[]} userAddresses addresses to add loans to
      * @param {number[]} amounts amount of each loan
-     * @param {number[]} periods periods of each loan
+     * @param {number[]} periods periods of each loan, in seconds
      * @param {number[]} dailyInterests daily interests of each loan
-     * @param {number[]} startDates start dates of each loan
+     * @param {number[]} claimDeadlines claim deadline of each loan (timestamp in seconds)
      * @returns {Promise<TransactionReceipt>} tx details
      */
     const addLoans = async (
@@ -22,7 +22,7 @@ export const useLoanManager = () => {
         amounts: number[],
         periods: number[],
         dailyInterests: number[],
-        startDates: number[]
+        claimDeadlines: number[]
     ) => {
         if (!address || !signer) {
             throw new Error('No wallet connected');
@@ -34,7 +34,7 @@ export const useLoanManager = () => {
             amounts.map(amount => toToken(amount)),
             periods,
             dailyInterests.map(interest => toToken(interest)),
-            startDates
+            claimDeadlines
         );
         const response = await executeTransaction(tx);
 

@@ -96,7 +96,14 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
 
         setAmountClaimed(toNumber(claimedAmount));
         if (lastClaimTime.toNumber() !== 0) {
-            setNextClaim(new Date((lastClaimTime.toNumber() + cooldown.toNumber()) * 1000));
+            const next = new Date((lastClaimTime.toNumber() + cooldown.toNumber()) * 1000);
+
+            if (next.getTime() < new Date().getTime()) {
+                setNextClaim(new Date(0));
+
+                return;
+            }
+            setNextClaim(next);
             _startUpdateInterval(address, lastClaimTime.toNumber(), cooldown.toNumber());
         } else {
             setNextClaim(new Date(0));
