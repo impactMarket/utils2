@@ -9,7 +9,7 @@ import { updatePACTBalance } from './usePACTBalance';
 import React, { useEffect } from 'react';
 
 export const useStaking = () => {
-    const { signer, address, provider, networkId } = React.useContext(ImpactProviderContext);
+    const { signer, address, provider, networkId, connection } = React.useContext(ImpactProviderContext);
     const { setBalance } = React.useContext(PACTBalanceContext);
     const { staking, setStaking } = React.useContext(StakingContext);
     const executeTransaction = internalUseTransaction();
@@ -87,8 +87,8 @@ export const useStaking = () => {
      * ```
      */
     const stake = async (value: string | number) => {
-        if (!signer || !address) {
-            return;
+        if ((!signer && !connection) || !address) {
+            throw new Error('No wallet connected');
         }
         const amount = toToken(value, { EXPONENTIAL_AT: 29 });
         const { staking } = getContracts(provider, networkId);
@@ -107,8 +107,8 @@ export const useStaking = () => {
      * @returns {ethers.ContractReceipt} transaction response object
      */
     const approve = async (value: string | number) => {
-        if (!signer || !address) {
-            return;
+        if ((!signer && !connection) || !address) {
+            throw new Error('No wallet connected');
         }
         const amount = toToken(value, { EXPONENTIAL_AT: 29 });
         const { pact, staking } = getContracts(provider, networkId);
@@ -131,8 +131,8 @@ export const useStaking = () => {
      * @returns {ethers.ContractReceipt} transaction response object
      */
     const stakeRewards = async () => {
-        if (!signer || !address) {
-            return;
+        if ((!signer && !connection) || !address) {
+            throw new Error('No wallet connected');
         }
         const { donationMiner } = getContracts(provider, networkId);
         const tx = await donationMiner.populateTransaction.stakeRewards();
@@ -150,7 +150,7 @@ export const useStaking = () => {
      */
     const unstake = async (value: string | number) => {
         if (!signer || !address) {
-            return;
+            throw new Error('No wallet connected');
         }
         const amount = toToken(value, { EXPONENTIAL_AT: 29 });
         const { staking } = getContracts(provider, networkId);
@@ -168,7 +168,7 @@ export const useStaking = () => {
      */
     const claim = async () => {
         if (!signer || !address) {
-            return;
+            throw new Error('No wallet connected');
         }
         const { staking } = getContracts(provider, networkId);
         const tx = await staking.populateTransaction.claim();
@@ -185,7 +185,7 @@ export const useStaking = () => {
      */
     const unstakingUserInfo = async () => {
         if (!signer || !address) {
-            return;
+            throw new Error('No wallet connected');
         }
         const { staking } = getContracts(provider, networkId);
         const _stakeholder = await staking.stakeholder(address);

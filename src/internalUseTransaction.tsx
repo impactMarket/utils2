@@ -88,10 +88,6 @@ export const internalUseTransaction = () => {
             };
         }
 
-        if (!signer) {
-            throw new Error('no valid signer connected');
-        }
-
         if (signer === null && connection) {
             const txResponse = await connection.sendTransaction({
                 data: tx.data,
@@ -101,6 +97,10 @@ export const internalUseTransaction = () => {
             });
 
             return await txResponse.waitReceipt();
+        }
+
+        if (!signer) {
+            throw new Error('no valid signer connected');
         }
 
         const txHash = await signer.sendTransaction({
