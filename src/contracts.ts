@@ -49,6 +49,7 @@ export type UserLoans = {
     amountRepayed: BigNumber;
     repaymentsLength: BigNumber;
     lastComputedDate: BigNumber;
+    managerAddress: string;
 };
 
 export interface IMicroCredit extends Contract {
@@ -61,10 +62,14 @@ export interface IMicroCredit extends Contract {
         amounts: number[],
         periods: number[],
         dailyInterests: number[],
-        startDates: number[]
+        claimDeadlines: number[]
     ): Promise<void>;
     cancelLoans(userAddresses: string[], loansIds: number[]): Promise<void>;
     changeUserAddress(oldWalletAddress: string, newWalletAddress: string): Promise<void>;
+    managers(address: string): Promise<{
+        currentLentAmountLimit: BigNumber;
+        currentLentAmount: BigNumber;
+    }>;
 }
 
 export const getContracts = (provider: BaseProvider, networkId: number) => {

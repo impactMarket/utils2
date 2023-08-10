@@ -30,7 +30,8 @@
             { "type": "uint256", "name": "lastComputedDebt", "internalType": "uint256" },
             { "type": "uint256", "name": "amountRepayed", "internalType": "uint256" },
             { "type": "uint256", "name": "repaymentsLength", "internalType": "uint256" },
-            { "type": "uint256", "name": "lastComputedDate", "internalType": "uint256" }
+            { "type": "uint256", "name": "lastComputedDate", "internalType": "uint256" },
+            { "type": "address", "name": "managerAddress", "internalType": "address" }
         ],
         "name": "userLoans",
         "inputs": [
@@ -61,6 +62,16 @@
             { "type": "uint256[]", "name": "_dailyInterests", "internalType": "uint256[]" },
             { "type": "uint256[]", "name": "_claimDeadlines", "internalType": "uint256[]" }
         ]
+    },
+    {
+        "type": "function",
+        "stateMutability": "view",
+        "outputs": [
+            { "type": "uint256", "name": "currentLentAmountLimit", "internalType": "uint256" },
+            { "type": "uint256", "name": "currentLentAmount", "internalType": "uint256" }
+        ],
+        "name": "managers",
+        "inputs": [{ "type": "address", "name": "managerAddress", "internalType": "address" }]
     },
     {
         "type": "function",

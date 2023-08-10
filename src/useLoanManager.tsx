@@ -1,32 +1,64 @@
 import { ImpactProviderContext } from './ImpactProvider';
 import { getContracts } from './contracts';
 import { internalUseTransaction } from './internalUseTransaction';
+import { toNumber } from './toNumber';
 import { toToken } from './toToken';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export const useLoanManager = () => {
     const { provider, address, signer, networkId } = React.useContext(ImpactProviderContext);
     const executeTransaction = internalUseTransaction();
+    const [isReady, setIsReady] = React.useState<boolean>(false);
+    const [managerDetails, setManagerDetails] = React.useState<{
+        currentLentAmountLimit: number;
+        currentLentAmount: number;
+    }>({
+        currentLentAmount: 0,
+        currentLentAmountLimit: 0
+    });
+
+    useEffect(() => {
+        const getManagerDetails = async () => {
+            if (!address) {
+                return;
+            }
+
+            const { microCredit } = getContracts(provider, networkId);
+            const { currentLentAmount, currentLentAmountLimit } = await microCredit.managers(address);
+
+            setManagerDetails({
+                currentLentAmount: toNumber(currentLentAmount),
+                currentLentAmountLimit: toNumber(currentLentAmountLimit)
+            });
+            setIsReady(true);
+        };
+
+        getManagerDetails();
+    }, [address]);
 
     /**
      * Add loans
-     * @param {string[]} userAddresses addresses to add loans to
-     * @param {number[]} amounts amount of each loan
-     * @param {number[]} periods periods of each loan, in seconds
-     * @param {number[]} dailyInterests daily interests of each loan
-     * @param {number[]} claimDeadlines claim deadline of each loan (timestamp in seconds)
+     * @param {object[]} loans loans to add
      * @returns {Promise<TransactionReceipt>} tx details
      */
     const addLoans = async (
-        userAddresses: string[],
-        amounts: number[],
-        periods: number[],
-        dailyInterests: number[],
-        claimDeadlines: number[]
+        loans: {
+            userAddress: string;
+            amount: number;
+            period: number;
+            dailyInterest: number;
+            claimDeadline: number;
+        }[]
     ) => {
         if (!address || !signer) {
             throw new Error('No wallet connected');
         }
+
+        const userAddresses = loans.map(loan => loan.userAddress);
+        const amounts = loans.map(loan => loan.amount);
+        const periods = loans.map(loan => loan.period);
+        const dailyInterests = loans.map(loan => loan.dailyInterest);
+        const claimDeadlines = loans.map(loan => loan.claimDeadline);
 
         const { microCredit } = getContracts(provider, networkId);
         const tx = await microCredit.populateTransaction.addLoans(
@@ -77,5 +109,5 @@ export const useLoanManager = () => {
         return response;
     };
 
-    return { addLoans, cancelLoans, changeUserAddress };
+    return { addLoans, cancelLoans, changeUserAddress, isReady, managerDetails };
 };

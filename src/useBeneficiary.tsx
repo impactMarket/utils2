@@ -38,7 +38,7 @@ type UseBeneficiary = {
  * @returns {UseBeneficiary} hook
  */
 export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
-    const { signer, provider, address, subgraph, networkId } = React.useContext(ImpactProviderContext);
+    const { signer, provider, address, subgraph, networkId, connection } = React.useContext(ImpactProviderContext);
     const updateIntervalRef = useRef<NodeJS.Timer>();
     const syncClockInterval = 120000;
 
@@ -188,8 +188,8 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
     const claim = async () => {
         const { contract } = beneficiary;
 
-        if (!contract || !signer || !address) {
-            throw new Error('No connection');
+        if (!contract || (!signer && !connection) || !address) {
+            throw new Error('No wallet connected');
         }
         const tx = await contract.populateTransaction.claim();
         const response = await executeTransaction(tx);
@@ -202,26 +202,26 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
 
     /**
      * Refetch beneficiary cooldown data.
-     * @throws {Error} "No connection"
+     * @throws {Error} "No address or contract"
      * @returns {Promise<void>} void
      */
     const refetch = useCallback(() => {
         const { contract } = beneficiary;
 
-        if (!contract || !signer || !address) {
-            throw new Error('No connection');
+        if (!contract || !address) {
+            throw new Error('No address or contract');
         }
         updateClaimData(contract);
-    }, [isReady]);
+    }, [isReady, address]);
 
     useEffect(() => {
         // make sure it's valid!
-        if (address && signer && provider && communityAddress) {
+        if (address && provider && communityAddress) {
             const contract_ = communityContract(communityAddress, provider);
 
             updateClaimData(contract_);
         }
-    }, []);
+    }, [address]);
 
     return useMemo(() => ({ beneficiary, claim, isReady, refetch }), [isReady, beneficiary]);
 };

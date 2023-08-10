@@ -26,6 +26,7 @@ export type Loan = {
     period: number;
     repaymentsLength: number;
     startDate: number;
+    managerAddress: string;
 };
 
 export const useBorrower = () => {
@@ -39,6 +40,7 @@ export const useBorrower = () => {
         lastComputedDate: 0,
         lastComputedDebt: 0,
         loanStatus: 0,
+        managerAddress: '',
         period: 0,
         repaymentsLength: 0,
         startDate: 0
@@ -130,7 +132,8 @@ export const useBorrower = () => {
             lastComputedDebt,
             period,
             repaymentsLength,
-            startDate
+            startDate,
+            managerAddress
         } = data;
 
         const formattedData = {
@@ -141,6 +144,7 @@ export const useBorrower = () => {
             lastComputedDate: lastComputedDate.toNumber(),
             lastComputedDebt: toNumber(lastComputedDebt.toString(), { ROUNDING_MODE: BigNumber.ROUND_UP }),
             loanStatus: _loanStatus(data),
+            managerAddress,
             period: period.toNumber(),
             repaymentsLength: repaymentsLength.toNumber(),
             startDate: startDate.toNumber()
