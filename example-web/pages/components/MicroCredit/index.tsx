@@ -1,4 +1,5 @@
 import WalletConnection from '../WalletConnection';
+import LoanManager from './LoanManager';
 import UserLoans from './UserLoans';
 
 const MicroCredit = () => {
@@ -7,6 +8,7 @@ const MicroCredit = () => {
             {'MicroCredit'}
             <WalletConnection title="MicroCredit">
                 <UserLoans />
+                <LoanManager />
             </WalletConnection>
         </div>
     );
