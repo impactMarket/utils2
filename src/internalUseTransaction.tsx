@@ -50,6 +50,10 @@ export const internalUseTransaction = () => {
             throw new Error('no valid address connected');
         }
 
+        if (signer) {
+            return tx;
+        }
+
         const [_nonce, _gasPrice, _gasLimit, _value] = await Promise.all([
             apiGetAccountNonce(jsonRpcUrl, tx.from || address),
             apiGetGasPrice(jsonRpcUrl, defaultFeeCurrency),
@@ -62,7 +66,7 @@ export const internalUseTransaction = () => {
             ...tx,
             account: (tx.from || address) as `0x${string}`,
             gas: BigInt(_gasLimit.toNumber() * 2),
-            gasPrice: BigInt(_gasPrice),
+            gasPrice: BigInt(parseInt(_gasPrice, 16) * 2),
             nonce: _nonce,
             value: BigInt(_value)
         };
@@ -92,7 +96,7 @@ export const internalUseTransaction = () => {
             const txResponse = await connection.sendTransaction({
                 data: tx.data,
                 from: tx.from || address,
-                gasPrice: await apiGetGasPrice(jsonRpcUrl, defaultFeeCurrency),
+                gasPrice: parseInt(await apiGetGasPrice(jsonRpcUrl, defaultFeeCurrency), 16) * 2,
                 to: tx.to
             });
 

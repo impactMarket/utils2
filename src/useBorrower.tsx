@@ -163,6 +163,8 @@ export const useBorrower = () => {
 
             if (loanId !== -1) {
                 userLoans(address, loanId).then(() => setIsReady(true));
+            } else {
+                setIsReady(true);
             }
         };
 
