@@ -8,10 +8,7 @@ const projectId = 'e14be5c27cfd796596686bdc6876e836';
 
 
 const metadata = {
-    name: 'Web3Modal',
-    description: 'Web3Modal Example',
-    url: 'https://web3modal.com',
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
+    name: 'impactMarket utils'
 };
 
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
