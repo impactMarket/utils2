@@ -16,33 +16,27 @@ export const useDonationMiner = () => {
     const executeTransaction = internalUseTransaction();
 
     const approve = async (value: string | number, to?: string) => {
-        try {
-            const { cusd, donationMiner } = getContracts(provider, networkId);
-            const amount = toToken(value, { EXPONENTIAL_AT: 29 });
+        const { cusd, donationMiner } = getContracts(provider, networkId);
+        const amount = toToken(value, { EXPONENTIAL_AT: 29 });
 
-            if (to === undefined) {
-                to = donationMiner.address;
-            }
-            if (!address || !donationMiner?.provider || !cusd?.provider || !amount) {
-                return;
-            }
-
-            const cUSDAllowance = await cusd.allowance(address, to);
-            const cusdAllowance = toNumber(cUSDAllowance);
-            const allowance = cusdAllowance || 0;
-
-            if (allowance >= Number(value)) {
-                return { status: true };
-            }
-
-            const tx = await cusd.populateTransaction.approve(to, amount);
-
-            return await executeTransaction(tx);
-        } catch (error) {
-            console.log('Error approving amount: \n', error);
-
-            return { status: false };
+        if (to === undefined) {
+            to = donationMiner.address;
         }
+        if (!address || !donationMiner?.provider || !cusd?.provider || !amount) {
+            return;
+        }
+
+        const cUSDAllowance = await cusd.allowance(address, to);
+        const cusdAllowance = toNumber(cUSDAllowance);
+        const allowance = cusdAllowance || 0;
+
+        if (allowance >= Number(value)) {
+            return { status: true };
+        }
+
+        const tx = await cusd.populateTransaction.approve(to, amount);
+
+        return await executeTransaction(tx);
     };
 
     const donateToTreasury = async (value: string | number) => {
