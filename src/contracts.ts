@@ -10,6 +10,7 @@ import ImpactMarketCouncilABI from './abi/ImpactMarketCouncil.json';
 import LearnAndEarnABI from './abi/LearnAndEarnABI.json';
 import MerkleDistributorABI from './abi/MerkleDistributor.json';
 import MicroCreditABI from './abi/MicroCreditABI.json';
+import MicroCreditABIOld from './abi/MicroCreditABIOld.json';
 import PACTDelegateABI from './abi/PACTDelegate.json';
 import PACTTokenABI from './abi/PACTToken.json';
 import StakingABI from './abi/Staking.json';
@@ -59,6 +60,7 @@ export interface IMicroCredit extends Contract {
     repayLoan(loanId: string, amount: string): Promise<void>;
     addLoans(
         userAddresses: string[],
+        tokenAddresses: string[],
         amounts: number[],
         periods: number[],
         dailyInterests: number[],
@@ -70,6 +72,7 @@ export interface IMicroCredit extends Contract {
         currentLentAmountLimit: BigNumber;
         currentLentAmount: BigNumber;
     }>;
+    getVersion(): Promise<BigNumber>;
 }
 
 export const getContracts = (provider: BaseProvider, networkId: number) => {
@@ -109,6 +112,7 @@ export const getContracts = (provider: BaseProvider, networkId: number) => {
         learnAndEarn: LearnAndEarn || '',
         merkleDistributor: MerkleDistributor || '',
         microCredit: MicroCredit || '',
+        microCreditOld: MicroCredit || '',
         pactToken: PACTToken || '',
         spactToken: SPACTToken || '',
         staking: Staking || '',
@@ -120,6 +124,7 @@ export const getContracts = (provider: BaseProvider, networkId: number) => {
     const merkleDistributor = new Contract(addresses.merkleDistributor, MerkleDistributorABI, provider);
 
     const microCredit = new Contract(addresses.microCredit, MicroCreditABI, provider) as IMicroCredit;
+    const microCreditOld = new Contract(addresses.microCreditOld, MicroCreditABIOld, provider) as IMicroCredit;
 
     const donationMiner = new Contract(addresses.donationMiner, DonationMinerABI, provider);
 
@@ -161,6 +166,7 @@ export const getContracts = (provider: BaseProvider, networkId: number) => {
         learnAndEarn,
         merkleDistributor,
         microCredit,
+        microCreditOld,
         pact,
         spact,
         staking,

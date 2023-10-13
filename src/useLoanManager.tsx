@@ -1,3 +1,4 @@
+import { ContractAddresses } from './contractAddress';
 import { ImpactProviderContext } from './ImpactProvider';
 import { getContracts } from './contracts';
 import { internalUseTransaction } from './internalUseTransaction';
@@ -23,8 +24,10 @@ export const useLoanManager = () => {
                 return;
             }
 
-            const { microCredit } = getContracts(provider, networkId);
-            const { currentLentAmount, currentLentAmountLimit } = await microCredit.managers(address);
+            const { microCredit, microCreditOld } = getContracts(provider, networkId);
+            const version = (await microCredit.getVersion()).toNumber();
+            const { currentLentAmount, currentLentAmountLimit } =
+                version === 1 ? await microCreditOld.managers(address) : await microCredit.managers(address);
 
             setManagerDetails({
                 currentLentAmount: toNumber(currentLentAmount),
@@ -60,14 +63,25 @@ export const useLoanManager = () => {
         const dailyInterests = loans.map(loan => loan.dailyInterest);
         const claimDeadlines = loans.map(loan => loan.claimDeadline);
 
-        const { microCredit } = getContracts(provider, networkId);
-        const tx = await microCredit.populateTransaction.addLoans(
-            userAddresses,
-            amounts.map(amount => toToken(amount)),
-            periods,
-            dailyInterests.map(interest => toToken(interest)),
-            claimDeadlines
-        );
+        const { microCredit, microCreditOld } = getContracts(provider, networkId);
+        const version = (await microCredit.getVersion()).toNumber();
+        const tx =
+            version === 1
+                ? await microCreditOld.populateTransaction.addLoans(
+                      userAddresses,
+                      amounts.map(amount => toToken(amount)),
+                      periods,
+                      dailyInterests.map(interest => toToken(interest)),
+                      claimDeadlines
+                  )
+                : await microCredit.populateTransaction.addLoans(
+                      userAddresses,
+                      Array(loans.length).fill(ContractAddresses.get(networkId)!.cUSD),
+                      amounts.map(amount => toToken(amount)),
+                      periods,
+                      dailyInterests.map(interest => toToken(interest)),
+                      claimDeadlines
+                  );
         const response = await executeTransaction(tx);
 
         return response;
