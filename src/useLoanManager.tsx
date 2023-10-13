@@ -58,9 +58,10 @@ export const useLoanManager = () => {
         }
 
         const userAddresses = loans.map(loan => loan.userAddress);
-        const amounts = loans.map(loan => loan.amount);
+        const tokens = Array(loans.length).fill(ContractAddresses.get(networkId)!.cUSD);
+        const amounts = loans.map(loan => toToken(loan.amount));
         const periods = loans.map(loan => loan.period);
-        const dailyInterests = loans.map(loan => loan.dailyInterest);
+        const dailyInterests = loans.map(loan => toToken(loan.dailyInterest));
         const claimDeadlines = loans.map(loan => loan.claimDeadline);
 
         const { microCredit, microCreditOld } = getContracts(provider, networkId);
@@ -69,17 +70,17 @@ export const useLoanManager = () => {
             version === 1
                 ? await microCreditOld.populateTransaction.addLoans(
                       userAddresses,
-                      amounts.map(amount => toToken(amount)),
+                      amounts,
                       periods,
-                      dailyInterests.map(interest => toToken(interest)),
+                      dailyInterests,
                       claimDeadlines
                   )
                 : await microCredit.populateTransaction.addLoans(
                       userAddresses,
-                      Array(loans.length).fill(ContractAddresses.get(networkId)!.cUSD),
-                      amounts.map(amount => toToken(amount)),
+                      tokens,
+                      amounts,
                       periods,
-                      dailyInterests.map(interest => toToken(interest)),
+                      dailyInterests,
                       claimDeadlines
                   );
         const response = await executeTransaction(tx);
