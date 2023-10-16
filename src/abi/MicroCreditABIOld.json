@@ -18,27 +18,26 @@
         ]
     },
     {
-        "inputs": [
-            { "internalType": "address", "name": "_userAddress", "type": "address" },
-            { "internalType": "uint256", "name": "_loanId", "type": "uint256" }
+        "type": "function",
+        "stateMutability": "view",
+        "outputs": [
+            { "type": "uint256", "name": "amountBorrowed", "internalType": "uint256" },
+            { "type": "uint256", "name": "period", "internalType": "uint256" },
+            { "type": "uint256", "name": "dailyInterest", "internalType": "uint256" },
+            { "type": "uint256", "name": "claimDeadline", "internalType": "uint256" },
+            { "type": "uint256", "name": "startDate", "internalType": "uint256" },
+            { "type": "uint256", "name": "currentDebt", "internalType": "uint256" },
+            { "type": "uint256", "name": "lastComputedDebt", "internalType": "uint256" },
+            { "type": "uint256", "name": "amountRepayed", "internalType": "uint256" },
+            { "type": "uint256", "name": "repaymentsLength", "internalType": "uint256" },
+            { "type": "uint256", "name": "lastComputedDate", "internalType": "uint256" },
+            { "type": "address", "name": "managerAddress", "internalType": "address" }
         ],
         "name": "userLoans",
-        "outputs": [
-            { "internalType": "uint256", "name": "amountBorrowed", "type": "uint256" },
-            { "internalType": "uint256", "name": "period", "type": "uint256" },
-            { "internalType": "uint256", "name": "dailyInterest", "type": "uint256" },
-            { "internalType": "uint256", "name": "claimDeadline", "type": "uint256" },
-            { "internalType": "uint256", "name": "startDate", "type": "uint256" },
-            { "internalType": "uint256", "type": "uint256" },
-            { "internalType": "uint256", "type": "uint256" },
-            { "internalType": "uint256", "name": "amountRepayed", "type": "uint256" },
-            { "internalType": "uint256", "name": "repaymentsLength", "type": "uint256" },
-            { "internalType": "uint256", "name": "lastComputedDate", "type": "uint256" },
-            { "internalType": "address", "name": "managerAddress", "type": "address" },
-            { "internalType": "address", "name": "tokenAddress", "type": "address" }
-        ],
-        "stateMutability": "view",
-        "type": "function"
+        "inputs": [
+            { "type": "address", "name": "_userAddress", "internalType": "address" },
+            { "type": "uint256", "name": "_loanId", "internalType": "uint256" }
+        ]
     },
     {
         "type": "function",
@@ -52,18 +51,17 @@
         "inputs": [{ "type": "address", "name": "_userAddress", "internalType": "address" }]
     },
     {
-        "inputs": [
-            { "internalType": "address[]", "name": "_userAddresses", "type": "address[]" },
-            { "internalType": "address[]", "name": "_tokenAddresses", "type": "address[]" },
-            { "internalType": "uint256[]", "name": "_amounts", "type": "uint256[]" },
-            { "internalType": "uint256[]", "name": "_periods", "type": "uint256[]" },
-            { "internalType": "uint256[]", "name": "_dailyInterests", "type": "uint256[]" },
-            { "internalType": "uint256[]", "name": "_claimDeadlines", "type": "uint256[]" }
-        ],
-        "name": "addLoans",
-        "outputs": [],
+        "type": "function",
         "stateMutability": "nonpayable",
-        "type": "function"
+        "outputs": [],
+        "name": "addLoans",
+        "inputs": [
+            { "type": "address[]", "name": "_userAddresses", "internalType": "address[]" },
+            { "type": "uint256[]", "name": "_amounts", "internalType": "uint256[]" },
+            { "type": "uint256[]", "name": "_periods", "internalType": "uint256[]" },
+            { "type": "uint256[]", "name": "_dailyInterests", "internalType": "uint256[]" },
+            { "type": "uint256[]", "name": "_claimDeadlines", "internalType": "uint256[]" }
+        ]
     },
     {
         "type": "function",
@@ -94,12 +92,5 @@
             { "type": "address", "name": "_oldWalletAddress", "internalType": "address" },
             { "type": "address", "name": "_newWalletAddress", "internalType": "address" }
         ]
-    },
-    {
-        "inputs": [],
-        "name": "getVersion",
-        "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-        "stateMutability": "pure",
-        "type": "function"
     }
 ]
