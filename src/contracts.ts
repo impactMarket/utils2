@@ -51,6 +51,11 @@ export type UserLoans = {
     repaymentsLength: BigNumber;
     lastComputedDate: BigNumber;
     managerAddress: string;
+    tokenAddress?: string;
+    tokenAmountBorrowed?: BigNumber;
+    tokenAmountRepayed?: BigNumber;
+    tokenLastComputedDebt?: BigNumber;
+    tokenCurrentDebt?: BigNumber;
 };
 
 export interface IMicroCredit extends Contract {
