@@ -29,13 +29,17 @@
             { "internalType": "uint256", "name": "dailyInterest", "type": "uint256" },
             { "internalType": "uint256", "name": "claimDeadline", "type": "uint256" },
             { "internalType": "uint256", "name": "startDate", "type": "uint256" },
-            { "internalType": "uint256", "type": "uint256" },
-            { "internalType": "uint256", "type": "uint256" },
+            { "internalType": "uint256", "name": "currentDebt", "type": "uint256" },
+            { "internalType": "uint256", "name": "lastComputedDebt", "type": "uint256" },
             { "internalType": "uint256", "name": "amountRepayed", "type": "uint256" },
             { "internalType": "uint256", "name": "repaymentsLength", "type": "uint256" },
             { "internalType": "uint256", "name": "lastComputedDate", "type": "uint256" },
             { "internalType": "address", "name": "managerAddress", "type": "address" },
-            { "internalType": "address", "name": "tokenAddress", "type": "address" }
+            { "internalType": "address", "name": "tokenAddress", "type": "address" },
+            { "internalType": "uint256", "name": "tokenAmountBorrowed", "type": "uint256" },
+            { "internalType": "uint256", "name": "tokenAmountRepayed", "type": "uint256" },
+            { "internalType": "uint256", "name": "tokenLastComputedDebt", "type": "uint256" },
+            { "internalType": "uint256", "name": "tokenCurrentDebt", "type": "uint256" }
         ],
         "stateMutability": "view",
         "type": "function"

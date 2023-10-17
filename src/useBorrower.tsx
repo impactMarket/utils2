@@ -178,9 +178,13 @@ export const useBorrower = () => {
      * @returns {Promise<CeloTxReceipt>} tx details
      */
     const userLoans = async (userAddress: string, loanId: number) => {
-        const { microCredit } = getContracts(provider, networkId);
+        const { microCredit, microCreditOld } = getContracts(provider, networkId);
 
-        const response = await microCredit.userLoans(userAddress, loanId);
+        const version = (await microCredit.getVersion()).toNumber();
+        const response =
+            version === 1
+                ? await microCreditOld.userLoans(userAddress, loanId)
+                : await microCredit.userLoans(userAddress, loanId);
 
         updateLoan(response);
 
