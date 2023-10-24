@@ -49,15 +49,21 @@ export const useAirdropRecurring = (airdropSmartContractAddress: string) => {
             updateIntervalRef.current = setInterval(() => {
                 if (now + clockInterval >= end) {
                     clearInterval(updateIntervalRef.current);
-                    updateIntervalRef.current = setTimeout(() => {
-                        _reloadingClaimStatus(userAddress);
-                    }, end - now + 1000);
+                    updateIntervalRef.current = setTimeout(
+                        () => {
+                            _reloadingClaimStatus(userAddress);
+                        },
+                        end - now + 1000
+                    );
                 }
             }, clockInterval);
         } else {
-            updateIntervalRef.current = setTimeout(() => {
-                _reloadingClaimStatus(userAddress);
-            }, end - now + 1000);
+            updateIntervalRef.current = setTimeout(
+                () => {
+                    _reloadingClaimStatus(userAddress);
+                },
+                end - now + 1000
+            );
         }
     };
 
