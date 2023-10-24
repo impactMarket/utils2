@@ -56,20 +56,28 @@ export const updateUserContributionData = async (provider: BaseProvider, donatio
  * @returns {number} Estimated rewards.
  */
 export const getEstimatedClaimableRewards = async (donationMiner: Contract, address: string) => {
-    const rewardPeriodCount = await donationMiner.rewardPeriodCount();
-    const claimDelay = await donationMiner.claimDelay();
+    const [rewardPeriodCount, claimDelay] = await Promise.all([
+        donationMiner.rewardPeriodCount(),
+        donationMiner.claimDelay()
+    ]);
 
-    const claimableDonations = await donationMiner.calculateClaimableRewardsByPeriodNumber(
-        address,
-        Math.max(0, parseInt(rewardPeriodCount.toString(), 10) - parseInt(claimDelay.toString(), 10) - 1)
-    );
-    const allDonations = await donationMiner.calculateClaimableRewardsByPeriodNumber(
-        address,
-        parseInt(rewardPeriodCount.toString(), 10) - 1
-    );
-    const currentEpochDonations = await donationMiner.estimateClaimableReward(address);
+    try {
+        const [claimableDonations, allDonations, currentEpochDonations] = await Promise.all([
+            donationMiner.calculateClaimableRewardsByPeriodNumber(
+                address,
+                Math.max(0, parseInt(rewardPeriodCount.toString(), 10) - parseInt(claimDelay.toString(), 10) - 1)
+            ),
+            donationMiner.calculateClaimableRewardsByPeriodNumber(
+                address,
+                parseInt(rewardPeriodCount.toString(), 10) - 1
+            ),
+            donationMiner.estimateClaimableReward(address)
+        ]);
 
-    return toNumber(allDonations) - toNumber(claimableDonations) + toNumber(currentEpochDonations);
+        return toNumber(allDonations) - toNumber(claimableDonations) + toNumber(currentEpochDonations);
+    } catch (_) {
+        return 0;
+    }
 };
 
 /**
@@ -81,12 +89,16 @@ export const getEstimatedClaimableRewards = async (donationMiner: Contract, addr
 export const getAllocatedRewards = async (donationMiner: Contract, address: string) => {
     const rewardPeriodCount = await donationMiner.rewardPeriodCount();
 
-    const pastDonations = await donationMiner.calculateClaimableRewardsByPeriodNumber(
-        address,
-        parseInt(rewardPeriodCount.toString(), 10) - 1
-    );
+    try {
+        const pastDonations = await donationMiner.calculateClaimableRewardsByPeriodNumber(
+            address,
+            parseInt(rewardPeriodCount.toString(), 10) - 1
+        );
 
-    return toNumber(pastDonations);
+        return toNumber(pastDonations);
+    } catch (_) {
+        return 0;
+    }
 };
 
 /**
@@ -108,15 +120,21 @@ export const getCurrentEpochEstimatedRewards = async (donationMiner: Contract, a
  * @returns {number} Claimable rewards.
  */
 export const getClaimableRewards = async (donationMiner: Contract, address: string) => {
-    const rewardPeriodCount = await donationMiner.rewardPeriodCount();
-    const claimDelay = await donationMiner.claimDelay();
+    const [rewardPeriodCount, claimDelay] = await Promise.all([
+        donationMiner.rewardPeriodCount(),
+        donationMiner.claimDelay()
+    ]);
 
-    const value = await donationMiner.calculateClaimableRewardsByPeriodNumber(
-        address,
-        Math.max(0, parseInt(rewardPeriodCount.toString(), 10) - parseInt(claimDelay.toString(), 10) - 1)
-    );
+    try {
+        const value = await donationMiner.calculateClaimableRewardsByPeriodNumber(
+            address,
+            Math.max(0, parseInt(rewardPeriodCount.toString(), 10) - parseInt(claimDelay.toString(), 10) - 1)
+        );
 
-    return toNumber(value);
+        return toNumber(value);
+    } catch (_) {
+        return 0;
+    }
 };
 
 /**
