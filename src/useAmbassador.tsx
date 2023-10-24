@@ -93,9 +93,8 @@ export const useAmbassador = () => {
         if (!signer || !address) {
             throw new Error('No connection');
         }
-        const tx = await communityContract(communityAddress).populateTransaction.updateMaxBeneficiaries(
-            maxBeneficiaries
-        );
+        const tx =
+            await communityContract(communityAddress).populateTransaction.updateMaxBeneficiaries(maxBeneficiaries);
         const response = await executeTransaction(tx);
 
         return response;
