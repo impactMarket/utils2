@@ -1,5 +1,6 @@
 import { ContractAddresses } from './contractAddress';
 import { ImpactProviderContext } from './ImpactProvider';
+import { TransactionReceipt } from 'viem';
 import { getContracts } from './contracts';
 import { internalUseTransaction } from './internalUseTransaction';
 import { toNumber } from './toNumber';
@@ -52,7 +53,7 @@ export const useLoanManager = () => {
             dailyInterest: number;
             claimDeadline: number;
         }[]
-    ) => {
+    ): Promise<TransactionReceipt> => {
         if (!address || !signer) {
             throw new Error('No wallet connected');
         }
@@ -94,7 +95,7 @@ export const useLoanManager = () => {
      * @param {number[]} loansIds ids of each loan
      * @returns {Promise<TransactionReceipt>} tx details
      */
-    const cancelLoans = async (userAddresses: string[], loansIds: number[]) => {
+    const cancelLoans = async (userAddresses: string[], loansIds: number[]): Promise<TransactionReceipt> => {
         if (!address || !signer) {
             throw new Error('No wallet connected');
         }
@@ -107,12 +108,33 @@ export const useLoanManager = () => {
     };
 
     /**
+     * Change user's loan manager
+     * @param {string[]} userAddresses addresses to change loan manager
+     * @param {string} loanManager new loan manager
+     * @returns {Promise<TransactionReceipt>} tx details
+     */
+    const changeLoanManager = async (userAddresses: string[], loanManager: string): Promise<TransactionReceipt> => {
+        if (!address || !signer) {
+            throw new Error('No wallet connected');
+        }
+
+        const { microCredit } = getContracts(provider, networkId);
+        const tx = await microCredit.populateTransaction.changeManager(userAddresses, loanManager);
+        const response = await executeTransaction(tx);
+
+        return response;
+    };
+
+    /**
      * Change user address
      * @param {string} oldWalletAddress old wallet address
      * @param {string} newWalletAddress new wallet address
      * @returns {Promise<TransactionReceipt>} tx details
      */
-    const changeUserAddress = async (oldWalletAddress: string, newWalletAddress: string) => {
+    const changeUserAddress = async (
+        oldWalletAddress: string,
+        newWalletAddress: string
+    ): Promise<TransactionReceipt> => {
         if (!address || !signer) {
             throw new Error('No wallet connected');
         }
@@ -124,5 +146,5 @@ export const useLoanManager = () => {
         return response;
     };
 
-    return { addLoans, cancelLoans, changeUserAddress, isReady, managerDetails };
+    return { addLoans, cancelLoans, changeLoanManager, changeUserAddress, isReady, managerDetails };
 };

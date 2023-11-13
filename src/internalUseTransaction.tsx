@@ -1,8 +1,7 @@
-import { Account, Chain, SendTransactionParameters } from 'viem';
+import { Account, Chain, SendTransactionParameters, TransactionReceipt, createPublicClient, http } from 'viem';
 import { ImpactProviderContext } from './ImpactProvider';
-import { TransactionReceipt } from '@ethersproject/providers';
 import { getContracts } from './contracts';
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import axios from 'axios';
 
 // some methods copied from walletconnect v2 examples
@@ -41,6 +40,14 @@ const apiGetGasPrice = async (jsonRpcUrl: string, defaultFeeCurrency: string | u
 export const internalUseTransaction = () => {
     const { signer, address, provider, networkId, defaultFeeCurrency, jsonRpcUrl, connection } =
         useContext(ImpactProviderContext);
+    const publicClient = useMemo(
+        () =>
+            createPublicClient({
+                chain: signer?.chain,
+                transport: http(jsonRpcUrl)
+            }),
+        [signer, jsonRpcUrl]
+    );
 
     // internal transaction formatter
     const formatTransaction = async (
@@ -92,6 +99,7 @@ export const internalUseTransaction = () => {
             };
         }
 
+        // @deprecated: Block deprecated
         if (signer === null && connection) {
             const txResponse = await connection.sendTransaction({
                 data: tx.data,
@@ -100,7 +108,9 @@ export const internalUseTransaction = () => {
                 to: tx.to
             });
 
-            return await txResponse.waitReceipt();
+            return await publicClient.waitForTransactionReceipt({
+                hash: (await txResponse.getHash()) as `0x${string}`
+            });
         }
 
         if (!signer) {
@@ -112,28 +122,7 @@ export const internalUseTransaction = () => {
             ...feeTxParams
         });
 
-        try {
-            if (typeof document !== 'undefined') {
-                // I'm on the web!
-                // import('@sentry/nextjs').then((SentryNextJS) => {
-                //     SentryNextJS.addBreadcrumb({
-                //         category: 'blockchain',
-                //         level: 'info',
-                //         message: JSON.stringify({ tx, txParams })
-                //     });
-                // });
-            } else {
-                // import('@sentry/react-native').then((SentryReactNative) => SentryReactNative.addBreadcrumb({
-                //     category: 'blockchain',
-                //     level: 'info',
-                //     message: JSON.stringify({ tx, txParams })
-                // }));
-            }
-        } catch (_) {}
-
-        // initial version of utils returned the transaction receipt
-        // and it's used in many places, so we will keep doing it
-        return await provider.waitForTransaction(txHash);
+        return await publicClient.waitForTransactionReceipt({ hash: txHash });
     };
 
     return executeTransaction;

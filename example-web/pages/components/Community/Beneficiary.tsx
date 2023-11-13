@@ -6,8 +6,8 @@ const Beneficiary = () => {
         beneficiary,
         isReady,
         claim
-    } = useBeneficiary('0x13d9d460Bf4bbEE7c3ab53a29c5f23AeC64F8CB6');
-    const { claimCooldown, isClaimable, community, fundsRemainingDays } = beneficiary;
+    } = useBeneficiary('0x94876b6bfD2fd838413FB30A654148a5Fd2248b8');
+    const { claimCooldown, isClaimable, community, isFinished } = beneficiary;
 
     console.log('reload useBeneficiary');
 
@@ -28,9 +28,6 @@ const Beneficiary = () => {
                 claimedAmount: {beneficiary.claimedAmount.toString()}
             </div>
             <div style={{ marginTop: 8 }}>
-                communityHasFunds: {community.hasFunds.toString()}
-            </div>
-            <div style={{ marginTop: 8 }}>
                 maxClaim: {community.maxClaim.toString()}
             </div>
             <div style={{ marginTop: 8 }}>
@@ -40,7 +37,7 @@ const Beneficiary = () => {
                 isClaimable: {isClaimable.toString()}
             </div>
             <div style={{ marginTop: 8 }}>
-                fundsRemainingDays: {fundsRemainingDays.toString()}
+            isFinished: {isFinished.toString()}
             </div>
             <button onClick={() => claim()}>claim</button>
         </>

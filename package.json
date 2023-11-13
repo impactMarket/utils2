@@ -1,6 +1,6 @@
 {
     "name": "@impact-market/utils",
-    "version": "4.1.3",
+    "version": "4.2.0-beta.1",
     "description": "impactMarket utils",
     "repository": {
         "type": "git",
@@ -78,7 +78,7 @@
         "ts-node": "10.9.1",
         "typedoc": "0.25.2",
         "typescript": "5.2.2",
-        "viem": "1.16.6",
+        "viem": "1.18.9",
         "wagmi": "1.4.5"
     },
     "peerDependencies": {
@@ -95,7 +95,7 @@
         "bignumber.js": "^9.1.2",
         "graphql": "^16.8.1",
         "react": "^17.0.2",
-        "viem": "^1.16.6",
+        "viem": "^1.18.9",
         "wagmi": "^1.4.5"
     }
 }

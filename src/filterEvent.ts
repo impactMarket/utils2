@@ -1,5 +1,5 @@
 import { Interface } from '@ethersproject/abi';
-import { TransactionReceipt } from '@ethersproject/providers';
+import { TransactionReceipt } from 'viem';
 
 export const filterEvent = (event: string, eventName: string, txResponse: TransactionReceipt) => {
     if (txResponse.logs === undefined) {

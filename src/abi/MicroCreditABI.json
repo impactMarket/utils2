@@ -105,5 +105,15 @@
         "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
         "stateMutability": "pure",
         "type": "function"
+    },
+    {
+        "type": "function",
+        "stateMutability": "nonpayable",
+        "outputs": [],
+        "name": "changeManager",
+        "inputs": [
+            { "type": "address[]", "name": "_borrowerAddresses", "internalType": "address[]" },
+            { "type": "address", "name": "_managerAddress", "internalType": "address" }
+        ]
     }
 ]
