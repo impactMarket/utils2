@@ -115,5 +115,28 @@
             { "type": "address[]", "name": "_borrowerAddresses", "internalType": "address[]" },
             { "type": "address", "name": "_managerAddress", "internalType": "address" }
         ]
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address[]",
+                "name": "_userAddresses",
+                "type": "address[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "_loanIds",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "_newClaimDeadlines",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "editLoanClaimDeadlines",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
     }
 ]
