@@ -2,7 +2,7 @@ import type { AppProps } from 'next/app';
 import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { celoAlfajores, celo } from '@wagmi/chains';
 import { WagmiConfig } from 'wagmi';
-import { chains, projectId, wagmiConfig } from './network';
+import { chains, projectId, wagmiConfig } from '../utils/network';
 
 createWeb3Modal({
     wagmiConfig,
