@@ -44,7 +44,7 @@ export const internalUseTransaction = () => {
         () =>
             createPublicClient({
                 chain: signer?.chain,
-                transport: http(jsonRpcUrl)
+                transport: http(jsonRpcUrl || 'https://forno.celo.org')
             }),
         [signer, jsonRpcUrl]
     );
