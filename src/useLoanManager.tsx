@@ -27,13 +27,22 @@ export const useLoanManager = () => {
 
             const { microCredit, microCreditOld } = getContracts(provider, networkId);
             const version = (await microCredit.getVersion()).toNumber();
-            const { currentLentAmount, currentLentAmountLimit } =
-                version === 1 ? await microCreditOld.managers(address) : await microCredit.managers(address);
 
-            setManagerDetails({
-                currentLentAmount: toNumber(currentLentAmount),
-                currentLentAmountLimit: toNumber(currentLentAmountLimit)
-            });
+            if (version === 1) {
+                const { currentLentAmount, currentLentAmountLimit } = (await microCreditOld.managers(address)) as any;
+
+                setManagerDetails({
+                    currentLentAmount: toNumber(currentLentAmount),
+                    currentLentAmountLimit: toNumber(currentLentAmountLimit)
+                });
+            } else {
+                const { lentAmount, lentAmountLimit } = await microCredit.managers(address);
+
+                setManagerDetails({
+                    currentLentAmount: toNumber(lentAmount),
+                    currentLentAmountLimit: toNumber(lentAmountLimit)
+                });
+            }
             setIsReady(true);
         };
 

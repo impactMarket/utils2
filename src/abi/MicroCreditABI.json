@@ -73,8 +73,8 @@
         "type": "function",
         "stateMutability": "view",
         "outputs": [
-            { "type": "uint256", "name": "currentLentAmountLimit", "internalType": "uint256" },
-            { "type": "uint256", "name": "currentLentAmount", "internalType": "uint256" }
+            { "type": "uint256", "name": "lentAmountLimit", "internalType": "uint256" },
+            { "type": "uint256", "name": "lentAmount", "internalType": "uint256" }
         ],
         "name": "managers",
         "inputs": [{ "type": "address", "name": "managerAddress", "internalType": "address" }]
