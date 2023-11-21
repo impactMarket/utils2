@@ -76,23 +76,27 @@ export const useLoanManager = () => {
 
         const { microCredit, microCreditOld } = getContracts(provider, networkId);
         const version = (await microCredit.getVersion()).toNumber();
-        const tx =
-            version === 1
-                ? await microCreditOld.populateTransaction.addLoans(
-                      userAddresses,
-                      amounts,
-                      periods,
-                      dailyInterests,
-                      claimDeadlines
-                  )
-                : await microCredit.populateTransaction.addLoans(
-                      userAddresses,
-                      tokens,
-                      amounts,
-                      periods,
-                      dailyInterests,
-                      claimDeadlines
-                  );
+
+        if (version === 1) {
+            const tx = await microCreditOld.populateTransaction.addLoans(
+                userAddresses,
+                amounts,
+                periods,
+                dailyInterests,
+                claimDeadlines
+            );
+            const response = await executeTransaction(tx);
+
+            return response;
+        }
+        const tx = await microCredit.populateTransaction.addLoans(
+            userAddresses,
+            tokens,
+            amounts,
+            periods,
+            dailyInterests,
+            claimDeadlines
+        );
         const response = await executeTransaction(tx);
 
         return response;
