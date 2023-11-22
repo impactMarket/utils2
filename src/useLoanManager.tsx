@@ -68,7 +68,7 @@ export const useLoanManager = () => {
         }
 
         const userAddresses = loans.map(loan => loan.userAddress);
-        const tokens = Array(loans.length).fill(ContractAddresses.get(networkId)!.cUSD);
+        const tokens = Array(loans.length).fill(ContractAddresses[networkId].cUSD);
         const amounts = loans.map(loan => toToken(loan.amount));
         const periods = loans.map(loan => loan.period);
         const dailyInterests = loans.map(loan => toToken(loan.dailyInterest));

@@ -81,7 +81,7 @@ export interface IMicroCredit extends Contract {
 }
 
 export const getContracts = (provider: BaseProvider, networkId: number) => {
-    const contractAddresses = ContractAddresses.get(networkId)!;
+    const contractAddresses = ContractAddresses[networkId];
 
     const {
         Ambassadors,

@@ -20,8 +20,7 @@ export const usePACT = () => {
     const { provider, address, networkId } = React.useContext(ImpactProviderContext);
 
     const circulatingSupply = async () => {
-        const { chainId } = await provider.getNetwork();
-        const contractAddresses = ContractAddresses.get(chainId)!;
+        const contractAddresses = ContractAddresses[networkId];
 
         const { PACTDelegator, PACTToken, DonationMiner, MerkleDistributor, ImpactLabs, IDO } = contractAddresses;
 
@@ -60,7 +59,7 @@ export const usePACT = () => {
                 transfers: 0
             };
         }
-        const { PACTToken } = ContractAddresses.get(networkId)!;
+        const { PACTToken } = ContractAddresses[networkId];
 
         let statsFromUbeswapSubgraph = {
             dailyVolumeUSD: '--',
@@ -137,7 +136,7 @@ export const usePACT = () => {
         if (networkId !== networksId.CeloMainnet) {
             return '--';
         }
-        const contractAddresses = ContractAddresses.get(networkId)!;
+        const contractAddresses = ContractAddresses[networkId];
 
         const { PACTToken, PACTDelegator } = contractAddresses;
 
@@ -169,7 +168,7 @@ export const usePACT = () => {
     };
 
     const getUBILiquidity = async (): Promise<number> => {
-        const contractAddresses = ContractAddresses.get(networkId)!;
+        const contractAddresses = ContractAddresses[networkId];
 
         const { cUSD, Treasury } = contractAddresses;
         const cusd = new Contract(cUSD, ERC20ABI, provider);

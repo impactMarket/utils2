@@ -86,7 +86,7 @@ export const useSignatures = () => {
         const expiry = options?.expiry || Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30;
         const name = options?.name || 'impactMarket';
         const verifyingContract = (options?.verifyingContract ||
-            ContractAddresses.get(networkId || networksId.CeloMainnet)!.PACTDelegator) as `0x${string}`;
+            ContractAddresses[networkId || networksId.CeloMainnet].PACTDelegator) as `0x${string}`;
         const version = options?.version || '1';
 
         const domain = {
