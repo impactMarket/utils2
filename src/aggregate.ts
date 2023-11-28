@@ -59,3 +59,21 @@ export function aggregateObjects(
 
     return Object.values(result).map(d => d);
 }
+
+/**
+ * Builds an array of ids to query
+ * @param {string} baseId Base id to build the query
+ * @param {number} fromDayId From day id
+ * @param {number} toDayId To day id
+ * @returns {string[]} Array of ids
+ *
+ * @example
+ * const result = buildIdAveragesQuery('avg-xpto-', 1, 5);
+ *
+ * // $ result
+ * // ['avg-xpto-1', 'avg-xpto-2', 'avg-xpto-3', 'avg-xpto-4', 'avg-xpto-5'];
+ */
+export const buildIdAveragesQuery = (baseId: string, fromDayId: number, toDayId: number): string[] =>
+    Array(toDayId - fromDayId)
+        .fill('')
+        .map((_, i) => `${baseId}${fromDayId + i}`);
