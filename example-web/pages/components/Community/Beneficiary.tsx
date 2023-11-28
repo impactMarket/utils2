@@ -5,8 +5,8 @@ const Beneficiary = () => {
     const {
         beneficiary,
         isReady,
-        claim
-    } = useBeneficiary('0x94876b6bfD2fd838413FB30A654148a5Fd2248b8');
+        claim,
+    } = useBeneficiary('0xfa3caed4a8b9845112fdfb1ade0d25313ea4956e');
     const { claimCooldown, isClaimable, community, isFinished } = beneficiary;
 
     console.log('reload useBeneficiary');
@@ -14,6 +14,7 @@ const Beneficiary = () => {
     if(!isReady) {
         return <div>Loading</div>;
     }
+    console.log(beneficiary)
     if(community.claimAmount === 0) {
         return <div>Not beneficiary</div>;
     }
@@ -26,6 +27,9 @@ const Beneficiary = () => {
             </div>
             <div style={{ marginTop: 8 }}>
                 claimedAmount: {beneficiary.claimedAmount.toString()}
+            </div>
+            <div style={{ marginTop: 8 }}>
+                requestFundsStatus: {community.requestFundsStatus.toString()}
             </div>
             <div style={{ marginTop: 8 }}>
                 maxClaim: {community.maxClaim.toString()}

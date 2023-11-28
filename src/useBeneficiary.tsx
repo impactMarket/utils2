@@ -144,7 +144,10 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
             if (parseInt(lastFundRequest, 10) + communityGraph.baseInterval! >= currentBlockNumber) {
                 return RequestFundsStatus.NOT_YET;
             }
-            if (toNumber(treasuryBalance) <= toNumber(treasuryMinBalance)) {
+            if (
+                toNumber(treasuryBalance) <= toNumber(treasuryMinBalance) &&
+                toNumber(communityBalance) < parseFloat(communityGraph.claimAmount!)
+            ) {
                 return RequestFundsStatus.NOT_ENOUGH_FUNDS;
             }
 
