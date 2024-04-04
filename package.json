@@ -1,6 +1,6 @@
 {
     "name": "@impact-market/utils",
-    "version": "4.1.5",
+    "version": "4.1.5-beta.1",
     "description": "impactMarket utils",
     "repository": {
         "type": "git",
