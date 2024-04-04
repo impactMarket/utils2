@@ -100,7 +100,8 @@ export const internalUseTransaction = () => {
                 to: tx.to
             });
 
-            return await txResponse.waitReceipt();
+            // This was solved in the latest beta version
+            return (await txResponse.waitReceipt()) as unknown as TransactionReceipt;
         }
 
         if (!signer) {
