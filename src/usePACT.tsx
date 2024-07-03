@@ -86,16 +86,15 @@ export const usePACT = () => {
             });
 
             statsFromUbeswapSubgraph = result.data.tokenDayDatas[0];
-        } catch (_) {}
+        } catch (_) { }
         let counters = { data: { token_holder_count: 0, transfer_count: 0 } };
 
         try {
             counters = await axios.get(
-                `https://explorer.celo.org/${
-                    networkId === networksId.CeloMainnet ? 'mainnet' : 'alfajores'
+                `https://explorer.celo.org/${networkId === networksId.CeloMainnet ? 'mainnet' : 'alfajores'
                 }/token-counters?id=${PACTToken}`
             );
-        } catch (_) {}
+        } catch (_) { }
 
         return {
             ...statsFromUbeswapSubgraph,

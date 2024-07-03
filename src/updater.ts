@@ -56,25 +56,26 @@ export const updateUserContributionData = async (provider: BaseProvider, donatio
  * @returns {number} Estimated rewards.
  */
 export const getEstimatedClaimableRewards = async (donationMiner: Contract, address: string) => {
-    const [rewardPeriodCount, claimDelay] = await Promise.all([
-        donationMiner.rewardPeriodCount(),
-        donationMiner.claimDelay()
-    ]);
+    // const [rewardPeriodCount, claimDelay] = await Promise.all([
+    //     donationMiner.rewardPeriodCount(),
+    //     donationMiner.claimDelay()
+    // ]);
 
     try {
-        const [claimableDonations, allDonations, currentEpochDonations] = await Promise.all([
-            donationMiner.calculateClaimableRewardsByPeriodNumber(
-                address,
-                Math.max(0, parseInt(rewardPeriodCount.toString(), 10) - parseInt(claimDelay.toString(), 10) - 1)
-            ),
-            donationMiner.calculateClaimableRewardsByPeriodNumber(
-                address,
-                parseInt(rewardPeriodCount.toString(), 10) - 1
-            ),
-            donationMiner.estimateClaimableReward(address)
-        ]);
+        // const [claimableDonations, allDonations, currentEpochDonations] = await Promise.all([
+        //     donationMiner.calculateClaimableRewardsByPeriodNumber(
+        //         address,
+        //         Math.max(0, parseInt(rewardPeriodCount.toString(), 10) - parseInt(claimDelay.toString(), 10) - 1)
+        //     ),
+        //     donationMiner.calculateClaimableRewardsByPeriodNumber(
+        //         address,
+        //         parseInt(rewardPeriodCount.toString(), 10) - 1
+        //     ),
+        //     donationMiner.estimateClaimableReward(address)
+        // ]);
+        return toNumber(await donationMiner.estimateClaimableReward(address));
 
-        return toNumber(allDonations) - toNumber(claimableDonations) + toNumber(currentEpochDonations);
+        // return toNumber(allDonations) - toNumber(claimableDonations) + toNumber(currentEpochDonations);
     } catch (_) {
         return 0;
     }
