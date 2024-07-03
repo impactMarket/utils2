@@ -12,7 +12,7 @@ import axios from 'axios';
 
 const client = new ApolloClient({
     cache: new InMemoryCache(),
-    uri: 'https://api.thegraph.com/subgraphs/name/ubeswap/ubeswap'
+    uri: 'https://gateway-arbitrum.network.thegraph.com/api/f11ae56fca9bda04e78d3534edfb8ac5/subgraphs/id/JWDRLCwj4H945xEkbB6eocBSZcYnibqcJPJ8h9davFi'
 });
 
 // TODO: to finish migration (split, etc)
@@ -87,16 +87,15 @@ export const usePACT = () => {
             });
 
             statsFromUbeswapSubgraph = result.data.tokenDayDatas[0];
-        } catch (_) {}
+        } catch (_) { }
         let counters = { data: { token_holder_count: 0, transfer_count: 0 } };
 
         try {
             counters = await axios.get(
-                `https://explorer.celo.org/${
-                    networkId === networksId.CeloMainnet ? 'mainnet' : 'alfajores'
+                `https://explorer.celo.org/${networkId === networksId.CeloMainnet ? 'mainnet' : 'alfajores'
                 }/token-counters?id=${PACTToken}`
             );
-        } catch (_) {}
+        } catch (_) { }
 
         return {
             ...statsFromUbeswapSubgraph,
