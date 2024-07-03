@@ -12,7 +12,7 @@ import axios from 'axios';
 
 const client = new ApolloClient({
     cache: new InMemoryCache(),
-    uri: 'https://api.thegraph.com/subgraphs/name/ubeswap/ubeswap'
+    uri: 'https://gateway-arbitrum.network.thegraph.com/api/f11ae56fca9bda04e78d3534edfb8ac5/subgraphs/id/JWDRLCwj4H945xEkbB6eocBSZcYnibqcJPJ8h9davFi'
 });
 
 // TODO: to finish migration (split, etc)
