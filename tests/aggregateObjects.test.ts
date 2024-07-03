@@ -17,7 +17,7 @@ describe('#aggregateObjects()', () => {
 
         const result = aggregateObjects(data, 'week');
 
-        expect(result).to.equal(expectedOutput);
+        expect(result).to.deep.equal(expectedOutput);
     });
 
     it('month', () => {
@@ -31,7 +31,7 @@ describe('#aggregateObjects()', () => {
 
         const result = aggregateObjects(data, 'month');
 
-        expect(result).to.equal(expectedOutput);
+        expect(result).to.deep.equal(expectedOutput);
     });
 
     it('empty', () => {
@@ -41,6 +41,6 @@ describe('#aggregateObjects()', () => {
 
         const result = aggregateObjects(data, 'week');
 
-        expect(result).to.equal(expectedOutput);
+        expect(result).to.deep.equal(expectedOutput);
     });
 });
