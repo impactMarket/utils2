@@ -5,6 +5,7 @@ export * from './useDonationMiner';
 
 export * from './useCUSDBalance';
 export * from './usePACTBalance';
+export * from './useLoanRewards';
 export * from './ImpactProvider';
 export * from './useBeneficiary';
 export * from './useManager';
