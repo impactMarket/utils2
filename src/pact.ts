@@ -14,7 +14,7 @@ const client = new ApolloClient({
 });
 
 export async function circulatingSupply(provider: BaseProvider, chainId: number) {
-    const contractAddresses = ContractAddresses.get(chainId)!;
+    const contractAddresses = ContractAddresses[chainId];
 
     const { PACTDelegator, PACTToken, DonationMiner, MerkleDistributor, ImpactLabs, IDO } = contractAddresses;
 
@@ -54,7 +54,7 @@ export async function getPACTTradingMetrics(chainId: number): Promise<{
             transfers: 0
         };
     }
-    const contractAddresses = ContractAddresses.get(chainId)!;
+    const contractAddresses = ContractAddresses[chainId];
 
     const { PACTToken } = contractAddresses;
 
@@ -131,7 +131,7 @@ export async function getPACTTVL(provider: BaseProvider, chainId: number): Promi
     if (chainId !== 42220) {
         return '--';
     }
-    const contractAddresses = ContractAddresses.get(chainId)!;
+    const contractAddresses = ContractAddresses[chainId];
 
     const { PACTToken, PACTDelegator } = contractAddresses;
 
@@ -163,7 +163,7 @@ export async function getPACTTVL(provider: BaseProvider, chainId: number): Promi
 }
 
 export async function getUBILiquidity(provider: BaseProvider, chainId: number): Promise<number> {
-    const contractAddresses = ContractAddresses.get(chainId)!;
+    const contractAddresses = ContractAddresses[chainId];
 
     const { cUSD, Treasury } = contractAddresses;
     const cusd = new Contract(cUSD, ERC20ABI, provider);

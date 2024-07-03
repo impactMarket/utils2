@@ -74,14 +74,14 @@ export interface IMicroCredit extends Contract {
     cancelLoans(userAddresses: string[], loansIds: number[]): Promise<void>;
     changeUserAddress(oldWalletAddress: string, newWalletAddress: string): Promise<void>;
     managers(address: string): Promise<{
-        currentLentAmountLimit: BigNumber;
-        currentLentAmount: BigNumber;
+        lentAmountLimit: BigNumber;
+        lentAmount: BigNumber;
     }>;
     getVersion(): Promise<BigNumber>;
 }
 
 export const getContracts = (provider: BaseProvider, networkId: number) => {
-    const contractAddresses = ContractAddresses.get(networkId)!;
+    const contractAddresses = ContractAddresses[networkId];
 
     const {
         Ambassadors,

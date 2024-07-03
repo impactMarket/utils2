@@ -1,5 +1,6 @@
 import { ContractAddresses } from './contractAddress';
 import { ImpactProviderContext } from './ImpactProvider';
+import { TransactionReceipt } from 'viem';
 import { getContracts } from './contracts';
 import { internalUseTransaction } from './internalUseTransaction';
 import { toNumber } from './toNumber';
@@ -26,13 +27,22 @@ export const useLoanManager = () => {
 
             const { microCredit, microCreditOld } = getContracts(provider, networkId);
             const version = (await microCredit.getVersion()).toNumber();
-            const { currentLentAmount, currentLentAmountLimit } =
-                version === 1 ? await microCreditOld.managers(address) : await microCredit.managers(address);
 
-            setManagerDetails({
-                currentLentAmount: toNumber(currentLentAmount),
-                currentLentAmountLimit: toNumber(currentLentAmountLimit)
-            });
+            if (version === 1) {
+                const { currentLentAmount, currentLentAmountLimit } = (await microCreditOld.managers(address)) as any;
+
+                setManagerDetails({
+                    currentLentAmount: toNumber(currentLentAmount),
+                    currentLentAmountLimit: toNumber(currentLentAmountLimit)
+                });
+            } else {
+                const { lentAmount, lentAmountLimit } = await microCredit.managers(address);
+
+                setManagerDetails({
+                    currentLentAmount: toNumber(lentAmount),
+                    currentLentAmountLimit: toNumber(lentAmountLimit)
+                });
+            }
             setIsReady(true);
         };
 
@@ -52,13 +62,13 @@ export const useLoanManager = () => {
             dailyInterest: number;
             claimDeadline: number;
         }[]
-    ) => {
+    ): Promise<TransactionReceipt> => {
         if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
         const userAddresses = loans.map(loan => loan.userAddress);
-        const tokens = Array(loans.length).fill(ContractAddresses.get(networkId)!.cUSD);
+        const tokens = Array(loans.length).fill(ContractAddresses[networkId].cUSD);
         const amounts = loans.map(loan => toToken(loan.amount));
         const periods = loans.map(loan => loan.period);
         const dailyInterests = loans.map(loan => toToken(loan.dailyInterest));
@@ -66,23 +76,27 @@ export const useLoanManager = () => {
 
         const { microCredit, microCreditOld } = getContracts(provider, networkId);
         const version = (await microCredit.getVersion()).toNumber();
-        const tx =
-            version === 1
-                ? await microCreditOld.populateTransaction.addLoans(
-                      userAddresses,
-                      amounts,
-                      periods,
-                      dailyInterests,
-                      claimDeadlines
-                  )
-                : await microCredit.populateTransaction.addLoans(
-                      userAddresses,
-                      tokens,
-                      amounts,
-                      periods,
-                      dailyInterests,
-                      claimDeadlines
-                  );
+
+        if (version === 1) {
+            const tx = await microCreditOld.populateTransaction.addLoans(
+                userAddresses,
+                amounts,
+                periods,
+                dailyInterests,
+                claimDeadlines
+            );
+            const response = await executeTransaction(tx);
+
+            return response;
+        }
+        const tx = await microCredit.populateTransaction.addLoans(
+            userAddresses,
+            tokens,
+            amounts,
+            periods,
+            dailyInterests,
+            claimDeadlines
+        );
         const response = await executeTransaction(tx);
 
         return response;
@@ -90,17 +104,50 @@ export const useLoanManager = () => {
 
     /**
      * Cancel loans
-     * @param {string[]} userAddresses addresses to cancel loans
-     * @param {number[]} loansIds ids of each loan
+     * @param {object[]} loans loans to cancel
+     * @returns {Promise<TransactionReceipt>} tx details
+     *
+     * @example
+     * const loans = [{
+     *   userAddress: '0x...',
+     *   loanId: 1
+     * }]
+     *
+     * cancelLoans(loans)
+     */
+    const cancelLoans = async (
+        loans: {
+            userAddress: string;
+            loanId: number;
+        }[]
+    ): Promise<TransactionReceipt> => {
+        if (!address || !signer) {
+            throw new Error('No wallet connected');
+        }
+
+        const userAddresses = loans.map(loan => loan.userAddress);
+        const loansIds = loans.map(loan => loan.loanId);
+
+        const { microCredit } = getContracts(provider, networkId);
+        const tx = await microCredit.populateTransaction.cancelLoans(userAddresses, loansIds);
+        const response = await executeTransaction(tx);
+
+        return response;
+    };
+
+    /**
+     * Change user's loan manager
+     * @param {string[]} userAddresses addresses to change loan manager
+     * @param {string} loanManager new loan manager
      * @returns {Promise<TransactionReceipt>} tx details
      */
-    const cancelLoans = async (userAddresses: string[], loansIds: number[]) => {
+    const changeLoanManager = async (userAddresses: string[], loanManager: string): Promise<TransactionReceipt> => {
         if (!address || !signer) {
             throw new Error('No wallet connected');
         }
 
         const { microCredit } = getContracts(provider, networkId);
-        const tx = await microCredit.populateTransaction.cancelLoans(userAddresses, loansIds);
+        const tx = await microCredit.populateTransaction.changeManager(userAddresses, loanManager);
         const response = await executeTransaction(tx);
 
         return response;
@@ -112,7 +159,10 @@ export const useLoanManager = () => {
      * @param {string} newWalletAddress new wallet address
      * @returns {Promise<TransactionReceipt>} tx details
      */
-    const changeUserAddress = async (oldWalletAddress: string, newWalletAddress: string) => {
+    const changeUserAddress = async (
+        oldWalletAddress: string,
+        newWalletAddress: string
+    ): Promise<TransactionReceipt> => {
         if (!address || !signer) {
             throw new Error('No wallet connected');
         }
@@ -124,5 +174,53 @@ export const useLoanManager = () => {
         return response;
     };
 
-    return { addLoans, cancelLoans, changeUserAddress, isReady, managerDetails };
+    /**
+     * Edit loan claim deadlines
+     * @param {object[]} loans loans to edit
+     * @returns {Promise<TransactionReceipt>} tx details
+     *
+     * @example
+     * const loans = [{
+     *    userAddress: '0x...',
+     *    loanId: 1,
+     *    claimDeadline: 1234567890
+     * }]
+     *
+     * editLoanClaimDeadlines(loans)
+     */
+    const editLoanClaimDeadlines = async (
+        loans: {
+            userAddress: string;
+            loanId: number;
+            claimDeadline: number;
+        }[]
+    ): Promise<TransactionReceipt> => {
+        if (!address || !signer) {
+            throw new Error('No wallet connected');
+        }
+
+        const userAddresses = loans.map(loan => loan.userAddress);
+        const loansIds = loans.map(loan => loan.loanId);
+        const claimDeadlines = loans.map(loan => loan.claimDeadline);
+
+        const { microCredit } = getContracts(provider, networkId);
+        const tx = await microCredit.populateTransaction.editLoanClaimDeadlines(
+            userAddresses,
+            loansIds,
+            claimDeadlines
+        );
+        const response = await executeTransaction(tx);
+
+        return response;
+    };
+
+    return {
+        addLoans,
+        cancelLoans,
+        changeLoanManager,
+        changeUserAddress,
+        editLoanClaimDeadlines,
+        isReady,
+        managerDetails
+    };
 };

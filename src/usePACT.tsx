@@ -20,8 +20,7 @@ export const usePACT = () => {
     const { provider, address, networkId } = React.useContext(ImpactProviderContext);
 
     const circulatingSupply = async () => {
-        const { chainId } = await provider.getNetwork();
-        const contractAddresses = ContractAddresses.get(chainId)!;
+        const contractAddresses = ContractAddresses[networkId];
 
         const { PACTDelegator, PACTToken, DonationMiner, MerkleDistributor, ImpactLabs, IDO } = contractAddresses;
 
@@ -60,7 +59,7 @@ export const usePACT = () => {
                 transfers: 0
             };
         }
-        const { PACTToken } = ContractAddresses.get(networkId)!;
+        const { PACTToken } = ContractAddresses[networkId];
 
         let statsFromUbeswapSubgraph = {
             dailyVolumeUSD: '--',
@@ -87,15 +86,16 @@ export const usePACT = () => {
             });
 
             statsFromUbeswapSubgraph = result.data.tokenDayDatas[0];
-        } catch (_) { }
+        } catch (_) {}
         let counters = { data: { token_holder_count: 0, transfer_count: 0 } };
 
         try {
             counters = await axios.get(
-                `https://explorer.celo.org/${networkId === networksId.CeloMainnet ? 'mainnet' : 'alfajores'
+                `https://explorer.celo.org/${
+                    networkId === networksId.CeloMainnet ? 'mainnet' : 'alfajores'
                 }/token-counters?id=${PACTToken}`
             );
-        } catch (_) { }
+        } catch (_) {}
 
         return {
             ...statsFromUbeswapSubgraph,
@@ -136,7 +136,7 @@ export const usePACT = () => {
         if (networkId !== networksId.CeloMainnet) {
             return '--';
         }
-        const contractAddresses = ContractAddresses.get(networkId)!;
+        const contractAddresses = ContractAddresses[networkId];
 
         const { PACTToken, PACTDelegator } = contractAddresses;
 
@@ -168,7 +168,7 @@ export const usePACT = () => {
     };
 
     const getUBILiquidity = async (): Promise<number> => {
-        const contractAddresses = ContractAddresses.get(networkId)!;
+        const contractAddresses = ContractAddresses[networkId];
 
         const { cUSD, Treasury } = contractAddresses;
         const cusd = new Contract(cUSD, ERC20ABI, provider);

@@ -1,5 +1,5 @@
 import { ImpactProviderContext } from './ImpactProvider';
-import { TransactionReceipt } from '@ethersproject/providers';
+import { TransactionReceipt } from 'viem';
 import { getContracts } from './contracts';
 import { internalUseTransaction } from './internalUseTransaction';
 import React from 'react';

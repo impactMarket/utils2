@@ -73,8 +73,8 @@
         "type": "function",
         "stateMutability": "view",
         "outputs": [
-            { "type": "uint256", "name": "currentLentAmountLimit", "internalType": "uint256" },
-            { "type": "uint256", "name": "currentLentAmount", "internalType": "uint256" }
+            { "type": "uint256", "name": "lentAmountLimit", "internalType": "uint256" },
+            { "type": "uint256", "name": "lentAmount", "internalType": "uint256" }
         ],
         "name": "managers",
         "inputs": [{ "type": "address", "name": "managerAddress", "internalType": "address" }]
@@ -104,6 +104,39 @@
         "name": "getVersion",
         "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
         "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "type": "function",
+        "stateMutability": "nonpayable",
+        "outputs": [],
+        "name": "changeManager",
+        "inputs": [
+            { "type": "address[]", "name": "_borrowerAddresses", "internalType": "address[]" },
+            { "type": "address", "name": "_managerAddress", "internalType": "address" }
+        ]
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address[]",
+                "name": "_userAddresses",
+                "type": "address[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "_loanIds",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "_newClaimDeadlines",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "editLoanClaimDeadlines",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     }
 ]

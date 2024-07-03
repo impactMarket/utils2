@@ -1,16 +1,13 @@
 import WalletConnection from '../WalletConnection';
 import LoanManager from './LoanManager';
-import UserLoans from './UserLoans';
+import Borrower from './Borrower';
 
 const MicroCredit = () => {
     return (
-        <div>
-            {'MicroCredit'}
-            <WalletConnection title="MicroCredit">
-                <UserLoans />
-                <LoanManager />
-            </WalletConnection>
-        </div>
+        <WalletConnection title="MicroCredit">
+            <LoanManager />
+            <Borrower />
+        </WalletConnection>
     );
 };
 

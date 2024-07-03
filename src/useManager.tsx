@@ -1,5 +1,5 @@
 import { ImpactProviderContext } from './ImpactProvider';
-import { TransactionReceipt } from '@ethersproject/providers';
+import { TransactionReceipt } from 'viem';
 import { communityContract } from './community';
 import { estimateBlockTime } from './estimateBlockTime';
 import { estimateRemainingFundsInDays } from './estimateRemainingFundsInDays';

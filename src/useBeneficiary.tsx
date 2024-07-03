@@ -1,8 +1,7 @@
 import { ImpactProviderContext } from './ImpactProvider';
-import { TransactionReceipt } from '@ethersproject/providers';
+import { TransactionReceipt } from 'viem';
 import { communityContract } from './community';
 import { estimateBlockTime } from './estimateBlockTime';
-import { estimateRemainingFundsInDays } from './estimateRemainingFundsInDays';
 import { getContracts } from './contracts';
 import { internalUseTransaction } from './internalUseTransaction';
 import { toNumber } from './toNumber';
@@ -10,17 +9,24 @@ import { updateCUSDBalance } from './useCUSDBalance';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Contract } from '@ethersproject/contracts';
 
+export enum RequestFundsStatus {
+    READY = 0,
+    NOT_YET = 1,
+    NOT_ENOUGH_FUNDS = 2
+}
+
 export type Beneficiary = {
     claimedAmount: number;
     locked: boolean;
     claimCooldown: number;
     community: {
         claimAmount: number;
-        hasFunds: boolean;
         locked: boolean;
         maxClaim: number;
+        balance: number;
+        requestFundsStatus: number;
     };
-    fundsRemainingDays: number;
+    isFinished: boolean;
     isClaimable: boolean;
 };
 
@@ -48,13 +54,14 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
         claimCooldown: 0,
         claimedAmount: 0,
         community: {
+            balance: 0,
             claimAmount: 0,
-            hasFunds: false,
             locked: false,
-            maxClaim: 0
+            maxClaim: 0,
+            requestFundsStatus: RequestFundsStatus.NOT_YET
         },
-        fundsRemainingDays: 0,
         isClaimable: false,
+        isFinished: false,
         locked: false
     });
 
@@ -105,21 +112,47 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
         }
         // eslint-disable-next-line prefer-const
         let { claimedAmount, locked, community } = beneficiary;
+        const { cusd, treasury, communityAdmin } = getContracts(provider, networkId);
         let claimCooldown = 0;
         let isClaimable = false;
-        const { cusd } = getContracts(provider, networkId);
-        const [communityBalance, cooldown, claimedAmounts, beneficiaryGraph, communityGraph, currentBlockNumber] =
-            await Promise.all([
-                cusd.balanceOf(_contract.address),
-                _contract.claimCooldown(address),
-                _contract.beneficiaryClaimedAmounts(address),
-                subgraph.getBeneficiaryData(address, '{ state }'),
-                subgraph.getCommunityData(
-                    _contract.address,
-                    '{ baseInterval, claimAmount, maxClaim, beneficiaries, state }'
-                ),
-                provider.getBlockNumber()
-            ]);
+        const [
+            cooldown,
+            claimedAmounts,
+            beneficiaryGraph,
+            communityGraph,
+            currentBlockNumber,
+            treasuryMinBalance,
+            treasuryBalance,
+            communityBalance,
+            lastFundRequest
+        ] = await Promise.all([
+            _contract.claimCooldown(address),
+            _contract.beneficiaryClaimedAmounts(address),
+            subgraph.getBeneficiaryData(address, '{ state }'),
+            subgraph.getCommunityData(
+                _contract.address,
+                '{ baseInterval, claimAmount, maxClaim, beneficiaries, state }'
+            ),
+            provider.getBlockNumber(),
+            communityAdmin.treasuryMinBalance(),
+            cusd.balanceOf(treasury.address),
+            cusd.balanceOf(_contract.address),
+            _contract.lastFundRequest()
+        ]);
+
+        const getRequestFundsStatus = () => {
+            if (parseInt(lastFundRequest, 10) + communityGraph.baseInterval! >= currentBlockNumber) {
+                return RequestFundsStatus.NOT_YET;
+            }
+            if (
+                toNumber(treasuryBalance) <= toNumber(treasuryMinBalance) &&
+                toNumber(communityBalance) < parseFloat(communityGraph.claimAmount!)
+            ) {
+                return RequestFundsStatus.NOT_ENOUGH_FUNDS;
+            }
+
+            return RequestFundsStatus.READY;
+        };
 
         claimedAmount = toNumber(claimedAmounts[0]);
         // if not beneficiary, prevent method from throwing error
@@ -128,17 +161,19 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
                 locked = beneficiaryGraph.state === 2;
                 community = {
                     ...community,
+                    balance: toNumber(communityBalance),
                     claimAmount: parseFloat(communityGraph.claimAmount!),
-                    hasFunds: toNumber(communityBalance) > parseFloat(communityGraph.claimAmount!),
                     locked: communityGraph.state === 2,
-                    maxClaim: parseFloat(communityGraph.maxClaim!)
+                    maxClaim: parseFloat(communityGraph.maxClaim!),
+                    requestFundsStatus: getRequestFundsStatus()
                 };
             } else {
                 locked = beneficiaryGraph.state === 2;
                 community = {
                     ...community,
-                    hasFunds: toNumber(communityBalance) > parseFloat(communityGraph.claimAmount!),
-                    locked: communityGraph.state === 2
+                    balance: toNumber(communityBalance),
+                    locked: communityGraph.state === 2,
+                    requestFundsStatus: getRequestFundsStatus()
                 };
             }
         }
@@ -156,13 +191,8 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
             claimedAmount,
             community,
             contract: _contract,
-            fundsRemainingDays: estimateRemainingFundsInDays({
-                baseInterval: communityGraph.baseInterval!,
-                beneficiaries: communityGraph.beneficiaries!,
-                claimAmount: parseFloat(communityGraph.claimAmount!),
-                fundsOnContract: toNumber(communityBalance)
-            }),
             isClaimable,
+            isFinished: claimedAmount === community.maxClaim,
             locked
         });
         setIsReady(true);
@@ -171,7 +201,7 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
     /**
      * Calls community claim method.
      *
-     * @returns {ethers.TransactionReceipt} transaction response object
+     * @returns {TransactionReceipt} transaction response object
      * @throws {Error} "LOCKED"
      * @throws {Error} "Community: NOT_VALID_BENEFICIARY"
      * @throws {Error} "Community::claim: NOT_YET"
@@ -186,10 +216,13 @@ export const useBeneficiary = (communityAddress: string): UseBeneficiary => {
      * ```
      */
     const claim = async () => {
-        const { contract } = beneficiary;
+        const { contract, community } = beneficiary;
 
         if (!contract || (!signer && !connection) || !address) {
             throw new Error('No wallet connected');
+        }
+        if (community.balance < community.claimAmount && community.requestFundsStatus !== RequestFundsStatus.READY) {
+            throw new Error("It's not possible to claim yet");
         }
         const tx = await contract.populateTransaction.claim();
         const response = await executeTransaction(tx);
